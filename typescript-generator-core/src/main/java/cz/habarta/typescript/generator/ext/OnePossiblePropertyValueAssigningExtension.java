@@ -122,7 +122,7 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
         Optional<TsEnumModel> enumModelOption = model.getOriginalStringEnums().stream()
                 .filter(candidate -> candidate.getName().getFullName().equals(symbol.getFullName()))
                 .findAny();
-        if (!enumModelOption.isPresent()) {
+        if (enumModelOption.isEmpty()) {
             return Optional.empty();
         }
         TsEnumModel enumModel = enumModelOption.get();
