@@ -33,7 +33,7 @@ public class InputTest {
                 Arrays.asList("**Json"));
         Assertions.assertTrue(result1.contains("com.example.Json"));
         Assertions.assertTrue(result1.contains("com.example.AAAJson"));
-        Assertions.assertTrue(!result1.contains("com.example.AAA"));
+        Assertions.assertFalse(result1.contains("com.example.AAA"));
         Assertions.assertTrue(result1.contains("com.example.aaa$Json"));
 
         final List<String> result2 = Input.filterClassNames(
@@ -44,11 +44,11 @@ public class InputTest {
                         "cz.habarta.test.aaa.BBBJson",
                         "cz.habarta.test.CCC$Json"),
                 Arrays.asList("cz.habarta.test.*"));
-        Assertions.assertTrue(!result2.contains("com.example.Json"));
+        Assertions.assertFalse(result2.contains("com.example.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.BBBJson"));
-        Assertions.assertTrue(!result2.contains("cz.habarta.test.aaa.BBBJson"));
-        Assertions.assertTrue(!result2.contains("cz.habarta.test.CCC$Json"));
+        Assertions.assertFalse(result2.contains("cz.habarta.test.aaa.BBBJson"));
+        Assertions.assertFalse(result2.contains("cz.habarta.test.CCC$Json"));
 
         final List<String> result3 = Input.filterClassNames(
                 Arrays.asList(
@@ -56,9 +56,9 @@ public class InputTest {
                         "cz.habarta.ddd.CCC$Json",
                         "cz.habarta.CCC$Json"),
                 Arrays.asList("cz.habarta.*.*$*"));
-        Assertions.assertTrue(!result3.contains("cz.habarta.test.BBBJson"));
+        Assertions.assertFalse(result3.contains("cz.habarta.test.BBBJson"));
         Assertions.assertTrue(result3.contains("cz.habarta.ddd.CCC$Json"));
-        Assertions.assertTrue(!result3.contains("cz.habarta.CCC$Json"));
+        Assertions.assertFalse(result3.contains("cz.habarta.CCC$Json"));
     }
 
     @Test

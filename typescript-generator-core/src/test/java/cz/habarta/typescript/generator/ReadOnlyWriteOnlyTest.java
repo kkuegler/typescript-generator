@@ -52,8 +52,8 @@ public class ReadOnlyWriteOnlyTest {
         final String json = new ObjectMapper().writeValueAsString(user);
         Assertions.assertTrue(json.contains("id1"));
         Assertions.assertTrue(json.contains("id2"));
-        Assertions.assertTrue(!json.contains("password1"));
-        Assertions.assertTrue(!json.contains("password2"));
+        Assertions.assertFalse(json.contains("password1"));
+        Assertions.assertFalse(json.contains("password2"));
     }
 
     @Test

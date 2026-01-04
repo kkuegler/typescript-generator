@@ -32,7 +32,7 @@ public class Swagger3Test {
         //        Assertions.assertTrue(output.contains("testOperation2(): RestResponse<TestResponse[]>;"));
         //        Assertions.assertTrue(output.contains("testOperation3(): RestResponse<TestResponse[]>;"));
         //        Assertions.assertTrue(output.contains("testOperation4(): RestResponse<{ [index: string]: TestResponse }>;"));
-        Assertions.assertTrue(!output.contains("testHiddenOperation"));
+        Assertions.assertFalse(output.contains("testHiddenOperation"));
     }
 
     @Test
@@ -68,13 +68,13 @@ public class Swagger3Test {
         settings.ignoreSwaggerAnnotations = true;
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(DocumentedApplication.class));
-        Assertions.assertTrue(!output.contains("Documentation for operation 1."));
-        Assertions.assertTrue(!output.contains("Bad Request"));
-        Assertions.assertTrue(!output.contains("Not Found"));
-        Assertions.assertTrue(!output.contains("Documentation for the bean."));
-        Assertions.assertTrue(!output.contains("Documentation for property 1."));
-        Assertions.assertTrue(!output.contains("Documentation for property 2."));
-        Assertions.assertTrue(!output.contains("Documentation for property 3."));
+        Assertions.assertFalse(output.contains("Documentation for operation 1."));
+        Assertions.assertFalse(output.contains("Bad Request"));
+        Assertions.assertFalse(output.contains("Not Found"));
+        Assertions.assertFalse(output.contains("Documentation for the bean."));
+        Assertions.assertFalse(output.contains("Documentation for property 1."));
+        Assertions.assertFalse(output.contains("Documentation for property 2."));
+        Assertions.assertFalse(output.contains("Documentation for property 3."));
         Assertions.assertTrue(output.contains("property1: string"));
         Assertions.assertTrue(output.contains("property2: number"));
         Assertions.assertTrue(output.contains("property3: number"));

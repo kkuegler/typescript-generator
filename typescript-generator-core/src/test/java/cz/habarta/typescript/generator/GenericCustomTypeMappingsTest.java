@@ -57,7 +57,7 @@ public class GenericCustomTypeMappingsTest {
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(MyEntityRepresentation.class));
         Assertions.assertTrue(output.contains("id: string;"));
-        Assertions.assertTrue(!output.contains("IdRepresentation"));
+        Assertions.assertFalse(output.contains("IdRepresentation"));
     }
 
     private static class MyEntityRepresentation {

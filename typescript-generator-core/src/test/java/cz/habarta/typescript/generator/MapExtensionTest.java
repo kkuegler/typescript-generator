@@ -32,6 +32,7 @@ public class MapExtensionTest {
     }
 
     public static class A {
+        @SuppressWarnings("rawtypes")
         public MapExtension mapExt;
     }
 

@@ -170,6 +170,7 @@ public class GenericsResolverTest {
                 getTypeNames(resolvedTypeParameters));
     }
 
+    @SuppressWarnings("rawtypes")
     static class RawUsage {
         public Map rawMap;
         public StringKeyMap rawStringKeyMap;

@@ -51,9 +51,9 @@ public class JsonViewTest {
     private static void assertOutput(String output) {
         Assertions.assertTrue(output.contains("id:"));
         Assertions.assertTrue(output.contains("parentID:"));
-        Assertions.assertTrue(!output.contains("parent:"));
+        Assertions.assertFalse(output.contains("parent:"));
         Assertions.assertTrue(output.contains("someProperty:"));
-        Assertions.assertTrue(!output.contains("anotherProperty:"));
+        Assertions.assertFalse(output.contains("anotherProperty:"));
     }
 
     public static class Views {

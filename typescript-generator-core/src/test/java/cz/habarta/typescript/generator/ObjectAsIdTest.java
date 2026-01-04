@@ -131,11 +131,11 @@ public class ObjectAsIdTest {
         Assertions.assertTrue(output.contains("testObjectE1: string"));
         Assertions.assertTrue(output.contains("testObjectE2: TestObjectE | string"));
         Assertions.assertTrue(output.contains("testObjectE3: TestObjectE"));
-        Assertions.assertTrue(!output.contains("interface TestObjectA"));
-        Assertions.assertTrue(!output.contains("interface TestObjectSubA"));
+        Assertions.assertFalse(output.contains("interface TestObjectA"));
+        Assertions.assertFalse(output.contains("interface TestObjectSubA"));
         Assertions.assertTrue(output.contains("interface TestObjectB"));
         Assertions.assertTrue(output.contains("interface TestObjectC<T>"));
-        Assertions.assertTrue(!output.contains("interface TestObjectD"));
+        Assertions.assertFalse(output.contains("interface TestObjectD"));
         Assertions.assertTrue(output.contains("interface TestObjectE"));
     }
 
@@ -148,11 +148,11 @@ public class ObjectAsIdTest {
         Assertions.assertTrue(output.contains("listOfTestObjectC: (TestObjectC<string> | string)[]"));
         Assertions.assertTrue(output.contains("listOfTestObjectD: string[]"));
         Assertions.assertTrue(output.contains("listOfTestObjectE: string[]"));
-        Assertions.assertTrue(!output.contains("interface TestObjectA"));
+        Assertions.assertFalse(output.contains("interface TestObjectA"));
         Assertions.assertTrue(output.contains("interface TestObjectB"));
         Assertions.assertTrue(output.contains("interface TestObjectC<T>"));
-        Assertions.assertTrue(!output.contains("interface TestObjectD"));
-        Assertions.assertTrue(!output.contains("interface TestObjectE"));
+        Assertions.assertFalse(output.contains("interface TestObjectD"));
+        Assertions.assertFalse(output.contains("interface TestObjectE"));
     }
 
     @Test
@@ -166,11 +166,11 @@ public class ObjectAsIdTest {
                 output.contains("listOfMapOfTestObjectC: { [index: string]: TestObjectC<string> | string }[]"));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectD: { [index: string]: string }[]"));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectE: { [index: string]: string }[]"));
-        Assertions.assertTrue(!output.contains("interface TestObjectA"));
+        Assertions.assertFalse(output.contains("interface TestObjectA"));
         Assertions.assertTrue(output.contains("interface TestObjectB"));
         Assertions.assertTrue(output.contains("interface TestObjectC<T>"));
-        Assertions.assertTrue(!output.contains("interface TestObjectD"));
-        Assertions.assertTrue(!output.contains("interface TestObjectE"));
+        Assertions.assertFalse(output.contains("interface TestObjectD"));
+        Assertions.assertFalse(output.contains("interface TestObjectE"));
     }
 
     @Test
