@@ -28,11 +28,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.14.2'
+    implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.20.1'
     implementation 'org.codehaus.groovy:groovy-all:3.0.16'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.1.21'
     implementation 'org.scala-lang:scala-library:2.13.10'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
