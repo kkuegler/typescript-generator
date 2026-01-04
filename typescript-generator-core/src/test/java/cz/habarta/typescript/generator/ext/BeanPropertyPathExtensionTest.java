@@ -31,12 +31,7 @@ public class BeanPropertyPathExtensionTest {
     @Test
     public void basicTest() throws Exception {
         final StringBuilder data = new StringBuilder();
-        final EmitterExtension.Writer writer = new EmitterExtension.Writer() {
-            @Override
-            public void writeIndentedLine(String line) {
-                data.append(line + "\n");
-            }
-        };
+        final EmitterExtension.Writer writer = line -> data.append(line).append("\n");
         final Settings settings = new Settings();
         settings.sortDeclarations = true;
         final TypeProcessor typeProcessor = new DefaultTypeProcessor();

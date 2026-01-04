@@ -48,7 +48,7 @@ public class JaxrsApplicationParser extends RestApplicationParser {
             return new JaxrsApplicationParser(settings, commonTypeProcessor);
         }
 
-    };
+    }
 
     public JaxrsApplicationParser(Settings settings, TypeProcessor commonTypeProcessor) {
         super(settings, commonTypeProcessor, new RestApplicationModel(RestApplicationType.Jaxrs));
@@ -96,7 +96,7 @@ public class JaxrsApplicationParser extends RestApplicationParser {
         final ResourceContext subContext = context.subPathParamTypes(pathParamTypes);
         // parse resource methods
         final List<Method> methods = Arrays.asList(resourceClass.getMethods());
-        Collections.sort(methods, Utils.methodComparator());
+        methods.sort(Utils.methodComparator());
         for (Method method : methods) {
             parseResourceMethod(result, subContext, resourceClass, method);
         }

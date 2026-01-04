@@ -21,12 +21,7 @@ public class TypeGuardsForJackson2PolymorphismExtensionTest {
     @Test
     public void basicTest() {
         final List<String> lines = new ArrayList<>();
-        final EmitterExtension.Writer writer = new EmitterExtension.Writer() {
-            @Override
-            public void writeIndentedLine(String line) {
-                lines.add(line);
-            }
-        };
+        final EmitterExtension.Writer writer = lines::add;
         final Settings settings = TestUtils.settings();
         final TypeProcessor typeProcessor = new DefaultTypeProcessor();
         final Model model = new Jackson2Parser(settings, typeProcessor).parseModel(Point.class);

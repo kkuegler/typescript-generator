@@ -6,7 +6,7 @@ public class Logger {
     private final Level level;
 
     public enum Level {
-        Debug, Verbose, Info, Warning, Error;
+        Debug, Verbose, Info, Warning, Error
     }
 
     public Logger() {

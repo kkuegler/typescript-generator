@@ -175,18 +175,12 @@ public class TypeScriptGenerator {
     }
 
     private ModelParser.Factory getModelParserFactory() {
-        switch (settings.jsonLibrary) {
-        case jackson2:
-            return new Jackson2Parser.Jackson2ParserFactory();
-        case jaxb:
-            return new Jackson2Parser.JaxbParserFactory();
-        case gson:
-            return new GsonParser.Factory();
-        case jsonb:
-            return new JsonbParser.Factory();
-        default:
-            throw new RuntimeException();
-        }
+        return switch (settings.jsonLibrary) {
+        case jackson2 -> new Jackson2Parser.Jackson2ParserFactory();
+        case jaxb -> new Jackson2Parser.JaxbParserFactory();
+        case gson -> new GsonParser.Factory();
+        case jsonb -> new JsonbParser.Factory();
+        };
     }
 
     public ModelCompiler getModelCompiler() {

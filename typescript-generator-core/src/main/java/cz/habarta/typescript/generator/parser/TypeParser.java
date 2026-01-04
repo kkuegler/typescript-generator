@@ -246,7 +246,7 @@ public class TypeParser {
                     return newTypeVariable;
                 }
             }
-            throw new RuntimeException("Unexpected type: " + kType.toString());
+            throw new RuntimeException("Unexpected type: " + kType);
         }
 
         private <D extends GenericDeclaration> D getTypeVariableGenericDeclaration(TypeVariable<D> typeVariable) {

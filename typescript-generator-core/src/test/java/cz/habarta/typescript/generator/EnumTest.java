@@ -446,7 +446,7 @@ public class EnumTest {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     public enum NumberEnum {
         VALUE0,
-        VALUE1;
+        VALUE1
     }
 
     static class ClassWithNumberEnum {

@@ -702,24 +702,14 @@ public class Settings {
         names.add("java.lang.Record");
         final List<Pattern> patterns = Utils.globsToRegexps(
                 excludedClassPatterns != null ? excludedClassPatterns : Collections.emptyList());
-        return new Predicate<String>() {
-            @Override
-            public boolean test(String className) {
-                return names.contains(className) || Utils.classNameMatches(className, patterns);
-            }
-        };
+        return className -> names.contains(className) || Utils.classNameMatches(className, patterns);
     }
 
     public Predicate<String> getMapClassesAsClassesFilter() {
         if (mapClassesAsClassesFilter == null) {
             final List<Pattern> patterns = Utils.globsToRegexps(mapClassesAsClassesPatterns);
-            mapClassesAsClassesFilter = new Predicate<String>() {
-                @Override
-                public boolean test(String className) {
-                    return mapClasses == ClassMapping.asClasses &&
-                            (patterns == null || Utils.classNameMatches(className, patterns));
-                }
-            };
+            mapClassesAsClassesFilter = className -> mapClasses == ClassMapping.asClasses &&
+                    (patterns == null || Utils.classNameMatches(className, patterns));
         }
         return mapClassesAsClassesFilter;
     }
@@ -921,33 +911,21 @@ public class Settings {
     }
 
     private static int modifierToBitMask(javax.lang.model.element.Modifier modifier) {
-        switch (modifier) {
-        case PUBLIC:
-            return java.lang.reflect.Modifier.PUBLIC;
-        case PROTECTED:
-            return java.lang.reflect.Modifier.PROTECTED;
-        case PRIVATE:
-            return java.lang.reflect.Modifier.PRIVATE;
-        case ABSTRACT:
-            return java.lang.reflect.Modifier.ABSTRACT;
+        return switch (modifier) {
+        case PUBLIC -> java.lang.reflect.Modifier.PUBLIC;
+        case PROTECTED -> java.lang.reflect.Modifier.PROTECTED;
+        case PRIVATE -> java.lang.reflect.Modifier.PRIVATE;
+        case ABSTRACT -> java.lang.reflect.Modifier.ABSTRACT;
         // case DEFAULT: no equivalent
-        case STATIC:
-            return java.lang.reflect.Modifier.STATIC;
-        case FINAL:
-            return java.lang.reflect.Modifier.FINAL;
-        case TRANSIENT:
-            return java.lang.reflect.Modifier.TRANSIENT;
-        case VOLATILE:
-            return java.lang.reflect.Modifier.VOLATILE;
-        case SYNCHRONIZED:
-            return java.lang.reflect.Modifier.SYNCHRONIZED;
-        case NATIVE:
-            return java.lang.reflect.Modifier.NATIVE;
-        case STRICTFP:
-            return java.lang.reflect.Modifier.STRICT;
-        default:
-            return 0;
-        }
+        case STATIC -> java.lang.reflect.Modifier.STATIC;
+        case FINAL -> java.lang.reflect.Modifier.FINAL;
+        case TRANSIENT -> java.lang.reflect.Modifier.TRANSIENT;
+        case VOLATILE -> java.lang.reflect.Modifier.VOLATILE;
+        case SYNCHRONIZED -> java.lang.reflect.Modifier.SYNCHRONIZED;
+        case NATIVE -> java.lang.reflect.Modifier.NATIVE;
+        case STRICTFP -> java.lang.reflect.Modifier.STRICT;
+        default -> 0;
+        };
     }
 
 }

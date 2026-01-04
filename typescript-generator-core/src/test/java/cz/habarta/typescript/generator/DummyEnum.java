@@ -19,6 +19,6 @@ public enum DummyEnum {
     /**
      * 0000ff
      */
-    Blue;
+    Blue
 
 }
