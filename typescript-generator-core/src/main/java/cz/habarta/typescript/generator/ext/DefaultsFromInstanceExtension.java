@@ -12,7 +12,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +31,7 @@ public class DefaultsFromInstanceExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays
-                .asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, this::transformModel));
+        return List.of(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, this::transformModel));
     }
 
     protected TsModel transformModel(TsModelTransformer.Context context, TsModel model) {

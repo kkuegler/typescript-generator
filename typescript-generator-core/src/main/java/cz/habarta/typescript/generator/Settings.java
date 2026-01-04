@@ -395,7 +395,7 @@ public class Settings {
         checkAnnotationsHaveRuntimeRetention(this.nullableAnnotations);
         for (Class<? extends Annotation> annotation : optionalAnnotations) {
             final Target target = annotation.getAnnotation(Target.class);
-            final List<ElementType> elementTypes = target != null ? Arrays.asList(target.value()) : Arrays.asList();
+            final List<ElementType> elementTypes = target != null ? Arrays.asList(target.value()) : List.of();
             if (elementTypes.contains(ElementType.TYPE_PARAMETER) || elementTypes.contains(ElementType.TYPE_USE)) {
                 TypeScriptGenerator.getLogger().info(String.format(
                         "Suggestion: annotation '%s' supports 'TYPE_PARAMETER' or 'TYPE_USE' target. Consider using 'nullableAnnotations' parameter instead of 'optionalAnnotations'.",
@@ -412,7 +412,7 @@ public class Settings {
         }
         for (Class<? extends Annotation> annotation : nullableAnnotations) {
             final Target target = annotation.getAnnotation(Target.class);
-            final List<ElementType> elementTypes = target != null ? Arrays.asList(target.value()) : Arrays.asList();
+            final List<ElementType> elementTypes = target != null ? Arrays.asList(target.value()) : List.of();
             if (!elementTypes.contains(ElementType.TYPE_PARAMETER) && !elementTypes.contains(ElementType.TYPE_USE)) {
                 throw new RuntimeException(String.format(
                         "'%s' annotation cannot be used as nullable annotation because it doesn't have 'TYPE_PARAMETER' or 'TYPE_USE' target.",

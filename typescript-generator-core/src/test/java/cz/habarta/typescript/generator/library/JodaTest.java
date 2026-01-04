@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.*;
@@ -53,7 +52,7 @@ public class JodaTest {
     @Test
     public void testDateAsString_forJodaDateTime_usingDataLibrary() {
         final Settings settings = TestUtils.settings();
-        settings.additionalDataLibraries = Arrays.asList("joda");
+        settings.additionalDataLibraries = List.of("joda");
         settings.mapDate = DateMapping.asString;
         final String dts = new TypeScriptGenerator(settings).generateTypeScript(Input.from(JodaDates.class));
         Assertions.assertTrue(dts.contains("date: DateAsString;"));
@@ -75,7 +74,7 @@ public class JodaTest {
     @Test
     public void testJodaLibrary() {
         final Settings settings = TestUtils.settings();
-        settings.additionalDataLibraries = Arrays.asList("joda");
+        settings.additionalDataLibraries = List.of("joda");
         settings.mapDate = DateMapping.asString;
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(JodaSerializedClasses.class));

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,7 +85,7 @@ public class GenericsTest {
         final Settings settings = TestUtils.settings();
         settings.outputKind = TypeScriptOutputKind.module;
         settings.sortDeclarations = true;
-        settings.setExcludeFilter(Arrays.asList(Comparable.class.getName()), null);
+        settings.setExcludeFilter(List.of(Comparable.class.getName()), null);
 
         final StringWriter stringWriter = new StringWriter();
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(IA.class), Output.to(stringWriter));

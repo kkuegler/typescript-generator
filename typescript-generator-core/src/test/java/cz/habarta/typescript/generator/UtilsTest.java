@@ -18,9 +18,9 @@ public class UtilsTest {
 
     @Test
     public void testGlobToRegexp() {
-        Assertions.assertEquals("\\Q\\E.*\\QJson\\E", Utils.globsToRegexps(Arrays.asList("**Json")).get(0).toString());
+        Assertions.assertEquals("\\Q\\E.*\\QJson\\E", Utils.globsToRegexps(List.of("**Json")).get(0).toString());
         Assertions.assertEquals("\\Qcz.habarta.test.\\E[^.\\$]*\\Q\\E",
-                Utils.globsToRegexps(Arrays.asList("cz.habarta.test.*")).get(0).toString());
+                Utils.globsToRegexps(List.of("cz.habarta.test.*")).get(0).toString());
     }
 
     @Test

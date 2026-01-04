@@ -143,7 +143,7 @@ public class Jackson2Parser extends ModelParser {
 
     private static TypeProcessor createSpecificTypeProcessor() {
         return new TypeProcessor.Chain(
-                new ExcludingTypeProcessor(Arrays.asList(JsonNode.class.getName())),
+                new ExcludingTypeProcessor(List.of(JsonNode.class.getName())),
                 new TypeProcessor() {
                     @Override
                     public TypeProcessor.Result processType(Type javaType, TypeProcessor.Context context) {

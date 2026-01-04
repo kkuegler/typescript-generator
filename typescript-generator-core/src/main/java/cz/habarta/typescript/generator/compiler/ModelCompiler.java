@@ -508,7 +508,7 @@ public class ModelCompiler {
             if (bean.isClass()) {
                 final TsConstructorModel constructor = new TsConstructorModel(
                         TsModifierFlags.None,
-                        Arrays.asList(new TsParameterModel("data", dataType)),
+                        List.of(new TsParameterModel("data", dataType)),
                         body,
                         /*comments*/ null);
                 beans.add(bean.withConstructor(constructor));
@@ -553,12 +553,12 @@ public class ModelCompiler {
         final TsType.GenericVariableType varR = new TsType.GenericVariableType("R");
         final TsAliasModel responseTypeAlias;
         if (settings.restResponseType != null) {
-            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR),
+            responseTypeAlias = new TsAliasModel(null, responseSymbol, List.of(varR),
                     new TsType.VerbatimType(settings.restResponseType), null);
         } else {
             final TsType.GenericReferenceType responseTypeDefinition = new TsType.GenericReferenceType(
                     symbolTable.getSyntheticSymbol("Promise"), varR);
-            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR), responseTypeDefinition,
+            responseTypeAlias = new TsAliasModel(null, responseSymbol, List.of(varR), responseTypeDefinition,
                     null);
         }
         tsModel.getTypeAliases().add(responseTypeAlias);
@@ -587,9 +587,9 @@ public class ModelCompiler {
         // HttpClient interface
         final TsType.GenericVariableType returnGenericVariable = new TsType.GenericVariableType("R");
         tsModel.getBeans().add(new TsBeanModel(null, TsBeanCategory.ServicePrerequisite, false, httpClientSymbol,
-                typeParameters, null, null, null, null, null, Arrays.asList(
+                typeParameters, null, null, null, null, null, List.of(
                         new TsMethodModel(
-                                "request", TsModifierFlags.None, Arrays.asList(returnGenericVariable), Arrays.asList(
+                                "request", TsModifierFlags.None, List.of(returnGenericVariable), List.of(
                                         new TsParameterModel("requestConfig", new TsType.ObjectType(
                                                 new TsProperty("method", TsType.String),
                                                 new TsProperty("url", TsType.String),
@@ -597,7 +597,7 @@ public class ModelCompiler {
                                                 new TsProperty("data", new TsType.OptionalType(TsType.Any)),
                                                 new TsProperty("copyFn",
                                                         new TsType.OptionalType(new TsType.FunctionType(
-                                                                Arrays.asList(
+                                                                List.of(
                                                                         new TsParameter("data", returnGenericVariable)),
                                                                 returnGenericVariable))),
                                                 optionsType != null
@@ -613,7 +613,7 @@ public class ModelCompiler {
                 : new TsType.ReferenceType(httpClientSymbol);
         final TsConstructorModel constructor = new TsConstructorModel(
                 TsModifierFlags.None,
-                Arrays.asList(new TsParameterModel(TsAccessibilityModifier.Protected, "httpClient", httpClientType)),
+                List.of(new TsParameterModel(TsAccessibilityModifier.Protected, "httpClient", httpClientType)),
                 Collections.<TsStatement>emptyList(),
                 null);
         final boolean bothInterfacesAndClients = settings.generateJaxrsApplicationInterface
@@ -1146,10 +1146,10 @@ public class ModelCompiler {
         // type Nullable<T> = T | ...
         if (declareNullableType.get()) {
             final TsType.GenericVariableType tVar = new TsType.GenericVariableType("T");
-            transformedModel = transformedModel.withAddedTypeAliases(Arrays.asList(new TsAliasModel(
+            transformedModel = transformedModel.withAddedTypeAliases(List.of(new TsAliasModel(
                     /*origin*/ null,
                     symbolTable.getSyntheticSymbol(TsType.NullableType.AliasName),
-                    Arrays.asList(tVar),
+                    List.of(tVar),
                     new TsType.UnionType(tVar).add(nullabilityDefinition.getTypes()),
                     /*comments*/ null)));
         }
@@ -1182,7 +1182,7 @@ public class ModelCompiler {
             if (optionalType.type instanceof TsType.UnionType) {
                 final TsType.UnionType unionType = (TsType.UnionType) optionalType.type;
                 if (unionType.types.contains(TsType.Undefined)) {
-                    return new TsType.OptionalType(unionType.remove(Arrays.asList(TsType.Undefined)));
+                    return new TsType.OptionalType(unionType.remove(List.of(TsType.Undefined)));
                 }
             }
         }

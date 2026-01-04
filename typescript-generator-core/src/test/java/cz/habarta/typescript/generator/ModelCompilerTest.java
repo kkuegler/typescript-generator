@@ -42,7 +42,7 @@ public class ModelCompilerTest {
     @Test
     public void testExclusionPattern() throws Exception {
         final Settings settings = TestUtils.settings();
-        settings.setExcludeFilter(null, Arrays.asList("**Direction"));
+        settings.setExcludeFilter(null, List.of("**Direction"));
         final Type javaType = A.class.getField("directions").getGenericType();
         Assertions.assertEquals("{ [index: string]: any }[]", TestUtils.compileType(settings, javaType).toString());
     }

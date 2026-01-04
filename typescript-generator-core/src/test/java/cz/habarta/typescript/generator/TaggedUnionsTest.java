@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -523,7 +522,7 @@ public class TaggedUnionsTest {
     @Test
     public void testTaggedUnionDisabledUsingAnnotation() {
         final Settings settings = TestUtils.settings();
-        settings.disableTaggedUnionAnnotations = Arrays.asList(TestMarker.class);
+        settings.disableTaggedUnionAnnotations = List.of(TestMarker.class);
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry2.class));
         final String expected = ("\n" +
                 "interface Geometry2 {\n" +

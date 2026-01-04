@@ -12,7 +12,6 @@ import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class JsonDeserializationExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeSymbolResolution,
+        return List.of(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeSymbolResolution,
                 new TsModelTransformer() {
                     @Override
                     public TsModel transformModel(Context context, TsModel model) {
@@ -166,7 +165,7 @@ public class JsonDeserializationExtension extends Extension {
         final List<TsStatement> body = new ArrayList<>();
         body.add(new TsReturnStatement(
                 new TsArrowFunction(
-                        Arrays.asList(new TsParameter("data", null)),
+                        List.of(new TsParameter("data", null)),
                         new TsCallExpression(
                                 new TsMemberExpression(
                                         new TsTypeReferenceExpression(new TsType.ReferenceType(beanIdentifier)),
@@ -179,7 +178,7 @@ public class JsonDeserializationExtension extends Extension {
                 TsModifierFlags.None.setStatic(),
                 typeParameters,
                 constructorFnOfParameters,
-                new TsType.FunctionType(Arrays.asList(new TsParameter("data", dataType)), dataType),
+                new TsType.FunctionType(List.of(new TsParameter("data", dataType)), dataType),
                 body,
                 null);
     }
@@ -198,7 +197,7 @@ public class JsonDeserializationExtension extends Extension {
         for (TsType.GenericVariableType typeParameter : typeParameters) {
             parameters.add(new TsParameterModel(
                     "constructorFnOf" + typeParameter.name,
-                    new TsType.FunctionType(Arrays.asList(new TsParameter("data", typeParameter)), typeParameter)));
+                    new TsType.FunctionType(List.of(new TsParameter("data", typeParameter)), typeParameter)));
         }
         return parameters;
     }
@@ -206,7 +205,7 @@ public class JsonDeserializationExtension extends Extension {
     private static TsIfStatement ifUndefinedThenReturnItStatement(String identifier) {
         return new TsIfStatement(
                 new TsPrefixUnaryExpression(TsUnaryOperator.Exclamation, new TsIdentifierReference(identifier)),
-                Arrays.<TsStatement>asList(new TsReturnStatement(new TsIdentifierReference(identifier))));
+                List.<TsStatement>of(new TsReturnStatement(new TsIdentifierReference(identifier))));
     }
 
     private static TsExpression getPropertyCopy(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean,
@@ -279,7 +278,7 @@ public class JsonDeserializationExtension extends Extension {
         // __identity
         return new TsCallExpression(
                 new TsIdentifierReference("__identity"),
-                Arrays.asList(tsType),
+                Collections.singletonList(tsType),
                 Collections.<TsExpression>emptyList());
     }
 
@@ -290,7 +289,7 @@ public class JsonDeserializationExtension extends Extension {
             final TsBeanModel tuBean = tsModel.getBean(cls);
             caseClauses.add(new TsSwitchCaseClause(
                     new TsStringLiteral(tuBean.getDiscriminantLiteral()),
-                    Arrays.<TsStatement>asList(new TsReturnStatement(
+                    List.<TsStatement>of(new TsReturnStatement(
                             new TsCallExpression(
                                     new TsMemberExpression(new TsTypeReferenceExpression(
                                             new TsType.ReferenceType(symbolTable.getSymbol(cls))), "fromData"),
@@ -308,7 +307,7 @@ public class JsonDeserializationExtension extends Extension {
                 "fromDataUnion",
                 TsModifierFlags.None.setStatic(),
                 null, //typeParameters,
-                Arrays.asList(new TsParameterModel("data", unionType)),
+                List.of(new TsParameterModel("data", unionType)),
                 unionType,
                 body,
                 null);

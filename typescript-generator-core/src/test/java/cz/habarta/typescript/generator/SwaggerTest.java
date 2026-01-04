@@ -2,8 +2,8 @@
 package cz.habarta.typescript.generator;
 
 import io.swagger.annotations.*;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -77,7 +77,7 @@ public class SwaggerTest {
     private static class TestApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(Arrays.<Class<?>>asList(TestResource.class));
+            return new LinkedHashSet<>(List.<Class<?>>of(TestResource.class));
         }
     }
 
@@ -131,7 +131,7 @@ public class SwaggerTest {
     private static class DocumentedApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(Arrays.<Class<?>>asList(DocumentedResource.class));
+            return new LinkedHashSet<>(List.<Class<?>>of(DocumentedResource.class));
         }
     }
 

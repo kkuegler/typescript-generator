@@ -66,7 +66,7 @@ public class GsonParser extends ModelParser {
     }
 
     private static TypeProcessor createSpecificTypeProcessor() {
-        return new ExcludingTypeProcessor(Arrays.asList());
+        return new ExcludingTypeProcessor(List.of());
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.google.common.net.HostAndPort;
 import com.google.common.net.InternetDomainName;
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class GuavaTest {
         TypeScriptGenerator.setLogger(new Logger(Logger.Level.Verbose));
         final Settings settings = TestUtils.settings();
         settings.jackson2Configuration = new Jackson2ConfigurationResolved();
-        settings.additionalDataLibraries = Arrays.asList("guava");
+        settings.additionalDataLibraries = List.of("guava");
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(GuavaSerializedClasses.class));
         Assertions.assertTrue(output.contains("rangeSet: GuavaRangeSet<string>"));

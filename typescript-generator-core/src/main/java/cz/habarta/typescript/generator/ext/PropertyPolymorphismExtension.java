@@ -1,7 +1,6 @@
 package cz.habarta.typescript.generator.ext;
 
 import cz.habarta.typescript.generator.Extension;
-import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.TsType.ReferenceType;
 import cz.habarta.typescript.generator.compiler.ModelCompiler.TransformationPhase;
 import cz.habarta.typescript.generator.compiler.Symbol;
@@ -163,68 +162,67 @@ public class PropertyPolymorphismExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays
-                .asList(new TransformerDefinition(TransformationPhase.BeforeSymbolResolution, new TsModelTransformer() {
-                    @Override
-                    public TsModel transformModel(Context context, TsModel model) {
-                        List<TsBeanModel> newBeans = new ArrayList<>();
+        return List.of(new TransformerDefinition(TransformationPhase.BeforeSymbolResolution, new TsModelTransformer() {
+            @Override
+            public TsModel transformModel(Context context, TsModel model) {
+                List<TsBeanModel> newBeans = new ArrayList<>();
 
-                        for (TsBeanModel bean : model.getBeans()) {
-                            // replace references
-                            List<TsPropertyModel> newProperties = new ArrayList<>();
-                            for (TsPropertyModel property : bean.getProperties()) {
-                                if (property.tsType instanceof ReferenceType) {
-                                    ReferenceType type = (ReferenceType) property.tsType;
-                                    TsBeanModel referencedBean = model.getBean(type.symbol);
-                                    if (isPolymorphicBase.test(referencedBean.getOrigin())) {
-                                        Symbol refSymbol = context.getSymbolTable().addSuffixToSymbol(type.symbol,
-                                                "Ref");
-                                        newProperties.add(property.withTsType(new TsType.ReferenceType(refSymbol)));
-                                        continue;
-                                    }
-                                }
-                                newProperties.add(property);
-                            }
-                            newBeans.add(bean.withProperties(newProperties));
-                        }
-
-                        // add reference beans
-                        {
-                            List<TsBeanModel> bases = new ArrayList<>();
-                            Map<Class<?>, Set<Class<?>>> subTypes = new HashMap<>();
-                            Map<Class<?>, TsBeanModel> beanByOrigin = new HashMap<>();
-                            for (TsBeanModel bean : model.getBeans()) {
-                                Class<?> origin = bean.getOrigin();
-                                if (origin == null) {
-                                    continue;
-                                }
-                                beanByOrigin.put(origin, bean);
-                                if (isPolymorphicBase.test(origin)) {
-                                    bases.add(bean);
-                                }
-
-                                fillSubTypes(origin, subTypes, origin, new HashSet<>());
-                            }
-
-                            for (TsBeanModel base : bases) {
-                                List<TsPropertyModel> refProperties = new ArrayList<>();
-                                for (Class<?> subType : subTypes.getOrDefault(base.getOrigin(),
-                                        Collections.emptySet())) {
-                                    refProperties.add(new TsPropertyModel(getPropertyName.apply(subType),
-                                            new ReferenceType(context.getSymbolTable().getSymbol(subType)), null, true,
-                                            null));
-                                }
-                                newBeans.add(new TsBeanModel(base.getOrigin(), TsBeanCategory.Data, false,
-                                        context.getSymbolTable().addSuffixToSymbol(base.getName(), "Ref"), null, null,
-                                        null, null,
-                                        refProperties, null, null, null));
+                for (TsBeanModel bean : model.getBeans()) {
+                    // replace references
+                    List<TsPropertyModel> newProperties = new ArrayList<>();
+                    for (TsPropertyModel property : bean.getProperties()) {
+                        if (property.tsType instanceof ReferenceType) {
+                            ReferenceType type = (ReferenceType) property.tsType;
+                            TsBeanModel referencedBean = model.getBean(type.symbol);
+                            if (isPolymorphicBase.test(referencedBean.getOrigin())) {
+                                Symbol refSymbol = context.getSymbolTable().addSuffixToSymbol(type.symbol,
+                                        "Ref");
+                                newProperties.add(property.withTsType(new ReferenceType(refSymbol)));
+                                continue;
                             }
                         }
+                        newProperties.add(property);
+                    }
+                    newBeans.add(bean.withProperties(newProperties));
+                }
 
-                        return model.withBeans(newBeans);
+                // add reference beans
+                {
+                    List<TsBeanModel> bases = new ArrayList<>();
+                    Map<Class<?>, Set<Class<?>>> subTypes = new HashMap<>();
+                    Map<Class<?>, TsBeanModel> beanByOrigin = new HashMap<>();
+                    for (TsBeanModel bean : model.getBeans()) {
+                        Class<?> origin = bean.getOrigin();
+                        if (origin == null) {
+                            continue;
+                        }
+                        beanByOrigin.put(origin, bean);
+                        if (isPolymorphicBase.test(origin)) {
+                            bases.add(bean);
+                        }
+
+                        fillSubTypes(origin, subTypes, origin, new HashSet<>());
                     }
 
-                }));
+                    for (TsBeanModel base : bases) {
+                        List<TsPropertyModel> refProperties = new ArrayList<>();
+                        for (Class<?> subType : subTypes.getOrDefault(base.getOrigin(),
+                                Collections.emptySet())) {
+                            refProperties.add(new TsPropertyModel(getPropertyName.apply(subType),
+                                    new ReferenceType(context.getSymbolTable().getSymbol(subType)), null, true,
+                                    null));
+                        }
+                        newBeans.add(new TsBeanModel(base.getOrigin(), TsBeanCategory.Data, false,
+                                context.getSymbolTable().addSuffixToSymbol(base.getName(), "Ref"), null, null,
+                                null, null,
+                                refProperties, null, null, null));
+                    }
+                }
+
+                return model.withBeans(newBeans);
+            }
+
+        }));
     }
 
     private void fillSubTypes(Class<?> root, Map<Class<?>, Set<Class<?>>> subTypes, Class<?> cls, Set<Class<?>> seen) {

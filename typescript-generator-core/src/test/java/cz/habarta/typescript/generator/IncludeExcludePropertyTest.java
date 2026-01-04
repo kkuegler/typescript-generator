@@ -4,6 +4,7 @@ package cz.habarta.typescript.generator;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +23,7 @@ public class IncludeExcludePropertyTest {
     public void testInclude(JsonLibrary library) {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = library;
-        settings.includePropertyAnnotations = Arrays.asList(MyInclude.class);
+        settings.includePropertyAnnotations = List.of(MyInclude.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertFalse(output.contains("property1"));
@@ -36,7 +37,7 @@ public class IncludeExcludePropertyTest {
     public void testExclude(JsonLibrary library) {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = library;
-        settings.excludePropertyAnnotations = Arrays.asList(MyExclude.class);
+        settings.excludePropertyAnnotations = List.of(MyExclude.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertTrue(output.contains("property1"));
@@ -51,8 +52,8 @@ public class IncludeExcludePropertyTest {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = library;
 
-        settings.includePropertyAnnotations = Arrays.asList(MyInclude.class);
-        settings.excludePropertyAnnotations = Arrays.asList(MyExclude.class);
+        settings.includePropertyAnnotations = List.of(MyInclude.class);
+        settings.excludePropertyAnnotations = List.of(MyExclude.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertFalse(output.contains("property1"));

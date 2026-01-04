@@ -86,7 +86,7 @@ public class Input {
                             .collect(Collectors.toList())));
                 }
                 if (parameters.jaxrsApplicationClassName != null) {
-                    types.addAll(fromClassNames(Arrays.asList(parameters.jaxrsApplicationClassName)));
+                    types.addAll(fromClassNames(List.of(parameters.jaxrsApplicationClassName)));
                 }
                 if (parameters.automaticJaxrsApplication) {
                     types.addAll(JaxrsApplicationScanner.scanAutomaticJaxrsApplication(classpathScanner.getScanResult(),

@@ -6,6 +6,7 @@ import cz.habarta.typescript.generator.TsType.ObjectType;
 import cz.habarta.typescript.generator.TsType.UnionType;
 import cz.habarta.typescript.generator.compiler.Symbol;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static cz.habarta.typescript.generator.TsType.Number;
@@ -52,8 +53,8 @@ public class TsTypeTest {
                 new TsType.ObjectType(Arrays.asList(
                         new TsProperty("a", String),
                         new TsProperty("b", new UnionType(Arrays.asList(String, Number))),
-                        new TsProperty("c", new ObjectType(Arrays.<TsProperty>asList())),
-                        new TsProperty("d", new ObjectType(Arrays.asList(
+                        new TsProperty("c", new ObjectType(List.<TsProperty>of())),
+                        new TsProperty("d", new ObjectType(List.of(
                                 new TsProperty("x", String))))))
                         .format(settings));
     }

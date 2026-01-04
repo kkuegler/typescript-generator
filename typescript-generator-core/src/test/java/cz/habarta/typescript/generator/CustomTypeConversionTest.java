@@ -3,8 +3,8 @@ package cz.habarta.typescript.generator;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +64,7 @@ public class CustomTypeConversionTest {
         {
             final Type maybeObjectFieldType = CustomOptionalUsage.class.getField("maybeObject").getGenericType();
             final TypeProcessor.Result result = typeProcessor.processType(maybeObjectFieldType, context);
-            assertEquals(Arrays.asList(SomeObject.class), result.getDiscoveredClasses());
+            assertEquals(List.of(SomeObject.class), result.getDiscoveredClasses());
         }
         {
             final String dts = new TypeScriptGenerator(settings)

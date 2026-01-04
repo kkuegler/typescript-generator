@@ -213,14 +213,14 @@ public class DefaultTypeProcessor implements TypeProcessor {
                 Arrays.asList(byte.class, short.class, int.class, long.class, float.class, double.class, Number.class),
                 Arrays.asList(boolean.class, Boolean.class),
                 Arrays.asList(Date.class, Calendar.class, Temporal.class),
-                Arrays.asList(),
+                List.of(),
                 Arrays.asList(void.class, Void.class),
-                Arrays.asList(Collection.class),
-                Arrays.asList(Map.class),
-                Arrays.asList(Optional.class),
+                List.of(Collection.class),
+                List.of(Map.class),
+                List.of(Optional.class),
                 Arrays.asList(jakarta.xml.bind.JAXBElement.class, javax.xml.bind.JAXBElement.class),
-                Arrays.asList(),
-                Arrays.asList());
+                List.of(),
+                List.of());
     }
 
 }
