@@ -30,7 +30,7 @@ public class DataLibraryJson {
 
         private final String name;
 
-        private SemanticType(String name) {
+        SemanticType(String name) {
             this.name = name;
         }
 

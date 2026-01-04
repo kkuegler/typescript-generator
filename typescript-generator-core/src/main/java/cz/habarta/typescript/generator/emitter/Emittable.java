@@ -5,6 +5,6 @@ import cz.habarta.typescript.generator.Settings;
 
 public interface Emittable {
 
-    public String format(Settings settings);
+    String format(Settings settings);
 
 }

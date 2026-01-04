@@ -51,10 +51,10 @@ public class TaggedUnionsTest {
             @JsonSubTypes.Type(CRectangle2.class),
             @JsonSubTypes.Type(CCircle2.class),
     })
-    private static interface IShape2 {
+    private interface IShape2 {
     }
 
-    private static interface IQuadrilateral2 extends IShape2 {
+    private interface IQuadrilateral2 extends IShape2 {
     }
 
     @JsonTypeName("square")
@@ -105,23 +105,23 @@ public class TaggedUnionsTest {
             @JsonSubTypes.Type(DiamondB2.class),
             @JsonSubTypes.Type(DiamondC.class),
     })
-    private static interface DiamondA {
-        public String getA();
+    private interface DiamondA {
+        String getA();
     }
 
     @JsonTypeName("b1")
-    private static interface DiamondB1 extends DiamondA {
-        public String getB1();
+    private interface DiamondB1 extends DiamondA {
+        String getB1();
     }
 
     @JsonTypeName("b2")
-    private static interface DiamondB2 extends DiamondA {
-        public String getB2();
+    private interface DiamondB2 extends DiamondA {
+        String getB2();
     }
 
     @JsonTypeName("c")
-    private static interface DiamondC extends DiamondB1, DiamondB2 {
-        public String getC();
+    private interface DiamondC extends DiamondB1, DiamondB2 {
+        String getC();
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")

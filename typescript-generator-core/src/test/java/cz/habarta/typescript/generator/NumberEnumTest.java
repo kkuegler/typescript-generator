@@ -86,7 +86,7 @@ public class NumberEnumTest {
      */
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     @SomeNonConstAnnotation
-    public static enum SomeCode {
+    public enum SomeCode {
 
         /**
          * Documentation for VALUE0.
@@ -99,7 +99,7 @@ public class NumberEnumTest {
 
         private final Integer jsonValue;
 
-        private SomeCode(final Integer jsonValue) {
+        SomeCode(final Integer jsonValue) {
             this.jsonValue = jsonValue;
         }
 

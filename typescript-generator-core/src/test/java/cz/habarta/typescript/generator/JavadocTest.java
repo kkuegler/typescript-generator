@@ -141,7 +141,7 @@ public class JavadocTest {
     /**
      * Documentation for InterfaceWithJavadoc.
      */
-    public static interface InterfaceWithJavadoc {
+    public interface InterfaceWithJavadoc {
 
         /**
          * Documentation for interface getter property.
@@ -149,7 +149,7 @@ public class JavadocTest {
          * @deprecated replaced by something else
          */
         @Deprecated
-        public String getGetterPropery();
+        String getGetterPropery();
 
     }
 
@@ -168,7 +168,7 @@ public class JavadocTest {
     }
 
     @Deprecated
-    public static enum DeprecatedEnumWithoutJavadoc {
+    public enum DeprecatedEnumWithoutJavadoc {
 
         North,
         @Deprecated

@@ -10,8 +10,8 @@ public abstract class EmitterExtension {
     public void emitElements(Writer writer, Settings settings, boolean exportKeyword, TsModel model) {
     }
 
-    public static interface Writer {
-        public void writeIndentedLine(String line);
+    public interface Writer {
+        void writeIndentedLine(String line);
     }
 
 }

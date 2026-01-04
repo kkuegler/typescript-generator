@@ -88,7 +88,7 @@ public class InputTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private static @interface MyJsonClass {
+    private @interface MyJsonClass {
     }
 
     private interface MyJsonInterface {

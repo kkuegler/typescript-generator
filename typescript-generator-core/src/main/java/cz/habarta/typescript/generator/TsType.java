@@ -214,7 +214,7 @@ public abstract class TsType implements Emittable {
 
             private final String token;
 
-            private QuestionToken(String token) {
+            QuestionToken(String token) {
                 this.token = token;
             }
 
@@ -480,8 +480,8 @@ public abstract class TsType implements Emittable {
         // currently not needed
     }
 
-    public static interface Transformer {
-        public TsType transform(Context context, TsType tsType);
+    public interface Transformer {
+        TsType transform(Context context, TsType tsType);
     }
 
 }

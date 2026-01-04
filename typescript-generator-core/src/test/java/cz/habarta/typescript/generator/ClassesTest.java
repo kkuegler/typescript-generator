@@ -101,32 +101,32 @@ public class ClassesTest {
         public abstract String getB();
     }
 
-    private static abstract interface C {
-        public abstract String getC();
+    private interface C {
+        String getC();
     }
 
-    private static interface D extends C {
-        public abstract String getD();
+    private interface D extends C {
+        String getD();
     }
 
     private static abstract class E implements D {
         public abstract String getE();
     }
 
-    private static interface Q1 {
-        public abstract String getQ1();
+    private interface Q1 {
+        String getQ1();
     }
 
-    private static interface Q2 extends Q1 {
-        public abstract String getQ2();
+    private interface Q2 extends Q1 {
+        String getQ2();
     }
 
     private static abstract class Q3 implements Q2 {
         public abstract String getQ3();
     }
 
-    private static interface Q4 {
-        public abstract String getQ4();
+    private interface Q4 {
+        String getQ4();
     }
 
     private static abstract class Q5 extends Q3 implements Q2, Q4 {
@@ -243,8 +243,8 @@ public class ClassesTest {
         public abstract String getX();
     }
 
-    private static abstract interface Bi {
-        public abstract String getY();
+    private interface Bi {
+        String getY();
     }
 
     private static abstract class Derived1 extends Bc implements Bi {

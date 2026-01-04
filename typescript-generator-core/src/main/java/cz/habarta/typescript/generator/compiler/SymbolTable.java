@@ -217,8 +217,8 @@ public class SymbolTable {
      * If the function returns null, the default is used.
      * Used by parameter {@link Settings#customTypeNamingFunction} (JavaScript) and {@link Settings#customTypeNamingFunctionImpl} (Java).
      */
-    public static interface CustomTypeNamingFunction {
-        public Object getName(String className, String classSimpleName);
+    public interface CustomTypeNamingFunction {
+        Object getName(String className, String classSimpleName);
     }
 
     public Symbol getSymbolIfImported(Class<?> cls) {

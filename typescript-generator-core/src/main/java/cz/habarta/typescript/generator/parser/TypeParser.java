@@ -26,13 +26,13 @@ public class TypeParser {
     }
 
     private interface LanguageTypeParser {
-        public Type getFieldType(Field field);
+        Type getFieldType(Field field);
 
-        public Type getMethodReturnType(Method method);
+        Type getMethodReturnType(Method method);
 
-        public List<Type> getMethodParameterTypes(Method method);
+        List<Type> getMethodParameterTypes(Method method);
 
-        public List<Type> getConstructorParameterTypes(Constructor<?> constructor);
+        List<Type> getConstructorParameterTypes(Constructor<?> constructor);
     }
 
     private LanguageTypeParser getTypeParser(Class<?> declaringClass) {

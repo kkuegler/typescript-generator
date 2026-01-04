@@ -50,7 +50,7 @@ public class MapExtensionTest {
         Assertions.assertTrue(output.contains("stringList: string[];"));
     }
 
-    public static interface StringList extends List<String> {
+    public interface StringList extends List<String> {
     }
 
     public static class C {
@@ -79,7 +79,7 @@ public class MapExtensionTest {
         public StringKeyMap<T> stringKeyMap;
     }
 
-    public static interface StringKeyMap<T> extends Map<String, T> {
+    public interface StringKeyMap<T> extends Map<String, T> {
     }
 
 }
