@@ -26,7 +26,7 @@ public class SettingsTest {
             settings.generateNpmPackageJson = false;
             settings.npmPackageDependencies.put("dependencies", "version");
 
-            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> settings.validate());
+            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, settings::validate);
             Assertions.assertEquals(exceptionMessage, exception.getMessage());
         }
 
@@ -37,7 +37,7 @@ public class SettingsTest {
             settings.generateNpmPackageJson = false;
             settings.npmDevDependencies.put("dependencies", "version");
 
-            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> settings.validate());
+            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, settings::validate);
             Assertions.assertEquals(exceptionMessage, exception.getMessage());
         }
 
@@ -48,7 +48,7 @@ public class SettingsTest {
             settings.generateNpmPackageJson = false;
             settings.npmPeerDependencies.put("dependencies", "version");
 
-            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> settings.validate());
+            RuntimeException exception = Assertions.assertThrows(RuntimeException.class, settings::validate);
             Assertions.assertEquals(exceptionMessage, exception.getMessage());
         }
     }

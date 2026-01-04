@@ -198,7 +198,7 @@ public abstract class ModelParser {
             @SuppressWarnings("unchecked")
             final Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) sourceClass.type;
             final Map<String, Field> fields = Stream.of(enumClass.getDeclaredFields())
-                    .collect(Utils.toMap(field -> field.getName(), field -> field));
+                    .collect(Utils.toMap(Field::getName, field -> field));
             for (Enum<?> enumConstant : enumClass.getEnumConstants()) {
                 values.add(new EnumMemberModel(enumConstant.name(), enumConstant.name(),
                         fields.get(enumConstant.name()), null));

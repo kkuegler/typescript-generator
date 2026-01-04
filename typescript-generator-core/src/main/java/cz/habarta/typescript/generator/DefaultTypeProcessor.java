@@ -130,11 +130,11 @@ public class DefaultTypeProcessor implements TypeProcessor {
         }
         if (javaType instanceof JUnionType unionType) {
             final List<Result> results = unionType.getTypes().stream()
-                    .map(type -> context.processType(type))
+                    .map(context::processType)
                     .collect(Collectors.toList());
             return new Result(
                     new TsType.UnionType(results.stream()
-                            .map(result -> result.getTsType())
+                            .map(Result::getTsType)
                             .collect(Collectors.toList())),
                     results.stream()
                             .flatMap(result -> result.getDiscoveredClasses().stream())
