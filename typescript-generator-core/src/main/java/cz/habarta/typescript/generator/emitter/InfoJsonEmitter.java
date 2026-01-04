@@ -7,6 +7,7 @@ import cz.habarta.typescript.generator.util.Utils;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
@@ -42,7 +43,7 @@ public class InfoJsonEmitter {
                         tsModel.getBeans(),
                         tsModel.getEnums(),
                         tsModel.getTypeAliases())
-                .flatMap(s -> s.stream())
+                .flatMap(Collection::stream)
                 .filter(declaration -> declaration.origin != null)
                 .map(declaration -> {
                     final InfoJson.ClassInfo typeMapping = new InfoJson.ClassInfo();

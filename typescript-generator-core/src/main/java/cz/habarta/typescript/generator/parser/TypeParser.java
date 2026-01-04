@@ -90,7 +90,7 @@ public class TypeParser {
 
         private List<Type> getExecutableParameterTypes(Executable executable) {
             return Arrays.stream(executable.getAnnotatedParameterTypes())
-                    .map(annotatedType -> getType(annotatedType))
+                    .map(this::getType)
                     .collect(Collectors.toList());
         }
 
@@ -123,7 +123,7 @@ public class TypeParser {
 
         private Type[] getTypes(AnnotatedType[] annotatedTypes) {
             return Stream.of(annotatedTypes)
-                    .map(annotatedType -> getType(annotatedType))
+                    .map(this::getType)
                     .toArray(Type[]::new);
         }
 
@@ -192,7 +192,7 @@ public class TypeParser {
                         .collect(Collectors.toList());
                 return getTypes(
                         kParameters.stream()
-                                .map(parameter -> parameter.getType())
+                                .map(KParameter::getType)
                                 .collect(Collectors.toList()),
                         new LinkedHashMap<>());
             }

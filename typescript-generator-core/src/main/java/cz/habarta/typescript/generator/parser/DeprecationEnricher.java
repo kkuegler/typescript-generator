@@ -23,7 +23,7 @@ public class DeprecationEnricher {
     }
 
     private BeanModel enrichBean(BeanModel bean) {
-        final List<PropertyModel> properties = mapList(bean.getProperties(), property -> enrichProperty(property));
+        final List<PropertyModel> properties = mapList(bean.getProperties(), this::enrichProperty);
         return bean
                 .withProperties(properties)
                 .withComments(addDeprecation(bean.getComments(), bean.getOrigin()));
@@ -51,7 +51,7 @@ public class DeprecationEnricher {
 
     private EnumModel enrichEnum(EnumModel enumModel) {
         final List<EnumMemberModel> members = mapList(enumModel.getMembers(),
-                enumMember -> enrichEnumMember(enumMember));
+                this::enrichEnumMember);
         return enumModel
                 .withMembers(members)
                 .withComments(addDeprecation(enumModel.getComments(), enumModel.getOrigin()));
@@ -64,7 +64,7 @@ public class DeprecationEnricher {
 
     private RestApplicationModel enrichRestApplication(RestApplicationModel restApplicationModel) {
         final List<RestMethodModel> enrichedRestMethods = mapList(restApplicationModel.getMethods(),
-                restMethod -> enrichRestMethod(restMethod));
+                this::enrichRestMethod);
         return restApplicationModel.withMethods(enrichedRestMethods);
     }
 

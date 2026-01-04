@@ -91,7 +91,7 @@ public final class Utils {
     }
 
     public static Stream<Class<?>> getInheritanceChain(Class<?> cls) {
-        return Stream.iterate(cls, c -> c != null, (Class<?> c) -> c.getSuperclass())
+        return Stream.iterate(cls, Objects::nonNull, (Class<?> c) -> c.getSuperclass())
                 .collect(toReversedCollection())
                 .stream();
     }
@@ -99,7 +99,7 @@ public final class Utils {
     public static <T> Collector<T, ?, Collection<T>> toReversedCollection() {
         return Collector.<T, ArrayDeque<T>, Collection<T>>of(
                 ArrayDeque::new,
-                (deque, item) -> deque.addFirst(item),
+                ArrayDeque::addFirst,
                 (deque1, deque2) -> {
                     deque2.addAll(deque1);
                     return deque2;
@@ -271,7 +271,7 @@ public final class Utils {
     private static final Map<String, Class<?>> primitiveTypes = Stream
             .of(byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class,
                     void.class)
-            .collect(Utils.toMap(cls -> cls.getName(), cls -> cls));
+            .collect(Utils.toMap(Class::getName, cls -> cls));
 
     public static Class<?> getPrimitiveType(String typeName) {
         return primitiveTypes.get(typeName);

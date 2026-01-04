@@ -59,7 +59,7 @@ public class JParameterizedType implements ParameterizedType {
         return (rawType instanceof Class ? ((Class<?>) rawType).getName() : rawType.getTypeName())
                 + "<"
                 + Stream.of(actualTypeArguments)
-                        .map(type -> type.getTypeName())
+                        .map(Type::getTypeName)
                         .collect(Collectors.joining(", "))
                 + ">";
     }

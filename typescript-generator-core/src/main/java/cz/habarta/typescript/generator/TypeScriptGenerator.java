@@ -137,7 +137,7 @@ public class TypeScriptGenerator {
             final ModelParser.Factory modelParserFactory = getModelParserFactory();
             final List<TypeProcessor> specificTypeProcessors = Stream
                     .concat(
-                            restFactories.stream().map(factory -> factory.getSpecificTypeProcessor()),
+                            restFactories.stream().map(RestApplicationParser.Factory::getSpecificTypeProcessor),
                             Stream.of(modelParserFactory.getSpecificTypeProcessor()))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());

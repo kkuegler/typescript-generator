@@ -460,14 +460,14 @@ public class Jackson2Parser extends ModelParser {
     private Optional<List<Class<?>>> getSubClassesFromAnnotation(Class<?> cls) {
         return Optional.ofNullable(cls.getAnnotation(JsonSubTypes.class))
                 .map(jsonSubTypes -> Arrays.stream(jsonSubTypes.value())
-                        .map(jsonSubType -> jsonSubType.value())
+                        .map(JsonSubTypes.Type::value)
                         .collect(Collectors.toList()));
     }
 
     private Optional<List<Class<?>>> getSubClassesFromResolver(Class<?> cls) {
         final List<NamedType> subtypes = getSubtypesFromResolver(cls);
         final List<Class<?>> subClasses = subtypes.stream()
-                .map(subtype -> subtype.getType())
+                .map(NamedType::getType)
                 .filter(subClass -> !Objects.equals(subClass, cls))
                 .collect(Collectors.toList());
         return subClasses.isEmpty() ? Optional.empty() : Optional.of(subClasses);
@@ -633,7 +633,7 @@ public class Jackson2Parser extends ModelParser {
                                     serializableProperties.indexOf(pair2.getValue1()))
                             : 0;
             final Comparator<Pair<BeanProperty, BeanProperty>> byIndex = Comparator.comparing(
-                    pair -> getIndex(pair),
+                    BeanHelpers::getIndex,
                     Comparator.nullsLast(Comparator.naturalOrder()));
             final List<Field> fields = Utils.getAllFields(beanClass);
             final Comparator<Pair<BeanProperty, BeanProperty>> byFieldIndex = Comparator.comparing(

@@ -702,7 +702,7 @@ public class ModelCompiler {
 
     private static Map<String, Long> groupingByMethodName(List<Pair<RestApplicationModel, RestMethodModel>> methods) {
         return methods.stream()
-                .map(pair -> pair.getValue2())
+                .map(Pair::getValue2)
                 .collect(Collectors.groupingBy(RestMethodModel::getName, Collectors.counting()));
     }
 
@@ -1005,7 +1005,7 @@ public class ModelCompiler {
 
     private static TsModel addEnumValuesToJavadoc(TsModel tsModel) {
         return tsModel.withEnums(tsModel.getEnums().stream()
-                .map(enumModel -> addEnumValuesToJavadoc(enumModel))
+                .map(ModelCompiler::addEnumValuesToJavadoc)
                 .collect(Collectors.toList()));
     }
 

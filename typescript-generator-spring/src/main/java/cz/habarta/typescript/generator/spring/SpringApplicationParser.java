@@ -128,9 +128,7 @@ public class SpringApplicationParser extends RestApplicationParser {
         public List<Class<?>> findRestControllers() {
             try (ConfigurableApplicationContext context = createApplicationContext()) {
                 load(context, getAllSources().toArray());
-                withSystemProperty("server.port", "0", () -> {
-                    context.refresh();
-                });
+                withSystemProperty("server.port", "0", context::refresh);
                 final List<Class<?>> classes = Stream.of(context.getBeanDefinitionNames())
                         .map(beanName -> context.getBeanFactory().getBeanDefinition(beanName).getBeanClassName())
                         .filter(Objects::nonNull)
