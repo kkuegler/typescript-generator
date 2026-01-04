@@ -58,7 +58,7 @@ public class RequiredPropertyConstructorExtension extends Extension {
             return bean;
         }
         Optional<TsConstructorModel> constructorOption = createConstructor(bean, model, generatedConstructors);
-        if (!constructorOption.isPresent()) {
+        if (constructorOption.isEmpty()) {
             return bean;
         }
         TsConstructorModel constructor = constructorOption.get();
@@ -142,7 +142,7 @@ public class RequiredPropertyConstructorExtension extends Extension {
             Optional<TsEnumModel> enumModelOption = model.getOriginalStringEnums().stream()
                     .filter(candidate -> candidate.getName().getFullName().equals(symbol.getFullName()))
                     .findAny();
-            if (!enumModelOption.isPresent()) {
+            if (enumModelOption.isEmpty()) {
                 return Optional.empty();
             }
             TsEnumModel enumModel = enumModelOption.get();
