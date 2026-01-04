@@ -1315,7 +1315,7 @@ public class ModelCompiler {
     }
 
     private static String replaceDashPattern(String name) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final Matcher matcher = Pattern.compile("-[^-]").matcher(name);
         while (matcher.find()) {
             matcher.appendReplacement(sb,
@@ -1328,7 +1328,7 @@ public class ModelCompiler {
     private static String removeInvalidIdentifierCharacters(String name) {
         final StringBuilder sb = new StringBuilder();
         for (char c : name.toCharArray()) {
-            if (sb.length() == 0 ? isValidIdentifierStart(c) : isValidIdentifierPart(c)) {
+            if (sb.isEmpty() ? isValidIdentifierStart(c) : isValidIdentifierPart(c)) {
                 sb.append(c);
             }
         }

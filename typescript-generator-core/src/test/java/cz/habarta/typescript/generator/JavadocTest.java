@@ -174,7 +174,7 @@ public class JavadocTest {
         @Deprecated
         East,
         South,
-        West;
+        West
 
     }
 

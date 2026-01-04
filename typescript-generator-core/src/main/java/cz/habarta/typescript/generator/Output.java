@@ -2,7 +2,7 @@
 package cz.habarta.typescript.generator;
 
 import java.io.*;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Output {
 
@@ -31,7 +31,7 @@ public class Output {
     public static Output to(File file) {
         try {
             file.getParentFile().mkdirs();
-            return new Output(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")),
+            return new Output(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8),
                     file.toString(), true);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -39,7 +39,7 @@ public class Output {
     }
 
     public static Output to(OutputStream outputStream) {
-        return new Output(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")), null, false);
+        return new Output(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8), null, false);
     }
 
     public static Output to(Writer writer) {

@@ -429,12 +429,7 @@ public class Emitter implements EmitterExtension.Writer {
     private void emitExtensions(TsModel model, boolean exportKeyword) {
         for (EmitterExtension emitterExtension : settings.extensions) {
             final List<String> extensionLines = new ArrayList<>();
-            final EmitterExtension.Writer extensionWriter = new EmitterExtension.Writer() {
-                @Override
-                public void writeIndentedLine(String line) {
-                    extensionLines.add(line);
-                }
-            };
+            final EmitterExtension.Writer extensionWriter = extensionLines::add;
             emitterExtension.emitElements(extensionWriter, settings, exportKeyword, model);
             if (!extensionLines.isEmpty()) {
                 writeNewLine();

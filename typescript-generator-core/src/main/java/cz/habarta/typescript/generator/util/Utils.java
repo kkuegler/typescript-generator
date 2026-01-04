@@ -13,6 +13,7 @@ import cz.habarta.typescript.generator.type.JUnionType;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -342,7 +343,7 @@ public final class Utils {
     }
 
     public static String readString(InputStream stream) {
-        try (Scanner scanner = new Scanner(stream, "UTF-8")) {
+        try (Scanner scanner = new Scanner(stream, StandardCharsets.UTF_8)) {
             scanner.useDelimiter("\\A");
             return scanner.hasNext() ? scanner.next() : "";
         }
@@ -409,7 +410,7 @@ public final class Utils {
     private static Pattern globToRegexp(String glob) {
         final Pattern globToRegexpPattern = Pattern.compile("(\\*\\*)|(\\*)");
         final Matcher matcher = globToRegexpPattern.matcher(glob);
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         int lastEnd = 0;
         while (matcher.find()) {
             sb.append(Pattern.quote(glob.substring(lastEnd, matcher.start())));

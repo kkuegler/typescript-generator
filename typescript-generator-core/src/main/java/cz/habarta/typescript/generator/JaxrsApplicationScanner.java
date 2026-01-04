@@ -66,7 +66,7 @@ public class JaxrsApplicationScanner {
 
     List<SourceType<Type>> scanJaxrsApplication(Class<?> applicationClass, List<Class<?>> resourceClasses,
             Predicate<String> isClassNameExcluded) {
-        Collections.sort(resourceClasses, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+        resourceClasses.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         final List<SourceType<Type>> sourceTypes = new ArrayList<>();
         if (applicationClass != null) {
             sourceTypes.add(new SourceType<>(applicationClass));

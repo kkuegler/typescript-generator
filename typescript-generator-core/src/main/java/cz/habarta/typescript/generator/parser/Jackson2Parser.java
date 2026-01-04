@@ -117,8 +117,7 @@ public class Jackson2Parser extends ModelParser {
             setVisibility(PropertyAccessor.SETTER, config.setterVisibility);
             setVisibility(PropertyAccessor.CREATOR, config.creatorVisibility);
             if (config.shapeConfigOverrides != null) {
-                config.shapeConfigOverrides.entrySet()
-                        .forEach(entry -> setShapeOverride(entry.getKey(), entry.getValue()));
+                config.shapeConfigOverrides.forEach(this::setShapeOverride);
             }
             if (config.enumsUsingToString) {
                 objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
@@ -485,11 +484,10 @@ public class Jackson2Parser extends ModelParser {
                 annotatedClass);
         final Collection<NamedType> serializationSubtypes = subtypeResolver.collectAndResolveSubtypesByClass(config,
                 annotatedClass);
-        final LinkedHashSet<NamedType> subtypes = Stream
+        // `SubtypeResolver` returns all types from `JsonSubTypes` annotations, not only subtypes
+        return Stream
                 .concat(deserializationSubtypes.stream(), serializationSubtypes.stream())
-                .filter(namedType -> cls.isAssignableFrom(namedType.getType())) // `SubtypeResolver` returns all types from `JsonSubTypes` annotations, not only subtypes
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        return new ArrayList<>(subtypes);
+                .filter(namedType -> cls.isAssignableFrom(namedType.getType())).distinct().collect(Collectors.toList());
     }
 
     private boolean isInterfaceOrAbstract(Class<?> cls) {

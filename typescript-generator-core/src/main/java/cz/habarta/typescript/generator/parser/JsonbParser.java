@@ -688,7 +688,7 @@ public class JsonbParser extends ModelParser {
                     final char c = propertyName.charAt(i);
                     if (Character.isUpperCase(c)) {
                         final char transformed = converter.apply(c);
-                        if (current.length() > 0) {
+                        if (!current.isEmpty()) {
                             global.append(current).append(separator);
                             current.setLength(0);
                         }
@@ -697,7 +697,7 @@ public class JsonbParser extends ModelParser {
                         current.append(c);
                     }
                 }
-                if (current.length() > 0) {
+                if (!current.isEmpty()) {
                     global.append(current);
                 } else {
                     global.setLength(global.length() - 1); // remove last sep
