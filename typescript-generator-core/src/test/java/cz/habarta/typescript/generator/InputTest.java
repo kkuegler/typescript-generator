@@ -18,7 +18,7 @@ public class InputTest {
         final ScanResult scanResult = new ClassGraph().enableAllInfo().acceptPackages("cz.habarta").scan();
         final List<String> allClassNames = scanResult.getAllClasses().getNames();
         final List<String> testClassNames = Input.filterClassNames(allClassNames,
-                Arrays.asList("cz.habarta.typescript.generator.**Test"));
+                List.of("cz.habarta.typescript.generator.**Test"));
         Assertions.assertTrue(testClassNames.size() > 20, "Typescript-generator must have at least 20 tests :-)");
     }
 
@@ -30,7 +30,7 @@ public class InputTest {
                         "com.example.AAAJson",
                         "com.example.AAA",
                         "com.example.aaa$Json"),
-                Arrays.asList("**Json"));
+                List.of("**Json"));
         Assertions.assertTrue(result1.contains("com.example.Json"));
         Assertions.assertTrue(result1.contains("com.example.AAAJson"));
         Assertions.assertFalse(result1.contains("com.example.AAA"));
@@ -43,7 +43,7 @@ public class InputTest {
                         "cz.habarta.test.BBBJson",
                         "cz.habarta.test.aaa.BBBJson",
                         "cz.habarta.test.CCC$Json"),
-                Arrays.asList("cz.habarta.test.*"));
+                List.of("cz.habarta.test.*"));
         Assertions.assertFalse(result2.contains("com.example.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.BBBJson"));
@@ -55,7 +55,7 @@ public class InputTest {
                         "cz.habarta.test.BBBJson",
                         "cz.habarta.ddd.CCC$Json",
                         "cz.habarta.CCC$Json"),
-                Arrays.asList("cz.habarta.*.*$*"));
+                List.of("cz.habarta.*.*$*"));
         Assertions.assertFalse(result3.contains("cz.habarta.test.BBBJson"));
         Assertions.assertTrue(result3.contains("cz.habarta.ddd.CCC$Json"));
         Assertions.assertFalse(result3.contains("cz.habarta.CCC$Json"));
@@ -64,8 +64,8 @@ public class InputTest {
     @Test
     public void testClassesWithAnnotations() {
         final Input.Parameters parameters = new Input.Parameters();
-        parameters.classesWithAnnotations = Arrays.asList(MyJsonClass.class.getName());
-        parameters.scanningAcceptedPackages = Arrays.asList("cz.habarta");
+        parameters.classesWithAnnotations = List.of(MyJsonClass.class.getName());
+        parameters.scanningAcceptedPackages = List.of("cz.habarta");
         final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(parameters));
         Assertions.assertTrue(output.contains("name: string;"));
     }
@@ -73,7 +73,7 @@ public class InputTest {
     @Test
     public void testClassesImplementingInterfaces() {
         final Input.Parameters parameters = new Input.Parameters();
-        parameters.classesImplementingInterfaces = Arrays.asList(MyJsonInterface.class.getName());
+        parameters.classesImplementingInterfaces = List.of(MyJsonInterface.class.getName());
         final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(parameters));
         Assertions.assertTrue(output.contains("firstName: string;"));
         Assertions.assertTrue(output.contains("lastName: string;"));
@@ -82,7 +82,7 @@ public class InputTest {
     @Test
     public void testClassesExtendingClasses() {
         final Input.Parameters parameters = new Input.Parameters();
-        parameters.classesExtendingClasses = Arrays.asList(MyJsonInterfaceImpl.class.getName());
+        parameters.classesExtendingClasses = List.of(MyJsonInterfaceImpl.class.getName());
         final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(parameters));
         Assertions.assertTrue(output.contains("lastName: string;"));
     }

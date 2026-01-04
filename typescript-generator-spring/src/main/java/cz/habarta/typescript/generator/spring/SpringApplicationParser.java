@@ -388,7 +388,7 @@ public class SpringApplicationParser extends RestApplicationParser {
     private static Map<Class<?>, TsType> standardEntityClassesMapping;
 
     private static List<String> getDefaultExcludedClassNames() {
-        return Arrays.asList();
+        return List.of();
     }
 
     private static String firstOf(String... values) {

@@ -256,7 +256,7 @@ public class ClassesTest {
     @Test
     public void testConstructor() {
         final Settings settings = TestUtils.settings();
-        settings.optionalAnnotations = Arrays.asList(Nullable.class);
+        settings.optionalAnnotations = List.of(Nullable.class);
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.mapClasses = ClassMapping.asClasses;
         settings.generateConstructors = true;
@@ -267,7 +267,7 @@ public class ClassesTest {
     @Test
     public void testSortedConstructor() {
         final Settings settings = TestUtils.settings();
-        settings.optionalAnnotations = Arrays.asList(Nullable.class);
+        settings.optionalAnnotations = List.of(Nullable.class);
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.mapClasses = ClassMapping.asClasses;
         settings.generateConstructors = true;
@@ -282,7 +282,7 @@ public class ClassesTest {
     @Test
     public void testUnsortedConstructor() {
         final Settings settings = TestUtils.settings();
-        settings.optionalAnnotations = Arrays.asList(Nullable.class);
+        settings.optionalAnnotations = List.of(Nullable.class);
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.mapClasses = ClassMapping.asClasses;
         settings.generateConstructors = true;

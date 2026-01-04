@@ -12,7 +12,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -74,7 +74,7 @@ public class NumberEnumTest {
     @Test
     public void testJavadoc() {
         final Settings settings = TestUtils.settings();
-        settings.javadocXmlFiles = Arrays.asList(new File("src/test/javadoc/test-javadoc.xml"));
+        settings.javadocXmlFiles = List.of(new File("src/test/javadoc/test-javadoc.xml"));
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertTrue(output.contains("Documentation for SomeCode enum."));
         Assertions.assertTrue(output.contains("Documentation for VALUE0."));

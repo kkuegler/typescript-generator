@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import cz.habarta.typescript.generator.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,7 +103,7 @@ public class GsonParserTest {
 
     @Test
     public void testOptionalProperties_UseSpecifiedAnnotations() {
-        settings.optionalAnnotations = Arrays.asList(OptionalProperty.class);
+        settings.optionalAnnotations = List.of(OptionalProperty.class);
         final String output = generate(settings, BeanWithOptionalProperty.class);
         Assertions.assertTrue(output.contains("property1?: string;"));
     }

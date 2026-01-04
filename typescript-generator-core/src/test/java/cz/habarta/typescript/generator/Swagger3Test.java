@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -83,7 +83,7 @@ public class Swagger3Test {
     private static class TestApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(Arrays.<Class<?>>asList(TestResource.class));
+            return new LinkedHashSet<>(List.<Class<?>>of(TestResource.class));
         }
     }
 
@@ -150,7 +150,7 @@ public class Swagger3Test {
     private static class DocumentedApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(Arrays.<Class<?>>asList(DocumentedResource.class));
+            return new LinkedHashSet<>(List.<Class<?>>of(DocumentedResource.class));
         }
     }
 

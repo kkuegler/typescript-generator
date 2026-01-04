@@ -502,7 +502,7 @@ public class Jackson2ParserTest {
         final Settings settings = TestUtils.settings();
         settings.generateReadonlyAndWriteonlyJSDocTags = true;
         settings.optionalProperties = OptionalProperties.useSpecifiedAnnotations;
-        settings.optionalAnnotations = Arrays.asList(MyOptional.class);
+        settings.optionalAnnotations = List.of(MyOptional.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithJsonCreatorFactoryMethod.class));
         Assertions.assertTrue(output.contains("a: string;"));

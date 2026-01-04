@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.habarta.typescript.generator.ext.ClassEnumExtension;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +208,7 @@ public class EnumTest {
     @Test
     public void testExcludeObjectEnum() {
         final Settings settings = TestUtils.settings();
-        settings.setExcludeFilter(Arrays.asList(StatusType.class.getName()), Arrays.<String>asList());
+        settings.setExcludeFilter(List.of(StatusType.class.getName()), List.<String>of());
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithObjectEnum.class, StatusType.class));
         assertFalse(output.contains("StatusType"));
@@ -246,7 +245,7 @@ public class EnumTest {
     @Test
     public void testJavaLangEnum2() {
         final Settings settings = TestUtils.settings();
-        settings.setExcludeFilter(Arrays.asList(Enum.class.getName()), null);
+        settings.setExcludeFilter(List.of(Enum.class.getName()), null);
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithEnum.class));
         assertTrue(output.contains("enumA: any"));
     }

@@ -130,8 +130,8 @@ public class OptionalAnnotationTest {
     public void testOptionalAndRequiredProperty() {
         {
             final Settings settings = TestUtils.settings();
-            settings.optionalAnnotations = Arrays.asList();
-            settings.requiredAnnotations = Arrays.asList();
+            settings.optionalAnnotations = List.of();
+            settings.requiredAnnotations = List.of();
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a: string;"));
@@ -139,8 +139,8 @@ public class OptionalAnnotationTest {
         }
         {
             final Settings settings = TestUtils.settings();
-            settings.optionalAnnotations = Arrays.asList(MarkerAnnotation.class);
-            settings.requiredAnnotations = Arrays.asList();
+            settings.optionalAnnotations = List.of(MarkerAnnotation.class);
+            settings.requiredAnnotations = List.of();
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a: string;"));
@@ -148,8 +148,8 @@ public class OptionalAnnotationTest {
         }
         {
             final Settings settings = TestUtils.settings();
-            settings.optionalAnnotations = Arrays.asList();
-            settings.requiredAnnotations = Arrays.asList(MarkerAnnotation.class);
+            settings.optionalAnnotations = List.of();
+            settings.requiredAnnotations = List.of(MarkerAnnotation.class);
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a?: string;"));
@@ -157,8 +157,8 @@ public class OptionalAnnotationTest {
         }
         try {
             final Settings settings = TestUtils.settings();
-            settings.optionalAnnotations = Arrays.asList(MarkerAnnotation.class);
-            settings.requiredAnnotations = Arrays.asList(MarkerAnnotation.class);
+            settings.optionalAnnotations = List.of(MarkerAnnotation.class);
+            settings.requiredAnnotations = List.of(MarkerAnnotation.class);
             new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.fail();
         } catch (Exception e) {
@@ -180,7 +180,7 @@ public class OptionalAnnotationTest {
     public void testPrimitiveFieldRequired() {
         {
             final Settings settings = TestUtils.settings();
-            settings.requiredAnnotations = Arrays.asList(MarkerAnnotation.class);
+            settings.requiredAnnotations = List.of(MarkerAnnotation.class);
             settings.primitivePropertiesRequired = true;
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithPrimitiveField.class));
@@ -208,7 +208,7 @@ public class OptionalAnnotationTest {
         }
         try {
             final Settings settings = TestUtils.settings();
-            settings.requiredAnnotations = Arrays.asList();
+            settings.requiredAnnotations = List.of();
             settings.primitivePropertiesRequired = true;
             new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithPrimitiveField.class));
             Assertions.fail();

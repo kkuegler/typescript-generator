@@ -4,7 +4,7 @@ package cz.habarta.typescript.generator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.habarta.typescript.generator.parser.*;
 import java.io.File;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ public class JavadocTest {
     @Test
     public void testJavadoc() {
         final Settings settings = TestUtils.settings();
-        settings.javadocXmlFiles = Arrays.asList(new File("src/test/javadoc/test-javadoc.xml"));
+        settings.javadocXmlFiles = List.of(new File("src/test/javadoc/test-javadoc.xml"));
         final TypeProcessor typeProcessor = new DefaultTypeProcessor();
         {
             final Model model = new Jackson2Parser(settings, typeProcessor).parseModel(ClassWithJavadoc.class);

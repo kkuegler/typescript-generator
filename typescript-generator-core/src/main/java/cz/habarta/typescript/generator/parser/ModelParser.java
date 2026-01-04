@@ -46,7 +46,7 @@ public abstract class ModelParser {
     }
 
     public Model parseModel(Type type) {
-        return parseModel(Arrays.asList(new SourceType<>(type)));
+        return parseModel(List.of(new SourceType<>(type)));
     }
 
     public Model parseModel(List<SourceType<Type>> types) {

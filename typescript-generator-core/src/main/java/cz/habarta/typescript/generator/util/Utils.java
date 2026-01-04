@@ -305,7 +305,7 @@ public final class Utils {
     }
 
     public static <T> List<T> listFromNullable(T item) {
-        return item != null ? Arrays.asList(item) : Collections.<T>emptyList();
+        return item != null ? List.of(item) : Collections.<T>emptyList();
     }
 
     public static <T> List<T> listFromNullable(List<T> list) {

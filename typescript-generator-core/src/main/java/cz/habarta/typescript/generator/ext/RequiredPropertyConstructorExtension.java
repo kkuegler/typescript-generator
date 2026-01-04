@@ -34,7 +34,7 @@ public class RequiredPropertyConstructorExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.AfterDeclarationSorting,
+        return List.of(new TransformerDefinition(ModelCompiler.TransformationPhase.AfterDeclarationSorting,
                 new TsModelTransformer() {
                     @Override
                     public TsModel transformModel(Context context, TsModel model) {

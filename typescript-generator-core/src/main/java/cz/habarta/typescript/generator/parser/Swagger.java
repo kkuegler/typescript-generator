@@ -153,7 +153,7 @@ public class Swagger {
                         "description", String.class),
                 () -> Utils.getAnnotationElementValue(bean.getOrigin(), "io.swagger.annotations.ApiModel",
                         "description", String.class));
-        final List<String> comments = comment != null && !comment.isEmpty() ? Arrays.asList(comment) : null;
+        final List<String> comments = comment != null && !comment.isEmpty() ? List.of(comment) : null;
         return bean.withProperties(enrichedProperties).withComments(Utils.concat(comments, bean.getComments()));
     }
 
@@ -176,7 +176,7 @@ public class Swagger {
             return null;
         }
         final String comment = Utils.getAnnotationElementValue(apiModelProperty, "value", String.class);
-        final List<String> comments = comment != null && !comment.isEmpty() ? Arrays.asList(comment) : null;
+        final List<String> comments = comment != null && !comment.isEmpty() ? List.of(comment) : null;
         final PropertyModel propertyModel = property.withComments(Utils.concat(comments, property.getComments()));
         final String dataTypeString = Utils.getAnnotationElementValue(apiModelProperty, "dataType", String.class);
         if (dataTypeString == null || dataTypeString.isEmpty()) {
@@ -197,7 +197,7 @@ public class Swagger {
             return null;
         }
         final String comment = Utils.getAnnotationElementValue(schema, "description", String.class);
-        final List<String> comments = comment != null && !comment.isEmpty() ? Arrays.asList(comment) : null;
+        final List<String> comments = comment != null && !comment.isEmpty() ? List.of(comment) : null;
         final PropertyModel propertyModel = property.withComments(Utils.concat(comments, property.getComments()));
         final Class<?> implementation = Utils.getAnnotationElementValue(schema, "implementation", Class.class);
         if (implementation == null || Objects.equals(implementation, Void.class)) {

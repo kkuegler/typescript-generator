@@ -117,7 +117,7 @@ public class JaxrsApplicationTest {
 
     @Test
     public void testExcludedResource() {
-        final Predicate<String> excludeFilter = Settings.createExcludeFilter(Arrays.asList(
+        final Predicate<String> excludeFilter = Settings.createExcludeFilter(List.of(
                 TestResource1.class.getName()), null);
         final List<SourceType<Type>> sourceTypes = JaxrsApplicationScanner.scanJaxrsApplication(TestApplication.class,
                 excludeFilter);
@@ -166,7 +166,7 @@ public class JaxrsApplicationTest {
     private static class TestApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(Arrays.asList(
+            return new LinkedHashSet<>(List.of(
                     TestResource1.class));
         }
     }
@@ -526,7 +526,7 @@ public class JaxrsApplicationTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateJaxrsApplicationInterface = true;
-        settings.javadocXmlFiles = Arrays.asList(new File("src/test/javadoc/test-javadoc.xml"));
+        settings.javadocXmlFiles = List.of(new File("src/test/javadoc/test-javadoc.xml"));
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(OrganizationApplication.class));
         Assertions.assertTrue(output.contains("Returns person with specified ID."));

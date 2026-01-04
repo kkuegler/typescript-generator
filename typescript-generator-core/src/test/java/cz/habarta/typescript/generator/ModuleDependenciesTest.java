@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class ModuleDependenciesTest {
         settings.generateNpmPackageJson = true;
         settings.npmName = "b";
         settings.npmVersion = "1.0.0";
-        settings.moduleDependencies = Arrays.asList(
+        settings.moduleDependencies = List.of(
                 ModuleDependency.module("../a", "a",
                         new File("target/test-module-dependencies/a/typescript-generator-info.json"), "a", "1.0.0"));
         new TypeScriptGenerator(settings).generateTypeScript(

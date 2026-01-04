@@ -11,7 +11,6 @@ import io.vavr.control.Option;
 import io.vavr.jackson.datatype.VavrModule;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +30,7 @@ public class VavrTest {
         TypeScriptGenerator.setLogger(new Logger(Logger.Level.Verbose));
         final Settings settings = TestUtils.settings();
         settings.jackson2Configuration = new Jackson2ConfigurationResolved();
-        settings.additionalDataLibraries = Arrays.asList("vavr");
+        settings.additionalDataLibraries = java.util.List.of("vavr");
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(VavrSerializedClasses.class));
         Assertions.assertTrue(output.contains("lazy: number"));
