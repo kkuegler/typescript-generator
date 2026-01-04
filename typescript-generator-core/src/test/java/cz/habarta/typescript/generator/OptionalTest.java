@@ -33,7 +33,7 @@ public class OptionalTest {
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         final Person personWithEmail = new Person("afh", Optional.of("af@h.cz"));
-        final Person personWithEmptyEmail = new Person("afh", Optional.<String>empty());
+        final Person personWithEmptyEmail = new Person("afh", Optional.empty());
         final Person personWithoutEmail = new Person("afh", null);
 
         final String jsonWithEmail = "{'name':'afh','email':'af@h.cz'}".replace('\'', '\"');

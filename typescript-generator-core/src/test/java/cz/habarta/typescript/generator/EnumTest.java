@@ -208,7 +208,7 @@ public class EnumTest {
     @Test
     public void testExcludeObjectEnum() {
         final Settings settings = TestUtils.settings();
-        settings.setExcludeFilter(List.of(StatusType.class.getName()), List.<String>of());
+        settings.setExcludeFilter(List.of(StatusType.class.getName()), List.of());
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithObjectEnum.class, StatusType.class));
         assertFalse(output.contains("StatusType"));

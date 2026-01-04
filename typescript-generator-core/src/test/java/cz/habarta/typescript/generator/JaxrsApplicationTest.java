@@ -43,7 +43,7 @@ public class JaxrsApplicationTest {
         final List<SourceType<Type>> sourceTypes = JaxrsApplicationScanner.scanJaxrsApplication(TestApplication.class,
                 null);
         List<Type> types = getTypes(sourceTypes);
-        final List<Type> expectedTypes = Arrays.<Type>asList(
+        final List<Type> expectedTypes = Arrays.asList(
                 TestApplication.class,
                 TestResource1.class);
         assertHasSameItems(expectedTypes, types);

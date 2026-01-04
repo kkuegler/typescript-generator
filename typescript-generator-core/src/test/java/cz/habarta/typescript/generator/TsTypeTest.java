@@ -53,7 +53,7 @@ public class TsTypeTest {
                 new TsType.ObjectType(Arrays.asList(
                         new TsProperty("a", String),
                         new TsProperty("b", new UnionType(Arrays.asList(String, Number))),
-                        new TsProperty("c", new ObjectType(List.<TsProperty>of())),
+                        new TsProperty("c", new ObjectType(List.of())),
                         new TsProperty("d", new ObjectType(List.of(
                                 new TsProperty("x", String))))))
                         .format(settings));

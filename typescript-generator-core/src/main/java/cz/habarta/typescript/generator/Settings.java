@@ -698,10 +698,10 @@ public class Settings {
     public static Predicate<String> createExcludeFilter(List<String> excludedClasses,
             List<String> excludedClassPatterns) {
         final Set<String> names = new LinkedHashSet<>(
-                excludedClasses != null ? excludedClasses : Collections.<String>emptyList());
+                excludedClasses != null ? excludedClasses : Collections.emptyList());
         names.add("java.lang.Record");
         final List<Pattern> patterns = Utils.globsToRegexps(
-                excludedClassPatterns != null ? excludedClassPatterns : Collections.<String>emptyList());
+                excludedClassPatterns != null ? excludedClassPatterns : Collections.emptyList());
         return new Predicate<String>() {
             @Override
             public boolean test(String className) {

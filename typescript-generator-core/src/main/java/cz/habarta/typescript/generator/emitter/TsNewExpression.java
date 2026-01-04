@@ -21,9 +21,9 @@ public class TsNewExpression extends TsExpression {
             List<? extends TsExpression> arguments) {
         this.expression = expression;
         this.typeArguments = typeArguments != null ? new ArrayList<TsType>(typeArguments)
-                : Collections.<TsType>emptyList();
+                : Collections.emptyList();
         this.arguments = arguments != null ? new ArrayList<TsExpression>(arguments)
-                : Collections.<TsExpression>emptyList();
+                : Collections.emptyList();
     }
 
     public TsExpression getExpression() {

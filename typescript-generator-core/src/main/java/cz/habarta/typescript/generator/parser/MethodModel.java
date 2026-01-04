@@ -19,7 +19,7 @@ public class MethodModel {
             Method originalMethod, List<String> comments) {
         this.originClass = originClass;
         this.name = name;
-        this.parameters = parameters != null ? parameters : Collections.<MethodParameterModel>emptyList();
+        this.parameters = parameters != null ? parameters : Collections.emptyList();
         this.returnType = returnType;
         this.originalMethod = originalMethod;
         this.comments = comments;
