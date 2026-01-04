@@ -36,8 +36,7 @@ public class JGenericArrayType implements GenericArrayType {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof GenericArrayType) {
-            final GenericArrayType that = (GenericArrayType) obj;
+        if (obj instanceof GenericArrayType that) {
             return Objects.equals(genericComponentType, that.getGenericComponentType());
         } else {
             return false;

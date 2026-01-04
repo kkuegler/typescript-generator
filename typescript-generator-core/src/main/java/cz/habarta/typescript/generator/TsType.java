@@ -242,8 +242,7 @@ public abstract class TsType implements Emittable {
         public static UnionType combine(List<? extends TsType> types) {
             return new UnionType(types.stream()
                     .flatMap(type -> {
-                        if (type instanceof UnionType) {
-                            final UnionType unionType = (UnionType) type;
+                        if (type instanceof UnionType unionType) {
                             return unionType.types.stream();
                         } else {
                             return Stream.of(type);
@@ -399,73 +398,62 @@ public abstract class TsType implements Emittable {
 
     public static TsType transformTsType(Context context, TsType tsType, Transformer transformer) {
         final TsType type = transformer.transform(context, tsType);
-        if (type instanceof TsType.GenericBasicType) {
-            final GenericBasicType genericBasicType = (TsType.GenericBasicType) type;
+        if (type instanceof GenericBasicType genericBasicType) {
             final List<TsType> typeArguments = new ArrayList<>();
             for (TsType typeArgument : genericBasicType.typeArguments) {
                 typeArguments.add(transformTsType(context, typeArgument, transformer));
             }
             return new TsType.GenericBasicType(genericBasicType.name, typeArguments);
         }
-        if (type instanceof TsType.GenericReferenceType) {
-            final GenericReferenceType genericReferenceType = (TsType.GenericReferenceType) type;
+        if (type instanceof GenericReferenceType genericReferenceType) {
             final List<TsType> typeArguments = new ArrayList<>();
             for (TsType typeArgument : genericReferenceType.typeArguments) {
                 typeArguments.add(transformTsType(context, typeArgument, transformer));
             }
             return new TsType.GenericReferenceType(genericReferenceType.symbol, typeArguments);
         }
-        if (type instanceof TsType.OptionalType) {
-            final TsType.OptionalType optionalType = (TsType.OptionalType) type;
+        if (type instanceof OptionalType optionalType) {
             return new TsType.OptionalType(transformTsType(context, optionalType.type, transformer));
         }
-        if (type instanceof TsType.NullableType) {
-            final TsType.NullableType nullableType = (TsType.NullableType) type;
+        if (type instanceof NullableType nullableType) {
             return new TsType.NullableType(transformTsType(context, nullableType.type, transformer));
         }
-        if (type instanceof TsType.BasicArrayType) {
-            final TsType.BasicArrayType basicArrayType = (TsType.BasicArrayType) type;
+        if (type instanceof BasicArrayType basicArrayType) {
             return new TsType.BasicArrayType(transformTsType(context, basicArrayType.elementType, transformer));
         }
-        if (type instanceof TsType.IndexedArrayType) {
-            final TsType.IndexedArrayType indexedArrayType = (TsType.IndexedArrayType) type;
+        if (type instanceof IndexedArrayType indexedArrayType) {
             return new TsType.IndexedArrayType(
                     transformTsType(context, indexedArrayType.indexType, transformer),
                     transformTsType(context, indexedArrayType.elementType, transformer));
         }
-        if (type instanceof TsType.MappedType) {
-            final TsType.MappedType mappedType = (TsType.MappedType) type;
+        if (type instanceof MappedType mappedType) {
             return new TsType.MappedType(
                     transformTsType(context, mappedType.parameterType, transformer),
                     mappedType.questionToken,
                     transformTsType(context, mappedType.type, transformer));
         }
-        if (type instanceof TsType.UnionType) {
-            final TsType.UnionType unionType = (TsType.UnionType) type;
+        if (type instanceof UnionType unionType) {
             final List<TsType> types = new ArrayList<>();
             for (TsType constituentType : unionType.types) {
                 types.add(transformTsType(context, constituentType, transformer));
             }
             return new TsType.UnionType(types);
         }
-        if (type instanceof TsType.IntersectionType) {
-            final TsType.IntersectionType intersectionType = (TsType.IntersectionType) type;
+        if (type instanceof IntersectionType intersectionType) {
             final List<TsType> types = new ArrayList<>();
             for (TsType constituent : intersectionType.types) {
                 types.add(transformTsType(context, constituent, transformer));
             }
             return new TsType.IntersectionType(types);
         }
-        if (type instanceof TsType.ObjectType) {
-            final TsType.ObjectType objectType = (TsType.ObjectType) type;
+        if (type instanceof ObjectType objectType) {
             final List<TsProperty> properties = new ArrayList<>();
             for (TsProperty property : objectType.properties) {
                 properties.add(new TsProperty(property.name, transformTsType(context, property.tsType, transformer)));
             }
             return new TsType.ObjectType(properties);
         }
-        if (type instanceof TsType.FunctionType) {
-            final TsType.FunctionType functionType = (TsType.FunctionType) type;
+        if (type instanceof FunctionType functionType) {
             final List<TsParameter> parameters = new ArrayList<>();
             for (TsParameter parameter : functionType.parameters) {
                 parameters

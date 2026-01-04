@@ -36,8 +36,7 @@ public class DefaultTypeProcessor implements TypeProcessor {
         if (Objects.equals(javaType, Object.class)) {
             return new Result(TsType.Any);
         }
-        if (javaType instanceof Class) {
-            final Class<?> javaClass = (Class<?>) javaType;
+        if (javaType instanceof Class<?> javaClass) {
             if (isAssignableFrom(known.stringClasses, javaClass)) {
                 return new Result(TsType.String);
             }
@@ -54,15 +53,13 @@ public class DefaultTypeProcessor implements TypeProcessor {
                 return new Result(TsType.Void);
             }
         }
-        if (javaType instanceof Class) {
-            final Class<?> javaClass = (Class<?>) javaType;
+        if (javaType instanceof Class<?> javaClass) {
             final Symbol importedSymbol = context.getSymbolIfImported(javaClass);
             if (importedSymbol != null) {
                 return new Result(new TsType.ReferenceType(importedSymbol));
             }
         }
-        if (javaType instanceof Class) {
-            final Class<?> javaClass = (Class<?>) javaType;
+        if (javaType instanceof Class<?> javaClass) {
             if (isAssignableFrom(known.anyClasses, javaClass)) {
                 return new Result(TsType.Any);
             }
@@ -94,10 +91,8 @@ public class DefaultTypeProcessor implements TypeProcessor {
             // structural type
             return new Result(new TsType.ReferenceType(context.getSymbol(javaClass)), javaClass);
         }
-        if (javaType instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) javaType;
-            if (parameterizedType.getRawType() instanceof Class) {
-                final Class<?> javaClass = (Class<?>) parameterizedType.getRawType();
+        if (javaType instanceof ParameterizedType parameterizedType) {
+            if (parameterizedType.getRawType() instanceof Class<?> javaClass) {
                 // list, map, optional, wrapper
                 final Result knownGenericTypeResult = processKnownGenericType(javaType, javaClass, context);
                 if (knownGenericTypeResult != null) {
@@ -116,28 +111,24 @@ public class DefaultTypeProcessor implements TypeProcessor {
                         discoveredClasses);
             }
         }
-        if (javaType instanceof GenericArrayType) {
-            final GenericArrayType genericArrayType = (GenericArrayType) javaType;
+        if (javaType instanceof GenericArrayType genericArrayType) {
             final Result result = context.processTypeInsideCollection(genericArrayType.getGenericComponentType());
             return new Result(new TsType.BasicArrayType(result.getTsType()), result.getDiscoveredClasses());
         }
-        if (javaType instanceof TypeVariable) {
-            final TypeVariable<?> typeVariable = (TypeVariable<?>) javaType;
+        if (javaType instanceof TypeVariable<?> typeVariable) {
             if (typeVariable.getGenericDeclaration() instanceof Method) {
                 // example method: public <T extends Number> T getData();
                 return context.processType(typeVariable.getBounds()[0]);
             }
             return new Result(new TsType.GenericVariableType(typeVariable.getName()));
         }
-        if (javaType instanceof WildcardType) {
-            final WildcardType wildcardType = (WildcardType) javaType;
+        if (javaType instanceof WildcardType wildcardType) {
             final Type[] upperBounds = wildcardType.getUpperBounds();
             return upperBounds.length > 0
                     ? context.processType(upperBounds[0])
                     : new Result(TsType.Any);
         }
-        if (javaType instanceof JUnionType) {
-            final JUnionType unionType = (JUnionType) javaType;
+        if (javaType instanceof JUnionType unionType) {
             final List<Result> results = unionType.getTypes().stream()
                     .map(type -> context.processType(type))
                     .collect(Collectors.toList());
@@ -149,8 +140,7 @@ public class DefaultTypeProcessor implements TypeProcessor {
                             .flatMap(result -> result.getDiscoveredClasses().stream())
                             .collect(Collectors.toList()));
         }
-        if (javaType instanceof JTypeWithNullability) {
-            final JTypeWithNullability typeWithNullability = (JTypeWithNullability) javaType;
+        if (javaType instanceof JTypeWithNullability typeWithNullability) {
             final Result result = context.processType(typeWithNullability.getType());
             return new Result(
                     typeWithNullability.isNullable() ? new TsType.NullableType(result.getTsType()) : result.getTsType(),

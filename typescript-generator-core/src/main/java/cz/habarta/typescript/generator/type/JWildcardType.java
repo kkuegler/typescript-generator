@@ -42,8 +42,7 @@ public class JWildcardType implements WildcardType {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof WildcardType) {
-            final WildcardType that = (WildcardType) obj;
+        if (obj instanceof WildcardType that) {
             return Arrays.equals(lowerBounds, that.getLowerBounds()) &&
                     Arrays.equals(upperBounds, that.getUpperBounds());
         } else {

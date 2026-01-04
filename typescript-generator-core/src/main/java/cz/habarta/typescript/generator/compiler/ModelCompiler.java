@@ -143,8 +143,7 @@ public class ModelCompiler {
     private List<Extension.TransformerDefinition> getExtensionTransformers() {
         final List<Extension.TransformerDefinition> transformers = new ArrayList<>();
         for (EmitterExtension emitterExtension : settings.extensions) {
-            if (emitterExtension instanceof Extension) {
-                final Extension extension = (Extension) emitterExtension;
+            if (emitterExtension instanceof Extension extension) {
                 transformers.addAll(extension.getTransformers());
             }
         }
@@ -840,12 +839,10 @@ public class ModelCompiler {
     private static TsTemplateLiteral processPathTemplate(PathTemplate pathTemplate) {
         final List<TsExpression> spans = new ArrayList<>();
         for (PathTemplate.Part part : pathTemplate.getParts()) {
-            if (part instanceof PathTemplate.Literal) {
-                final PathTemplate.Literal literal = (PathTemplate.Literal) part;
+            if (part instanceof PathTemplate.Literal literal) {
                 spans.add(new TsStringLiteral(literal.getLiteral()));
             }
-            if (part instanceof PathTemplate.Parameter) {
-                final PathTemplate.Parameter parameter = (PathTemplate.Parameter) part;
+            if (part instanceof PathTemplate.Parameter parameter) {
                 spans.add(new TsIdentifierReference(parameter.getValidName()));
             }
         }
@@ -859,8 +856,7 @@ public class ModelCompiler {
         final TsModel model = transformBeanPropertyTypes(tsModel, new TsType.Transformer() {
             @Override
             public TsType transform(TsType.Context context, TsType type) {
-                if (type instanceof TsType.IndexedArrayType) {
-                    final TsType.IndexedArrayType indexedArrayType = (TsType.IndexedArrayType) type;
+                if (type instanceof TsType.IndexedArrayType indexedArrayType) {
                     return new TsType.GenericBasicType("Record", indexedArrayType.indexType,
                             indexedArrayType.elementType);
                 }
@@ -987,10 +983,8 @@ public class ModelCompiler {
         return transformBeanPropertyTypes(tsModel, new TsType.Transformer() {
             @Override
             public TsType transform(TsType.Context context, TsType tsType) {
-                if (tsType instanceof TsType.MappedType) {
-                    final TsType.MappedType mappedType = (TsType.MappedType) tsType;
-                    if (mappedType.parameterType instanceof TsType.EnumReferenceType) {
-                        final TsType.EnumReferenceType enumType = (TsType.EnumReferenceType) mappedType.parameterType;
+                if (tsType instanceof TsType.MappedType mappedType) {
+                    if (mappedType.parameterType instanceof TsType.EnumReferenceType enumType) {
                         final Class<?> enumClass = symbolTable.getSymbolClass(enumType.symbol);
                         final TsEnumModel enumModel = tsModel.getEnums().stream()
                                 .filter(model -> Objects.equals(model.getOrigin(), enumClass))
@@ -1083,8 +1077,7 @@ public class ModelCompiler {
                         if (cls != null) {
                             final Symbol unionSymbol = symbolTable.hasSymbol(cls, "Union");
                             if (unionSymbol != null) {
-                                if (tsType instanceof TsType.GenericReferenceType) {
-                                    final TsType.GenericReferenceType genericReferenceType = (TsType.GenericReferenceType) tsType;
+                                if (tsType instanceof TsType.GenericReferenceType genericReferenceType) {
                                     return new TsType.GenericReferenceType(unionSymbol,
                                             genericReferenceType.typeArguments);
                                 } else {
@@ -1132,8 +1125,7 @@ public class ModelCompiler {
         TsModel transformedModel = transformBeanPropertyTypes(tsModel, new TsType.Transformer() {
             @Override
             public TsType transform(TsType.Context context, TsType tsType) {
-                if (tsType instanceof TsType.NullableType) {
-                    final TsType.NullableType nullableType = (TsType.NullableType) tsType;
+                if (tsType instanceof TsType.NullableType nullableType) {
                     if (nullabilityDefinition.isInline()) {
                         return new TsType.UnionType(nullableType.type).add(nullabilityDefinition.getTypes());
                     } else {
@@ -1177,10 +1169,8 @@ public class ModelCompiler {
     }
 
     private static TsType eliminateUndefinedFromOptionalType(TsType type) {
-        if (type instanceof TsType.OptionalType) {
-            final TsType.OptionalType optionalType = (TsType.OptionalType) type;
-            if (optionalType.type instanceof TsType.UnionType) {
-                final TsType.UnionType unionType = (TsType.UnionType) optionalType.type;
+        if (type instanceof TsType.OptionalType optionalType) {
+            if (optionalType.type instanceof TsType.UnionType unionType) {
                 if (unionType.types.contains(TsType.Undefined)) {
                     return new TsType.OptionalType(unionType.remove(List.of(TsType.Undefined)));
                 }
@@ -1197,8 +1187,7 @@ public class ModelCompiler {
                     }
                     return bean.withProperties(bean.getProperties().stream()
                             .map(property -> {
-                                if (property.getTsType() instanceof TsType.OptionalType) {
-                                    final TsType.OptionalType optionalType = (TsType.OptionalType) property.getTsType();
+                                if (property.getTsType() instanceof TsType.OptionalType optionalType) {
                                     if (settings.optionalPropertiesDeclaration == OptionalPropertiesDeclaration.nullableType) {
                                         return property.withTsType(
                                                 TsType.UnionType
@@ -1313,8 +1302,7 @@ public class ModelCompiler {
     }
 
     private static Class<?> getOriginClass(SymbolTable symbolTable, TsType type) {
-        if (type instanceof TsType.ReferenceType) {
-            final TsType.ReferenceType referenceType = (TsType.ReferenceType) type;
+        if (type instanceof TsType.ReferenceType referenceType) {
             return symbolTable.getSymbolClass(referenceType.symbol);
         }
         return null;

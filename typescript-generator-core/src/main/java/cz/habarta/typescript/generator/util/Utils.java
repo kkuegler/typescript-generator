@@ -50,16 +50,13 @@ public final class Utils {
     }
 
     public static Pair<Class<?>, Optional<List<Type>>> getRawClassAndTypeArguments(Type type) {
-        if (type instanceof Class) {
-            final Class<?> javaClass = (Class<?>) type;
+        if (type instanceof Class<?> javaClass) {
             return javaClass.getTypeParameters().length != 0
                     ? Pair.of(javaClass, Optional.empty()) // raw usage of generic class
                     : Pair.of(javaClass, Optional.of(Collections.emptyList())); // non-generic class
         }
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
-            if (parameterizedType.getRawType() instanceof Class) {
-                final Class<?> javaClass = (Class<?>) parameterizedType.getRawType();
+        if (type instanceof ParameterizedType parameterizedType) {
+            if (parameterizedType.getRawType() instanceof Class<?> javaClass) {
                 return Pair.of(javaClass, Optional.of(Arrays.asList(parameterizedType.getActualTypeArguments())));
             }
         }
@@ -215,8 +212,7 @@ public final class Utils {
     }
 
     public static Type replaceRawClassInType(Type type, Class<?> newClass) {
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
+        if (type instanceof ParameterizedType parameterizedType) {
             return createParameterizedType(newClass, parameterizedType.getActualTypeArguments());
         }
         return newClass;
@@ -231,25 +227,21 @@ public final class Utils {
     }
 
     public static Type transformContainedTypes(Type type, Function<Type, Type> transformer) {
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
+        if (type instanceof ParameterizedType parameterizedType) {
             return new JParameterizedType(
                     parameterizedType.getRawType(),
                     transformTypes(parameterizedType.getActualTypeArguments(), transformer),
                     parameterizedType.getOwnerType());
         }
-        if (type instanceof GenericArrayType) {
-            final GenericArrayType genericArrayType = (GenericArrayType) type;
+        if (type instanceof GenericArrayType genericArrayType) {
             return new JGenericArrayType(
                     transformer.apply(genericArrayType.getGenericComponentType()));
         }
-        if (type instanceof JUnionType) {
-            final JUnionType unionType = (JUnionType) type;
+        if (type instanceof JUnionType unionType) {
             return new JUnionType(
                     transformTypes(unionType.getTypes(), transformer));
         }
-        if (type instanceof JTypeWithNullability) {
-            final JTypeWithNullability typeWithNullability = (JTypeWithNullability) type;
+        if (type instanceof JTypeWithNullability typeWithNullability) {
             return new JTypeWithNullability(
                     transformer.apply(typeWithNullability.getType()),
                     typeWithNullability.isNullable());
@@ -270,8 +262,7 @@ public final class Utils {
     }
 
     public static boolean isPrimitiveType(Type type) {
-        if (type instanceof Class<?>) {
-            final Class<?> cls = (Class<?>) type;
+        if (type instanceof Class<?> cls) {
             return cls.isPrimitive();
         }
         return false;

@@ -211,10 +211,8 @@ public class JsonDeserializationExtension extends Extension {
     private static TsExpression getPropertyCopy(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean,
             TsPropertyModel property) {
         final TsExpression copyFunction = getCopyFunctionForTsType(symbolTable, tsModel, property.getTsType());
-        if (copyFunction instanceof TsCallExpression) {
-            final TsCallExpression callExpression = (TsCallExpression) copyFunction;
-            if (callExpression.getExpression() instanceof TsIdentifierReference) {
-                final TsIdentifierReference reference = (TsIdentifierReference) callExpression.getExpression();
+        if (copyFunction instanceof TsCallExpression callExpression) {
+            if (callExpression.getExpression() instanceof TsIdentifierReference reference) {
                 if (reference.getIdentifier().equals("__identity")) {
                     // function degenerates to the same value (data.property)
                     return new TsMemberExpression(new TsIdentifierReference("data"), property.name);
@@ -227,8 +225,7 @@ public class JsonDeserializationExtension extends Extension {
     }
 
     private static TsExpression getCopyFunctionForTsType(SymbolTable symbolTable, TsModel tsModel, TsType tsType) {
-        if (tsType instanceof TsType.GenericReferenceType) {
-            final TsType.GenericReferenceType genericReferenceType = (TsType.GenericReferenceType) tsType;
+        if (tsType instanceof TsType.GenericReferenceType genericReferenceType) {
             // Class.fromDataFn<T1...>(constructorFnOfT1...)
             final List<TsExpression> arguments = new ArrayList<>();
             for (TsType typeArgument : genericReferenceType.typeArguments) {
@@ -241,8 +238,7 @@ public class JsonDeserializationExtension extends Extension {
                     genericReferenceType.typeArguments,
                     arguments);
         }
-        if (tsType instanceof TsType.ReferenceType) {
-            final TsType.ReferenceType referenceType = (TsType.ReferenceType) tsType;
+        if (tsType instanceof TsType.ReferenceType referenceType) {
             final TsBeanModel referencedBean = tsModel.getBean(symbolTable.getSymbolClass(referenceType.symbol));
             if (referencedBean != null && referencedBean.isClass()) {
                 if (referencedBean.getTaggedUnionAlias() != null) {
@@ -256,23 +252,20 @@ public class JsonDeserializationExtension extends Extension {
                 }
             }
         }
-        if (tsType instanceof TsType.BasicArrayType) {
+        if (tsType instanceof TsType.BasicArrayType arrayType) {
             // __getCopyArrayFn
-            final TsType.BasicArrayType arrayType = (TsType.BasicArrayType) tsType;
             return new TsCallExpression(
                     new TsIdentifierReference("__getCopyArrayFn"),
                     getCopyFunctionForTsType(symbolTable, tsModel, arrayType.elementType));
         }
-        if (tsType instanceof TsType.IndexedArrayType) {
+        if (tsType instanceof TsType.IndexedArrayType objectType) {
             // __getCopyObjectFn
-            final TsType.IndexedArrayType objectType = (TsType.IndexedArrayType) tsType;
             return new TsCallExpression(
                     new TsIdentifierReference("__getCopyObjectFn"),
                     getCopyFunctionForTsType(symbolTable, tsModel, objectType.elementType));
         }
-        if (tsType instanceof TsType.GenericVariableType) {
+        if (tsType instanceof TsType.GenericVariableType genericVariableType) {
             // constructorFnOfT
-            final TsType.GenericVariableType genericVariableType = (TsType.GenericVariableType) tsType;
             return new TsIdentifierReference("constructorFnOf" + genericVariableType.name);
         }
         // __identity
@@ -333,10 +326,9 @@ public class JsonDeserializationExtension extends Extension {
     private static TsMethodModel addCopyFnToJaxrsMethod(SymbolTable symbolTable, TsModel tsModel,
             TsMethodModel method) {
         final TsType returnType = method.getReturnType();
-        if (!(returnType instanceof TsType.GenericReferenceType)) {
+        if (!(returnType instanceof TsType.GenericReferenceType genericReferenceReturnType)) {
             return null;
         }
-        final TsType.GenericReferenceType genericReferenceReturnType = (TsType.GenericReferenceType) returnType;
         if (genericReferenceReturnType.symbol != symbolTable.getSyntheticSymbol("RestResponse")) {
             return null;
         }
@@ -350,27 +342,24 @@ public class JsonDeserializationExtension extends Extension {
             return null;
         }
         final TsStatement statement = body.get(0);
-        if (!(statement instanceof TsReturnStatement)) {
+        if (!(statement instanceof TsReturnStatement returnStatement)) {
             return null;
         }
-        final TsReturnStatement returnStatement = (TsReturnStatement) statement;
         final TsExpression returnExpression = returnStatement.getExpression();
         if (returnExpression == null) {
             return null;
         }
-        if (!(returnExpression instanceof TsCallExpression)) {
+        if (!(returnExpression instanceof TsCallExpression callExpression)) {
             return null;
         }
-        final TsCallExpression callExpression = (TsCallExpression) returnExpression;
         final List<TsExpression> arguments = callExpression.getArguments();
         if (arguments == null || arguments.isEmpty()) {
             return null;
         }
         final TsExpression firstArgument = arguments.get(0);
-        if (!(firstArgument instanceof TsObjectLiteral)) {
+        if (!(firstArgument instanceof TsObjectLiteral objectLiteral)) {
             return null;
         }
-        final TsObjectLiteral objectLiteral = (TsObjectLiteral) firstArgument;
 
         // todo create changed method instead of modifying existing
         final int index = Math.max(objectLiteral.getPropertyDefinitions().size() - 1, 0);

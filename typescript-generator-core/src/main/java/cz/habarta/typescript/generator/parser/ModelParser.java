@@ -87,9 +87,8 @@ public abstract class ModelParser {
             final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null,
                     settings);
             if (result != null) {
-                if (sourceType.type instanceof Class<?> && result.getTsType() instanceof TsType.ReferenceType) {
-                    final Class<?> cls = (Class<?>) sourceType.type;
-                    final TsType.ReferenceType referenceType = (TsType.ReferenceType) result.getTsType();
+                if (sourceType.type instanceof Class<?> cls
+                        && result.getTsType() instanceof TsType.ReferenceType referenceType) {
                     if (!referenceType.symbol.isResolved()) {
                         TypeScriptGenerator.getLogger().verbose("Parsing '" + cls.getName() + "'" +
                                 (sourceType.usedInClass != null
@@ -122,13 +121,11 @@ public abstract class ModelParser {
     protected static PropertyMember wrapMember(TypeParser typeParser, Member propertyMember, Integer creatorIndex,
             AnnotationGetter annotationGetter,
             String propertyName, Class<?> sourceClass) {
-        if (propertyMember instanceof Field) {
-            final Field field = (Field) propertyMember;
+        if (propertyMember instanceof Field field) {
             return new PropertyMember(field, typeParser.getFieldType(field), field.getAnnotatedType(),
                     annotationGetter);
         }
-        if (propertyMember instanceof Method) {
-            final Method method = (Method) propertyMember;
+        if (propertyMember instanceof Method method) {
             if (creatorIndex != null) {
                 return new PropertyMember(method, typeParser.getMethodParameterTypes(method).get(creatorIndex),
                         method.getAnnotatedParameterTypes()[creatorIndex], annotationGetter);
@@ -143,8 +140,7 @@ public abstract class ModelParser {
                 }
             }
         }
-        if (propertyMember instanceof Constructor) {
-            final Constructor<?> constructor = (Constructor<?>) propertyMember;
+        if (propertyMember instanceof Constructor<?> constructor) {
             if (creatorIndex != null) {
                 return new PropertyMember(constructor,
                         typeParser.getConstructorParameterTypes(constructor).get(creatorIndex),

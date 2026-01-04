@@ -73,11 +73,10 @@ public class RequiredPropertyConstructorExtension extends Extension {
         List<TsStatement> body = new ArrayList<>();
         TsType parent = bean.getParent();
         if (parent != null) {
-            if (!(parent instanceof TsType.ReferenceType)) {
+            if (!(parent instanceof TsType.ReferenceType referenceParent)) {
                 throw new IllegalStateException(
                         "Generating constructor for non-reference parent types is not currently supported");
             }
-            TsType.ReferenceType referenceParent = (TsType.ReferenceType) parent;
             TsConstructorModel parentConstructor = generatedConstructors.get(referenceParent.symbol.getFullName());
             if (parentConstructor == null) {
                 throw new IllegalStateException(
@@ -132,10 +131,9 @@ public class RequiredPropertyConstructorExtension extends Extension {
                 return Optional.empty();
             }
             TsType onlyElement = unionTypeElements.iterator().next();
-            if (!(onlyElement instanceof TsType.StringLiteralType)) {
+            if (!(onlyElement instanceof TsType.StringLiteralType onlyValue)) {
                 return Optional.empty();
             }
-            TsType.StringLiteralType onlyValue = (TsType.StringLiteralType) onlyElement;
             TsStringLiteral expression = new TsStringLiteral(onlyValue.literal);
             return Optional.of(expression);
         }

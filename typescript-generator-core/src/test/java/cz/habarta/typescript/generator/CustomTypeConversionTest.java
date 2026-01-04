@@ -75,10 +75,8 @@ public class CustomTypeConversionTest {
     }
 
     private static Type[] tryGetParameterizedTypeArguments(Type javaType, Class<?> requiredRawType) {
-        if (javaType instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) javaType;
-            if (parameterizedType.getRawType() instanceof Class) {
-                final Class<?> javaClass = (Class<?>) parameterizedType.getRawType();
+        if (javaType instanceof ParameterizedType parameterizedType) {
+            if (parameterizedType.getRawType() instanceof Class<?> javaClass) {
                 if (requiredRawType.isAssignableFrom(javaClass)) {
                     return parameterizedType.getActualTypeArguments();
                 }

@@ -58,8 +58,7 @@ public class GenericsResolver {
         }
         for (int i = 0; i < resolvedParent.typeArguments.size(); i++) {
             final Type argument = resolvedParent.typeArguments.get(i);
-            if (argument instanceof TypeVariable) {
-                final TypeVariable<?> variable = (TypeVariable<?>) argument;
+            if (argument instanceof TypeVariable<?> variable) {
                 if (Objects.equals(variable.getName(), typeVariableName)) {
                     return resolvedParent.rawClass.getTypeParameters()[i].getName();
                 }
@@ -128,8 +127,7 @@ public class GenericsResolver {
         }
 
         private Type resolveType(Type type) {
-            if (type instanceof TypeVariable) {
-                final TypeVariable<?> typeVariable = (TypeVariable<?>) type;
+            if (type instanceof TypeVariable<?> typeVariable) {
                 return resolvedTypeParameters.getOrDefault(typeVariable.getName(), typeVariable);
             }
             return Utils.transformContainedTypes(type, this::resolveType);
