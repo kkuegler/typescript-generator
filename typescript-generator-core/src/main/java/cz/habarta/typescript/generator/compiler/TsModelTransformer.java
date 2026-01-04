@@ -12,9 +12,9 @@ import java.util.Objects;
 @FunctionalInterface
 public interface TsModelTransformer {
 
-    public TsModel transformModel(Context context, TsModel model);
+    TsModel transformModel(Context context, TsModel model);
 
-    public static class Context {
+    class Context {
 
         private final SymbolTable symbolTable;
         private final Model model;

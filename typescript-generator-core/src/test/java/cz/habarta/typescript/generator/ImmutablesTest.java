@@ -48,7 +48,7 @@ public class ImmutablesTest {
             @JsonSubTypes.Type(value = Rectangle.class, name = "rectangle"),
             @JsonSubTypes.Type(value = Circle.class, name = "circle"),
     })
-    public static interface Shape {
+    public interface Shape {
     }
 
     public static class Square implements Shape {
@@ -75,7 +75,7 @@ public class ImmutablesTest {
     @Value.Immutable
     @JsonSerialize(as = ImmutableCircle.class)
     @JsonDeserialize(as = ImmutableCircle.class)
-    public static interface Circle extends Shape {
+    public interface Circle extends Shape {
         double radius();
 
         final class Builder extends ImmutableCircle.Builder {

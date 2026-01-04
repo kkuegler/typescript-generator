@@ -803,14 +803,14 @@ public class JaxrsApplicationTest {
         public String name;
     }
 
-    public static interface AbstractCrudResource<ENTITY, ID> {
+    public interface AbstractCrudResource<ENTITY, ID> {
         @GET
         @Path("{id}")
-        public ENTITY get(@PathParam("id") ID id);
+        ENTITY get(@PathParam("id") ID id);
     }
 
     @Path("/account")
-    public static interface AccountResource extends AbstractCrudResource<AccountDto, Integer> {
+    public interface AccountResource extends AbstractCrudResource<AccountDto, Integer> {
         @GET
         @Path("/test")
         void test();

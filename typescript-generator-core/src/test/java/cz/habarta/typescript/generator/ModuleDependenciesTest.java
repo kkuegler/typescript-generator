@@ -141,7 +141,7 @@ public class ModuleDependenciesTest {
         public String a;
     }
 
-    private static enum Enum1 {
+    private enum Enum1 {
         c1, c2
     }
 

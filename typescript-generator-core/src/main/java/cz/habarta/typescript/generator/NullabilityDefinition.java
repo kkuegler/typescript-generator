@@ -16,7 +16,7 @@ public enum NullabilityDefinition {
     private final boolean isInline;
     private final List<TsType> types;
 
-    private NullabilityDefinition(boolean isInline, TsType... types) {
+    NullabilityDefinition(boolean isInline, TsType... types) {
         this.isInline = isInline;
         this.types = Arrays.asList(types);
     }

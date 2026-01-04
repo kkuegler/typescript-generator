@@ -25,13 +25,13 @@ public class InterfaceTest {
         Assertions.assertTrue(output.contains("readonly name: string;"));
     }
 
-    static interface Book {
+    interface Book {
         Author getAuthor();
 
         String getTitle();
     }
 
-    static interface Author {
+    interface Author {
         String getName();
     }
 

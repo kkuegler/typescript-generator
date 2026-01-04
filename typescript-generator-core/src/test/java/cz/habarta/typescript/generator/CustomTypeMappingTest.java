@@ -78,7 +78,7 @@ public class CustomTypeMappingTest {
         private final String code;
         private final String definition;
 
-        private MyEnum(String code, String definition) {
+        MyEnum(String code, String definition) {
             this.code = code;
             this.definition = definition;
         }
@@ -95,7 +95,7 @@ public class CustomTypeMappingTest {
     }
 
     public interface MyInterfUsingEnum {
-        public MyEnum getSomeValue();
+        MyEnum getSomeValue();
     }
 
     public static class CodedValueSerializer extends StdSerializer<CodedValue> {

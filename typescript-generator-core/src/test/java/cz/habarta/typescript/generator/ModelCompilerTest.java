@@ -78,11 +78,11 @@ public class ModelCompilerTest {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-    private static interface WithoutTypeParam {
+    private interface WithoutTypeParam {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-    private static interface WithTypeParam<T> {
+    private interface WithTypeParam<T> {
     }
 
     private static class Implementation implements WithTypeParam<Integer>, WithoutTypeParam {
@@ -95,7 +95,7 @@ public class ModelCompilerTest {
         return settings;
     }
 
-    private static enum Direction {
+    private enum Direction {
         North, East, South, West
     }
 

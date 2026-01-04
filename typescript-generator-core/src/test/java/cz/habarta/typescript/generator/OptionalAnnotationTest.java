@@ -51,7 +51,7 @@ public class OptionalAnnotationTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    static @interface Nullable {
+    @interface Nullable {
         // marker
     }
 

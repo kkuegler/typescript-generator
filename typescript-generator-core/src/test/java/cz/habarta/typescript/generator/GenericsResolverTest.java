@@ -176,7 +176,7 @@ public class GenericsResolverTest {
         public StringKeyMap rawStringKeyMap;
     }
 
-    static interface StringKeyMap<T> extends Map<String, T> {
+    interface StringKeyMap<T> extends Map<String, T> {
     }
 
     @Test
@@ -191,10 +191,10 @@ public class GenericsResolverTest {
         public StringMapDescendant stringMapDescendant;
     }
 
-    static interface StringMapDescendant extends StringMap {
+    interface StringMapDescendant extends StringMap {
     }
 
-    static interface StringMap extends Map<String, String> {
+    interface StringMap extends Map<String, String> {
     }
 
     private static List<String> getTypeNames(List<Type> types) {

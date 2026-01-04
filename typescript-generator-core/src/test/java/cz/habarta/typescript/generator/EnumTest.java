@@ -235,12 +235,12 @@ public class EnumTest {
         assertTrue(output.contains("interface Enum<E>"));
     }
 
-    private static @interface Child {
-        public static class NoEnumFactory implements IBaseEnumFactory<Enum<?>> {
+    private @interface Child {
+        class NoEnumFactory implements IBaseEnumFactory<Enum<?>> {
         }
     }
 
-    private static interface IBaseEnumFactory<T> {
+    private interface IBaseEnumFactory<T> {
     }
 
     @Test
@@ -281,7 +281,7 @@ public class EnumTest {
 
         private final String jsonValue;
 
-        private SideWithJsonValueMethodAnnotation(String jsonValue) {
+        SideWithJsonValueMethodAnnotation(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -300,7 +300,7 @@ public class EnumTest {
         @JsonValue
         private final String jsonValue;
 
-        private SideWithJsonValueFieldAnnotation(String jsonValue) {
+        SideWithJsonValueFieldAnnotation(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -318,7 +318,7 @@ public class EnumTest {
 
         private final String jsonValue;
 
-        private SideUsingToString(String jsonValue) {
+        SideUsingToString(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -344,7 +344,7 @@ public class EnumTest {
         private final int code;
         private final String label;
 
-        private StatusType(int code, String label) {
+        StatusType(int code, String label) {
             this.label = label;
             this.code = code;
         }
@@ -412,14 +412,14 @@ public class EnumTest {
         assertTrue(output.contains("MixedEnum"));
     }
 
-    public static enum MixedEnum {
+    public enum MixedEnum {
 
         NUMBER(42),
         STRING("foo");
 
         private final Object jsonValue;
 
-        private MixedEnum(Object jsonValue) {
+        MixedEnum(Object jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -445,7 +445,7 @@ public class EnumTest {
     }
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    public static enum NumberEnum {
+    public enum NumberEnum {
         VALUE0,
         VALUE1;
     }

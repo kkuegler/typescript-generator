@@ -62,11 +62,11 @@ public class IncludeExcludePropertyTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private static @interface MyInclude {
+    private @interface MyInclude {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private static @interface MyExclude {
+    private @interface MyExclude {
     }
 
     private static class ClassWithAnnotatedProperties {

@@ -172,7 +172,7 @@ public class GenericsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = As.PROPERTY, visible = false)
     interface IB<T> {
-        public T getX();
+        T getX();
     }
 
     class Table<T> {
@@ -193,7 +193,7 @@ public class GenericsTest {
     }
 
     interface ExecutionResult {
-        public <T extends Number> T getData();
+        <T extends Number> T getData();
     }
 
     @Test

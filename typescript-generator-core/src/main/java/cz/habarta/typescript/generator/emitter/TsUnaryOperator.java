@@ -9,7 +9,7 @@ public enum TsUnaryOperator implements Emittable {
 
     private final String formatted;
 
-    private TsUnaryOperator(String formatted) {
+    TsUnaryOperator(String formatted) {
         this.formatted = formatted;
     }
 

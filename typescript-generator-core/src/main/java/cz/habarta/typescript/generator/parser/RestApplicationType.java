@@ -10,7 +10,7 @@ public enum RestApplicationType {
     Spring(settings -> settings.generateSpringApplicationInterface,
             settings -> settings.generateSpringApplicationClient);
 
-    private RestApplicationType(Function<Settings, Boolean> generateInterface,
+    RestApplicationType(Function<Settings, Boolean> generateInterface,
             Function<Settings, Boolean> generateClient) {
         this.generateInterface = generateInterface;
         this.generateClient = generateClient;

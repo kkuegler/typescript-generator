@@ -56,7 +56,7 @@ public class TypeGuardsForJackson2PolymorphismExtensionTest {
             @JsonSubTypes.Type(CartesianPoint.class),
             @JsonSubTypes.Type(PolarPoint.class)
     })
-    private static interface Point {
+    private interface Point {
     }
 
     @JsonTypeName("cartesian")

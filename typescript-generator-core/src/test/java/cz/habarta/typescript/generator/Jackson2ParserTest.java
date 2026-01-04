@@ -120,7 +120,7 @@ public class Jackson2ParserTest {
             @JsonSubTypes.Type(value = SubTypeDiscriminatedByName3.class),
             @JsonSubTypes.Type(value = SubTypeDiscriminatedByName4.class),
     })
-    private static interface ParentWithNameDiscriminant {
+    private interface ParentWithNameDiscriminant {
     }
 
     @JsonTypeName("explicit-name1")
@@ -353,7 +353,7 @@ public class Jackson2ParserTest {
     }
 
     @JsonClassDescription("Enum description")
-    private static enum EnumWithDescriptions {
+    private enum EnumWithDescriptions {
         @JsonPropertyDescription("Enum constant description")
         Empty
     }
@@ -369,7 +369,7 @@ public class Jackson2ParserTest {
     }
 
     public interface Identifyable {
-        public String getId();
+        String getId();
     }
 
     public static class Project implements Identifyable {

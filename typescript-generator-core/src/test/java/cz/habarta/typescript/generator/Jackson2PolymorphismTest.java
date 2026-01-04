@@ -16,7 +16,7 @@ public class Jackson2PolymorphismTest {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
-    public static interface BadFieldClass {
+    public interface BadFieldClass {
     }
 
     @Test
