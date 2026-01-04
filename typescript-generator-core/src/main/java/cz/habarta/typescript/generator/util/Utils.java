@@ -295,10 +295,12 @@ public final class Utils {
             return null;
         }
         final List<T> result = new ArrayList<>();
-        if (list1 != null)
+        if (list1 != null) {
             result.addAll(list1);
-        if (list2 != null)
+        }
+        if (list2 != null) {
             result.addAll(list2);
+        }
         return result;
     }
 

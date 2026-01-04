@@ -334,34 +334,43 @@ public class JsonDeserializationExtension extends Extension {
     private static TsMethodModel addCopyFnToJaxrsMethod(SymbolTable symbolTable, TsModel tsModel,
             TsMethodModel method) {
         final TsType returnType = method.getReturnType();
-        if (!(returnType instanceof TsType.GenericReferenceType))
+        if (!(returnType instanceof TsType.GenericReferenceType)) {
             return null;
+        }
         final TsType.GenericReferenceType genericReferenceReturnType = (TsType.GenericReferenceType) returnType;
-        if (genericReferenceReturnType.symbol != symbolTable.getSyntheticSymbol("RestResponse"))
+        if (genericReferenceReturnType.symbol != symbolTable.getSyntheticSymbol("RestResponse")) {
             return null;
+        }
         final List<TsType> typeArguments = genericReferenceReturnType.typeArguments;
-        if (typeArguments == null || typeArguments.size() != 1)
+        if (typeArguments == null || typeArguments.size() != 1) {
             return null;
+        }
         final TsType returnDataType = typeArguments.get(0);
         final List<TsStatement> body = method.getBody();
-        if (body == null || body.size() != 1)
+        if (body == null || body.size() != 1) {
             return null;
+        }
         final TsStatement statement = body.get(0);
-        if (!(statement instanceof TsReturnStatement))
+        if (!(statement instanceof TsReturnStatement)) {
             return null;
+        }
         final TsReturnStatement returnStatement = (TsReturnStatement) statement;
         final TsExpression returnExpression = returnStatement.getExpression();
-        if (returnExpression == null)
+        if (returnExpression == null) {
             return null;
-        if (!(returnExpression instanceof TsCallExpression))
+        }
+        if (!(returnExpression instanceof TsCallExpression)) {
             return null;
+        }
         final TsCallExpression callExpression = (TsCallExpression) returnExpression;
         final List<TsExpression> arguments = callExpression.getArguments();
-        if (arguments == null || arguments.isEmpty())
+        if (arguments == null || arguments.isEmpty()) {
             return null;
+        }
         final TsExpression firstArgument = arguments.get(0);
-        if (!(firstArgument instanceof TsObjectLiteral))
+        if (!(firstArgument instanceof TsObjectLiteral)) {
             return null;
+        }
         final TsObjectLiteral objectLiteral = (TsObjectLiteral) firstArgument;
 
         // todo create changed method instead of modifying existing

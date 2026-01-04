@@ -218,10 +218,12 @@ public class SpringApplicationParser extends RestApplicationParser {
         for (int i = 0; i < resolvedMethods.size(); i++) {
             Method currMethod = resolvedMethods.get(i);
 
-            if (!currMethod.getName().equals(newMethod.getName()))
+            if (!currMethod.getName().equals(newMethod.getName())) {
                 continue;
-            if (!Arrays.equals(currMethod.getParameterTypes(), newMethod.getParameterTypes()))
+            }
+            if (!Arrays.equals(currMethod.getParameterTypes(), newMethod.getParameterTypes())) {
                 continue;
+            }
 
             return i;
         }
