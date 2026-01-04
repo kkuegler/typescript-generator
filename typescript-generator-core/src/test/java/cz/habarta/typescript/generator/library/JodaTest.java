@@ -35,7 +35,7 @@ public class JodaTest {
         Assertions.assertTrue(dts.contains("dateList: number[];"));
         Assertions.assertTrue(dts.contains("datesMap: { [index: string]: number[] };"));
         Assertions.assertTrue(dts.contains("dates: number[];"));
-        Assertions.assertTrue(!dts.contains("type DateAsNumber = number;"));
+        Assertions.assertFalse(dts.contains("type DateAsNumber = number;"));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class JodaTest {
         Assertions.assertTrue(dts.contains("dateList: string[];"));
         Assertions.assertTrue(dts.contains("datesMap: { [index: string]: string[] };"));
         Assertions.assertTrue(dts.contains("dates: string[];"));
-        Assertions.assertTrue(!dts.contains("type DateAsString = string;"));
+        Assertions.assertFalse(dts.contains("type DateAsString = string;"));
     }
 
     @Test

@@ -49,7 +49,7 @@ public class JavadocTest {
             Assertions.assertTrue(generated.contains("Documentation for interface getter property."));
             Assertions.assertTrue(generated.contains("@return value of getterPropery"));
             Assertions.assertTrue(generated.contains("@deprecated replaced by something else\n"));
-            Assertions.assertTrue(!generated.contains("@deprecated\n"));
+            Assertions.assertFalse(generated.contains("@deprecated\n"));
             Assertions.assertTrue(
                     generated.contains(" *     // indentation and line breaks are kept\n * \n *     {@literal @}"));
             Assertions.assertTrue(generated.contains(" *     public List<String> generics() {\n"));
@@ -92,17 +92,17 @@ public class JavadocTest {
         {
             final String generated = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithBrElements.class));
-            Assertions.assertTrue(!generated.contains("<br>"));
-            Assertions.assertTrue(!generated.contains("<br/>"));
-            Assertions.assertTrue(!generated.contains("<br />"));
+            Assertions.assertFalse(generated.contains("<br>"));
+            Assertions.assertFalse(generated.contains("<br/>"));
+            Assertions.assertFalse(generated.contains("<br />"));
             Assertions.assertTrue(generated.contains("Class documentation\n * \n"));
             Assertions.assertTrue(generated.contains("Some documentation\n * \n * for this class."));
         }
         {
             final String generated = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithPElements.class));
-            Assertions.assertTrue(!generated.contains("<p>"));
-            Assertions.assertTrue(!generated.contains("</p>"));
+            Assertions.assertFalse(generated.contains("<p>"));
+            Assertions.assertFalse(generated.contains("</p>"));
             Assertions.assertTrue(generated.contains("Long\n * paragraph\n * \n * Second\n * paragraph"));
         }
     }

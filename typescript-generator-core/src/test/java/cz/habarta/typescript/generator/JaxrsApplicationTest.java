@@ -136,7 +136,7 @@ public class JaxrsApplicationTest {
         final JaxrsApplicationParser.Result result = jaxrsApplicationParser
                 .tryParse(new SourceType<>(TestResource1.class));
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(!getTypes(result.discoveredTypes).contains(A.class));
+        Assertions.assertFalse(getTypes(result.discoveredTypes).contains(A.class));
         Assertions.assertTrue(getTypes(result.discoveredTypes).contains(JGenericArrayType.of(J[].class)));
     }
 
@@ -362,7 +362,7 @@ public class JaxrsApplicationTest {
         Assertions.assertTrue(output.contains("interface RestApplication"), errorMessage);
         Assertions.assertTrue(output.contains("getA(): RestResponse<A>;"), errorMessage);
         Assertions.assertTrue(output.contains("type RestResponse<R> = Promise<R>;"), errorMessage);
-        Assertions.assertTrue(!output.contains("function uriEncoding"), errorMessage);
+        Assertions.assertFalse(output.contains("function uriEncoding"), errorMessage);
         Assertions.assertTrue(output.contains("setAsync(): RestResponse<string>"), errorMessage);
     }
 
@@ -494,10 +494,10 @@ public class JaxrsApplicationTest {
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(OrganizationApplication.class));
         final String errorMessage = "Unexpected output: " + output;
-        Assertions.assertTrue(!output.contains("class OrganizationApplicationClient"), errorMessage);
+        Assertions.assertFalse(output.contains("class OrganizationApplicationClient"), errorMessage);
         Assertions.assertTrue(output.contains("class OrganizationsResourceClient implements OrganizationsResource "),
                 errorMessage);
-        Assertions.assertTrue(!output.contains("class OrganizationResourceClient"), errorMessage);
+        Assertions.assertFalse(output.contains("class OrganizationResourceClient"), errorMessage);
         Assertions.assertTrue(output.contains("class PersonResourceClient implements PersonResource "), errorMessage);
     }
 
@@ -516,9 +516,9 @@ public class JaxrsApplicationTest {
         Assertions.assertTrue(
                 output.contains("class OrganizationApplicationClient implements OrganizationApplication "),
                 errorMessage);
-        Assertions.assertTrue(!output.contains("class OrganizationsResourceClient"), errorMessage);
-        Assertions.assertTrue(!output.contains("class OrganizationResourceClient"), errorMessage);
-        Assertions.assertTrue(!output.contains("class PersonResourceClient"), errorMessage);
+        Assertions.assertFalse(output.contains("class OrganizationsResourceClient"), errorMessage);
+        Assertions.assertFalse(output.contains("class OrganizationResourceClient"), errorMessage);
+        Assertions.assertFalse(output.contains("class PersonResourceClient"), errorMessage);
     }
 
     @Test
@@ -793,7 +793,7 @@ public class JaxrsApplicationTest {
         settings.generateJaxrsApplicationClient = true;
         settings.outputFileType = TypeScriptFileType.implementationFile;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AccountResource.class));
-        Assertions.assertTrue(!output.contains("get(id: ID): RestResponse<ENTITY>"));
+        Assertions.assertFalse(output.contains("get(id: ID): RestResponse<ENTITY>"));
         Assertions.assertTrue(output.contains("get(id: number): RestResponse<AccountDto>"));
         Assertions.assertTrue(output.contains("interface AccountDto"));
     }

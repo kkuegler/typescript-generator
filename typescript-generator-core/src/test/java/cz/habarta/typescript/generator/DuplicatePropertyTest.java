@@ -48,7 +48,7 @@ public class DuplicatePropertyTest {
         settings.mapClasses = ClassMapping.asClasses;
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(DuplicateKindUsage.class));
-        Assertions.assertTrue(!output.contains("DuplicateKindUnion"));
+        Assertions.assertFalse(output.contains("DuplicateKindUnion"));
     }
 
 }

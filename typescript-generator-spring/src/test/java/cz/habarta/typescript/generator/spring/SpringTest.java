@@ -465,7 +465,7 @@ public class SpringTest {
         settings.generateSpringApplicationClient = true;
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ControllerWithSwaggerIgnore.class));
-        Assertions.assertTrue(!output.contains("shouldBeExcluded"));
+        Assertions.assertFalse(output.contains("shouldBeExcluded"));
     }
 
     @RestController
@@ -484,7 +484,7 @@ public class SpringTest {
         settings.generateSpringApplicationClient = true;
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ControllerWithSwagger3Ignore.class));
-        Assertions.assertTrue(!output.contains("shouldBeExcluded"));
+        Assertions.assertFalse(output.contains("shouldBeExcluded"));
     }
 
     @RestController

@@ -63,10 +63,10 @@ public class ModuleDependenciesTest {
         Assertions.assertTrue(output.contains("objectA: a.NS.A2;"));
         Assertions.assertTrue(output.contains("interface D1 extends C<a.A1> {"));
         Assertions.assertTrue(output.contains("interface D2 extends C<a.NS.A2> {"));
-        Assertions.assertTrue(!output.contains("interface A1 {"));
-        Assertions.assertTrue(!output.contains("namespace NS {"));
-        Assertions.assertTrue(!output.contains("interface A2 {"));
-        Assertions.assertTrue(!output.contains("type Enum1 ="));
+        Assertions.assertFalse(output.contains("interface A1 {"));
+        Assertions.assertFalse(output.contains("namespace NS {"));
+        Assertions.assertFalse(output.contains("interface A2 {"));
+        Assertions.assertFalse(output.contains("type Enum1 ="));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ModuleDependenciesTest {
                 Input.from(B1.class, B2.class, C.class, D1.class, D2.class),
                 Output.to(new File("target/test-module-dependencies/" + directory + "/global.d.ts")));
         final String output = TestUtils.readFile("target/test-module-dependencies/" + directory + "/global.d.ts");
-        Assertions.assertTrue(!output.contains("import"));
+        Assertions.assertFalse(output.contains("import"));
         Assertions.assertTrue(output.contains("interface B1 extends A1 {"));
         Assertions.assertTrue(output.contains("objectA: A1;"));
         Assertions.assertTrue(output.contains("enum1: Enum1;"));
@@ -125,10 +125,10 @@ public class ModuleDependenciesTest {
         Assertions.assertTrue(output.contains("objectA: NS.A2;"));
         Assertions.assertTrue(output.contains("interface D1 extends C<A1> {"));
         Assertions.assertTrue(output.contains("interface D2 extends C<NS.A2> {"));
-        Assertions.assertTrue(!output.contains("interface A1 {"));
-        Assertions.assertTrue(!output.contains("namespace NS {"));
-        Assertions.assertTrue(!output.contains("interface A2 {"));
-        Assertions.assertTrue(!output.contains("type Enum1 ="));
+        Assertions.assertFalse(output.contains("interface A1 {"));
+        Assertions.assertFalse(output.contains("namespace NS {"));
+        Assertions.assertFalse(output.contains("interface A2 {"));
+        Assertions.assertFalse(output.contains("type Enum1 ="));
     }
 
     /// module "a"

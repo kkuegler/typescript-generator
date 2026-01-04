@@ -37,10 +37,10 @@ public class Jackson2ParserTest {
         final Jackson2Parser jacksonParser = getJackson2Parser();
         final Class<?> bean = DummyBean.class;
         final Model model = jacksonParser.parseModel(bean);
-        Assertions.assertTrue(model.getBeans().size() > 0);
+        Assertions.assertFalse(model.getBeans().isEmpty());
         final BeanModel beanModel = model.getBeans().get(0);
         Assertions.assertEquals("DummyBean", beanModel.getOrigin().getSimpleName());
-        Assertions.assertTrue(beanModel.getProperties().size() > 0);
+        Assertions.assertFalse(beanModel.getProperties().isEmpty());
         Assertions.assertEquals("firstProperty", beanModel.getProperties().get(0).getName());
     }
 
@@ -48,10 +48,10 @@ public class Jackson2ParserTest {
     public void testChangedNameProperty() {
         final Jackson2Parser jacksonParser = getJackson2Parser();
         final Model model = jacksonParser.parseModel(DummyBeanJackson2.class);
-        Assertions.assertTrue(model.getBeans().size() > 0);
+        Assertions.assertFalse(model.getBeans().isEmpty());
         final BeanModel beanModel = model.getBeans().get(0);
         Assertions.assertEquals("DummyBeanJackson2", beanModel.getOrigin().getSimpleName());
-        Assertions.assertTrue(beanModel.getProperties().size() > 0);
+        Assertions.assertFalse(beanModel.getProperties().isEmpty());
         Assertions.assertEquals("changedNameProperty", beanModel.getProperties().get(0).getName());
     }
 
@@ -59,7 +59,7 @@ public class Jackson2ParserTest {
     public void testConflictingJsonTypeInfoProperty() {
         final Jackson2Parser jacksonParser = getJackson2Parser();
         final Model model = jacksonParser.parseModel(InheritedClass.class);
-        Assertions.assertTrue(model.getBeans().size() > 0);
+        Assertions.assertFalse(model.getBeans().isEmpty());
         final BeanModel beanModel = model.getBeans().get(0);
         Assertions.assertEquals(1, beanModel.getProperties().size());
     }
@@ -275,7 +275,7 @@ public class Jackson2ParserTest {
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithIgnoredProperty.class));
         Assertions.assertTrue(output.contains("name1: string"));
-        Assertions.assertTrue(!output.contains("name2: string"));
+        Assertions.assertFalse(output.contains("name2: string"));
     }
 
     private static class ClassWithIgnoredProperty {
@@ -298,7 +298,7 @@ public class Jackson2ParserTest {
             final Settings settings = TestUtils.settings();
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithDifferentMemberVisibilities.class));
-            Assertions.assertTrue(!output.contains("property1: string"));
+            Assertions.assertFalse(output.contains("property1: string"));
             Assertions.assertTrue(output.contains("property2: string"));
         }
         {
@@ -308,7 +308,7 @@ public class Jackson2ParserTest {
             final String output = new TypeScriptGenerator(settings)
                     .generateTypeScript(Input.from(ClassWithDifferentMemberVisibilities.class));
             Assertions.assertTrue(output.contains("property1: string"));
-            Assertions.assertTrue(!output.contains("property2: string"));
+            Assertions.assertFalse(output.contains("property2: string"));
         }
     }
 

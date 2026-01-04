@@ -29,10 +29,10 @@ public class GsonParserTest {
         final GsonParser gsonParser = getGsonParser();
         final Class<?> bean = DummyBean.class;
         final Model model = gsonParser.parseModel(bean);
-        Assertions.assertTrue(model.getBeans().size() > 0);
+        Assertions.assertFalse(model.getBeans().isEmpty());
         final BeanModel beanModel = model.getBeans().get(0);
         Assertions.assertEquals("DummyBean", beanModel.getOrigin().getSimpleName());
-        Assertions.assertTrue(beanModel.getProperties().size() > 0);
+        Assertions.assertFalse(beanModel.getProperties().isEmpty());
         Assertions.assertEquals("firstProperty", beanModel.getProperties().get(0).getName());
     }
 
@@ -70,7 +70,7 @@ public class GsonParserTest {
     @Test
     public void testStaticFieldNotIncluded() {
         final String output = generate(settings, Demo.class);
-        Assertions.assertTrue(!output.contains("THIS_FIELD_SHOULD_NOT_BE_INCLUDED"));
+        Assertions.assertFalse(output.contains("THIS_FIELD_SHOULD_NOT_BE_INCLUDED"));
     }
 
     @Test

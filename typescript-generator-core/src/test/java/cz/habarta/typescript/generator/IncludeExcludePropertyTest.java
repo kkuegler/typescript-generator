@@ -25,9 +25,9 @@ public class IncludeExcludePropertyTest {
         settings.includePropertyAnnotations = Arrays.asList(MyInclude.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
-        Assertions.assertTrue(!output.contains("property1"));
+        Assertions.assertFalse(output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
-        Assertions.assertTrue(!output.contains("property3"));
+        Assertions.assertFalse(output.contains("property3"));
         Assertions.assertTrue(output.contains("property4"));
     }
 
@@ -41,8 +41,8 @@ public class IncludeExcludePropertyTest {
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertTrue(output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
-        Assertions.assertTrue(!output.contains("property3"));
-        Assertions.assertTrue(!output.contains("property4"));
+        Assertions.assertFalse(output.contains("property3"));
+        Assertions.assertFalse(output.contains("property4"));
     }
 
     @ParameterizedTest(name = "{index} - {0}")
@@ -55,10 +55,10 @@ public class IncludeExcludePropertyTest {
         settings.excludePropertyAnnotations = Arrays.asList(MyExclude.class);
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
-        Assertions.assertTrue(!output.contains("property1"));
+        Assertions.assertFalse(output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
-        Assertions.assertTrue(!output.contains("property3"));
-        Assertions.assertTrue(!output.contains("property4"));
+        Assertions.assertFalse(output.contains("property3"));
+        Assertions.assertFalse(output.contains("property4"));
     }
 
     @Retention(RetentionPolicy.RUNTIME)

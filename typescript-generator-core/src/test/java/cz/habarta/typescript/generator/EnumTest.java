@@ -13,6 +13,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unused")
@@ -211,7 +212,7 @@ public class EnumTest {
         settings.setExcludeFilter(Arrays.asList(StatusType.class.getName()), Arrays.<String>asList());
         final String output = new TypeScriptGenerator(settings)
                 .generateTypeScript(Input.from(ClassWithObjectEnum.class, StatusType.class));
-        assertTrue(!output.contains("StatusType"));
+        assertFalse(output.contains("StatusType"));
     }
 
     @Test
@@ -375,7 +376,7 @@ public class EnumTest {
                 .generateTypeScript(Input.from(ClassWithMapWithEnumKeys.class));
         assertTrue(
                 output.contains("labels: { [P in 'North' | 'East' | 'South' | 'West']?: string }".replace('\'', '"')));
-        assertTrue(!output.contains("Direction"));
+        assertFalse(output.contains("Direction"));
     }
 
     @Test
