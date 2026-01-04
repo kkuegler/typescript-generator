@@ -13,7 +13,6 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class TaggedUnionsTest {
 
@@ -23,9 +22,9 @@ public class TaggedUnionsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(Square.class),
-        @JsonSubTypes.Type(Rectangle.class),
-        @JsonSubTypes.Type(Circle.class),
+            @JsonSubTypes.Type(Square.class),
+            @JsonSubTypes.Type(Rectangle.class),
+            @JsonSubTypes.Type(Circle.class),
     })
     private abstract static class Shape {
     }
@@ -46,12 +45,11 @@ public class TaggedUnionsTest {
         public double radius;
     }
 
-
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(CSquare2.class),
-        @JsonSubTypes.Type(CRectangle2.class),
-        @JsonSubTypes.Type(CCircle2.class),
+            @JsonSubTypes.Type(CSquare2.class),
+            @JsonSubTypes.Type(CRectangle2.class),
+            @JsonSubTypes.Type(CCircle2.class),
     })
     private static interface IShape2 {
     }
@@ -77,35 +75,35 @@ public class TaggedUnionsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(IRectangle3.class),
-        @JsonSubTypes.Type(ICircle3.class),
+            @JsonSubTypes.Type(IRectangle3.class),
+            @JsonSubTypes.Type(ICircle3.class),
     })
     interface IShape3 {
     }
-    
+
     interface IQuadrilateral3 extends IShape3 {
     }
-    
+
     interface INamedShape3 extends IShape3 {
         String getName();
     }
-    
+
     interface INamedQuadrilateral3 extends INamedShape3, IQuadrilateral3 {
     }
-    
+
     @JsonTypeName("rectangle")
     interface IRectangle3 extends INamedQuadrilateral3 {
     }
-    
+
     @JsonTypeName("circle")
     interface ICircle3 extends INamedShape3 {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(DiamondB1.class),
-        @JsonSubTypes.Type(DiamondB2.class),
-        @JsonSubTypes.Type(DiamondC.class),
+            @JsonSubTypes.Type(DiamondB1.class),
+            @JsonSubTypes.Type(DiamondB2.class),
+            @JsonSubTypes.Type(DiamondC.class),
     })
     private static interface DiamondA {
         public String getA();
@@ -126,10 +124,10 @@ public class TaggedUnionsTest {
         public String getC();
     }
 
-    @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
     @JsonSubTypes({
-        @JsonSubTypes.Type(DieselCar.class),
-        @JsonSubTypes.Type(ElectricCar.class),
+            @JsonSubTypes.Type(DieselCar.class),
+            @JsonSubTypes.Type(ElectricCar.class),
     })
     private abstract static class Car {
         public String name;
@@ -189,8 +187,7 @@ public class TaggedUnionsTest {
     public void testTaggedUnions() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Geometry {\n" +
                 "    shapes: ShapeUnion[];\n" +
                 "}\n" +
@@ -216,8 +213,7 @@ public class TaggedUnionsTest {
                 "}\n" +
                 "\n" +
                 "type ShapeUnion = Square | Rectangle | Circle;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -225,8 +221,7 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithInterfaces() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(IShape2.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface IShape2 {\n" +
                 "    kind: 'circle' | 'square' | 'rectangle';\n" +
                 "}\n" +
@@ -252,8 +247,7 @@ public class TaggedUnionsTest {
                 "}\n" +
                 "\n" +
                 "type IShape2Union = CSquare2 | CRectangle2 | CCircle2;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -261,8 +255,7 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithOverlappingInterfaces() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(IShape3.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface IShape3 {\n" +
                 "    kind: 'circle' | 'rectangle';\n" +
                 "}\n" +
@@ -288,8 +281,7 @@ public class TaggedUnionsTest {
                 "    kind: 'rectangle';\n" +
                 "}\n" +
                 "\n" +
-                "type IShape3Union = IRectangle3 | ICircle3;\n"
-                ).replace('\'', '"');
+                "type IShape3Union = IRectangle3 | ICircle3;\n").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -298,8 +290,7 @@ public class TaggedUnionsTest {
         final Settings settings = TestUtils.settings();
         settings.disableTaggedUnions = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Geometry {\n" +
                 "    shapes: Shape[];\n" +
                 "}\n" +
@@ -323,8 +314,7 @@ public class TaggedUnionsTest {
                 "    kind: 'circle';\n" +
                 "    radius: number;\n" +
                 "}\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -332,8 +322,7 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithDiamond() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DiamondA.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface DiamondA {\n" +
                 "    kind: 'b1' | 'c' | 'b2';\n" +
                 "    a: string;\n" +
@@ -355,8 +344,7 @@ public class TaggedUnionsTest {
                 "}\n" +
                 "\n" +
                 "type DiamondAUnion = DiamondB1 | DiamondB2 | DiamondC;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -364,10 +352,10 @@ public class TaggedUnionsTest {
     public void testIdClass() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Car.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Car {\n" +
-                "    '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar' | 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';\n" +
+                "    '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar' | 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';\n"
+                +
                 "    name: string;\n" +
                 "}\n" +
                 "\n" +
@@ -382,8 +370,7 @@ public class TaggedUnionsTest {
                 "}\n" +
                 "\n" +
                 "type CarUnion = DieselCar | ElectricCar;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -398,7 +385,7 @@ public class TaggedUnionsTest {
     public static void main(String[] args) throws Exception {
         final ElectricCar electricCar = new ElectricCar();
         electricCar.name = "Tesla";
-        electricCar.batteryCapacityInKWh = 75;  // kWh
+        electricCar.batteryCapacityInKWh = 75; // kWh
         System.out.println(new ObjectMapper().writeValueAsString(electricCar));
     }
 
@@ -433,7 +420,8 @@ public class TaggedUnionsTest {
         settings.outputKind = TypeScriptOutputKind.module;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AsyncUsage.class));
         Assertions.assertTrue(output.contains("result: AsyncOperationResultUnion<string>"));
-        Assertions.assertTrue(output.contains("type AsyncOperationResultUnion<T> = InProgressResult<T> | FinishedResult<T> | FailedResult<T>"));
+        Assertions.assertTrue(output.contains(
+                "type AsyncOperationResultUnion<T> = InProgressResult<T> | FinishedResult<T> | FailedResult<T>"));
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -467,8 +455,8 @@ public class TaggedUnionsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = Foo.class, name = "Foo"),
-        @JsonSubTypes.Type(value = Bar.class, name = "Bar")
+            @JsonSubTypes.Type(value = Foo.class, name = "Foo"),
+            @JsonSubTypes.Type(value = Bar.class, name = "Bar")
     })
     public static abstract class Entity<T> {
         public T id;
@@ -494,15 +482,15 @@ public class TaggedUnionsTest {
         settings.nonConstEnums = true;
         settings.mapPackagesToNamespaces = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(EntityCollection.class));
-        Assertions.assertTrue(output.contains("type EntityUnion<T> = cz.habarta.typescript.generator.TaggedUnionsTest.Foo | cz.habarta.typescript.generator.TaggedUnionsTest.Bar"));
+        Assertions.assertTrue(output.contains(
+                "type EntityUnion<T> = cz.habarta.typescript.generator.TaggedUnionsTest.Foo | cz.habarta.typescript.generator.TaggedUnionsTest.Bar"));
     }
 
     @Test
     public void testTaggedUnionsWithExistingProperty() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry2.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Geometry2 {\n" +
                 "    shapes: Shape2Union[];\n" +
                 "}\n" +
@@ -528,8 +516,7 @@ public class TaggedUnionsTest {
                 "}\n" +
                 "\n" +
                 "type Shape2Union = Square2 | Rectangle2 | Circle2;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -538,8 +525,7 @@ public class TaggedUnionsTest {
         final Settings settings = TestUtils.settings();
         settings.disableTaggedUnionAnnotations = Arrays.asList(TestMarker.class);
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry2.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Geometry2 {\n" +
                 "    shapes: Shape2[];\n" +
                 "}\n" +
@@ -560,8 +546,7 @@ public class TaggedUnionsTest {
                 "interface Circle2 extends Shape2 {\n" +
                 "    radius: number;\n" +
                 "}\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -576,9 +561,9 @@ public class TaggedUnionsTest {
     @TestMarker
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(Square2.class),
-        @JsonSubTypes.Type(Rectangle2.class),
-        @JsonSubTypes.Type(Circle2.class),
+            @JsonSubTypes.Type(Square2.class),
+            @JsonSubTypes.Type(Rectangle2.class),
+            @JsonSubTypes.Type(Circle2.class),
     })
     private abstract static class Shape2 {
         @JsonProperty("kind")
@@ -609,7 +594,6 @@ public class TaggedUnionsTest {
         public double radius;
     }
 
-
     static class RecordUsage {
         public List<Record> records;
         public List<FormRecord> formRecords;
@@ -618,27 +602,37 @@ public class TaggedUnionsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = FormRecord.class),
-        @JsonSubTypes.Type(value = ListRecord.class),
+            @JsonSubTypes.Type(value = FormRecord.class),
+            @JsonSubTypes.Type(value = ListRecord.class),
     })
-    static abstract class Record {}
+    static abstract class Record {
+    }
 
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = OrderFormRecord.class, name = "order.form"),
-        @JsonSubTypes.Type(value = ProductFormRecord.class, name = "product.form"),
+            @JsonSubTypes.Type(value = OrderFormRecord.class, name = "order.form"),
+            @JsonSubTypes.Type(value = ProductFormRecord.class, name = "product.form"),
     })
-    static abstract class FormRecord extends Record {}
+    static abstract class FormRecord extends Record {
+    }
 
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = OrderListRecord.class, name = "order.list"),
-        @JsonSubTypes.Type(value = ProductListRecord.class, name = "product.list"),
+            @JsonSubTypes.Type(value = OrderListRecord.class, name = "order.list"),
+            @JsonSubTypes.Type(value = ProductListRecord.class, name = "product.list"),
     })
-    static abstract class ListRecord extends Record {}
+    static abstract class ListRecord extends Record {
+    }
 
-    static class OrderFormRecord extends FormRecord {}
-    static class OrderListRecord extends ListRecord {}
-    static class ProductFormRecord extends FormRecord {}
-    static class ProductListRecord extends ListRecord {}
+    static class OrderFormRecord extends FormRecord {
+    }
+
+    static class OrderListRecord extends ListRecord {
+    }
+
+    static class ProductFormRecord extends FormRecord {
+    }
+
+    static class ProductListRecord extends ListRecord {
+    }
 
     @Test
     public void testIntermediateUnions() {
@@ -700,8 +694,8 @@ public class TaggedUnionsTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = Child1.class, name = "one"),
-        @JsonSubTypes.Type(value = Child2.class, name = "two"),
+            @JsonSubTypes.Type(value = Child1.class, name = "one"),
+            @JsonSubTypes.Type(value = Child2.class, name = "two"),
     })
     private static class Parent {
     }

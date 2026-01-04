@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator.parser;
 
 import java.lang.reflect.Type;
 
-
 public class MethodParameterModel {
 
     private final String name;

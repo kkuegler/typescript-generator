@@ -8,7 +8,6 @@ import cz.habarta.typescript.generator.util.StandardJsonPrettyPrinter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class JsonUnwrappedTest {
 
     @Test

@@ -9,7 +9,6 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class JaxbV3Test {
 
     @Test
@@ -36,7 +35,8 @@ public class JaxbV3Test {
     public void testJAXBElement() {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = JsonLibrary.jaxb;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithJAXBElements.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ClassWithJAXBElements.class));
         Assertions.assertTrue(output.contains("ExternalReference: string"));
         Assertions.assertTrue(output.contains("UserInformation: UserType"));
         Assertions.assertTrue(output.contains("Source: EndPointType"));

@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-
 public class JaxrsApplicationScanner {
 
-    public static List<SourceType<Type>> scanJaxrsApplication(Class<?> jaxrsApplicationClass, Predicate<String> isClassNameExcluded) {
+    public static List<SourceType<Type>> scanJaxrsApplication(Class<?> jaxrsApplicationClass,
+            Predicate<String> isClassNameExcluded) {
         final ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(jaxrsApplicationClass.getClassLoader());
@@ -33,11 +33,13 @@ public class JaxrsApplicationScanner {
             }
             final List<Class<?>> resourceClasses = new ArrayList<>();
             for (Class<?> cls : applicationClasses) {
-                if (cls.isAnnotationPresent(jakarta.ws.rs.Path.class) || cls.isAnnotationPresent(javax.ws.rs.Path.class)) {
+                if (cls.isAnnotationPresent(jakarta.ws.rs.Path.class)
+                        || cls.isAnnotationPresent(javax.ws.rs.Path.class)) {
                     resourceClasses.add(cls);
                 }
             }
-            return new JaxrsApplicationScanner().scanJaxrsApplication(jaxrsApplicationClass, resourceClasses, isClassNameExcluded);
+            return new JaxrsApplicationScanner().scanJaxrsApplication(jaxrsApplicationClass, resourceClasses,
+                    isClassNameExcluded);
         } catch (ReflectiveOperationException e) {
             throw reportError(e);
         } finally {
@@ -45,11 +47,11 @@ public class JaxrsApplicationScanner {
         }
     }
 
-    public static List<SourceType<Type>> scanAutomaticJaxrsApplication(ScanResult scanResult, Predicate<String> isClassNameExcluded) {
+    public static List<SourceType<Type>> scanAutomaticJaxrsApplication(ScanResult scanResult,
+            Predicate<String> isClassNameExcluded) {
         final List<String> namesOfResourceClasses = Utils.concat(
                 scanResult.getClassesWithAnnotation(jakarta.ws.rs.Path.class.getName()).getNames(),
-                scanResult.getClassesWithAnnotation(javax.ws.rs.Path.class.getName()).getNames()
-        );
+                scanResult.getClassesWithAnnotation(javax.ws.rs.Path.class.getName()).getNames());
         final List<Class<?>> resourceClasses = Input.loadClasses(namesOfResourceClasses);
         TypeScriptGenerator.getLogger().info(String.format("Found %d root resources.", resourceClasses.size()));
         return new JaxrsApplicationScanner().scanJaxrsApplication(null, resourceClasses, isClassNameExcluded);
@@ -62,7 +64,8 @@ public class JaxrsApplicationScanner {
         return new RuntimeException(message, e);
     }
 
-    List<SourceType<Type>> scanJaxrsApplication(Class<?> applicationClass, List<Class<?>> resourceClasses, Predicate<String> isClassNameExcluded) {
+    List<SourceType<Type>> scanJaxrsApplication(Class<?> applicationClass, List<Class<?>> resourceClasses,
+            Predicate<String> isClassNameExcluded) {
         Collections.sort(resourceClasses, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         final List<SourceType<Type>> sourceTypes = new ArrayList<>();
         if (applicationClass != null) {

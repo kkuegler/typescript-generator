@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class Swagger3Test {
 
     @Test
@@ -30,9 +29,9 @@ public class Swagger3Test {
         Assertions.assertTrue(output.contains("testOperation1a(): RestResponse<TestResponse>;"));
         Assertions.assertTrue(output.contains("testOperation1b(): RestResponse<TestResponse>;"));
         Assertions.assertTrue(output.contains("testOperation1c(): RestResponse<TestResponse>;"));
-//        Assertions.assertTrue(output.contains("testOperation2(): RestResponse<TestResponse[]>;"));
-//        Assertions.assertTrue(output.contains("testOperation3(): RestResponse<TestResponse[]>;"));
-//        Assertions.assertTrue(output.contains("testOperation4(): RestResponse<{ [index: string]: TestResponse }>;"));
+        //        Assertions.assertTrue(output.contains("testOperation2(): RestResponse<TestResponse[]>;"));
+        //        Assertions.assertTrue(output.contains("testOperation3(): RestResponse<TestResponse[]>;"));
+        //        Assertions.assertTrue(output.contains("testOperation4(): RestResponse<{ [index: string]: TestResponse }>;"));
         Assertions.assertTrue(!output.contains("testHiddenOperation"));
     }
 
@@ -40,7 +39,8 @@ public class Swagger3Test {
     public void testDocumentation() {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(output.contains("Documentation for operation 1."));
         Assertions.assertTrue(output.contains("Bad Request"));
         Assertions.assertTrue(output.contains("Not Found"));
@@ -54,7 +54,8 @@ public class Swagger3Test {
     public void testDataType() {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(output.contains("property1: string"));
         Assertions.assertTrue(output.contains("property2?: string"));
         Assertions.assertTrue(output.contains("property3: string"));
@@ -65,7 +66,8 @@ public class Swagger3Test {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
         settings.ignoreSwaggerAnnotations = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(!output.contains("Documentation for operation 1."));
         Assertions.assertTrue(!output.contains("Bad Request"));
         Assertions.assertTrue(!output.contains("Not Found"));
@@ -106,25 +108,26 @@ public class Swagger3Test {
             return Response.ok(new TestResponse()).build();
         }
 
-//        @Operation(responses = @ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = TestResponse.class)))))
-//        @GET
-//        public Response testOperation2() {
-//            return Response.ok(new TestResponse()).build();
-//        }
-//
-//        @Operation(responses = @ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = TestResponse.class)))))
-//        @GET
-//        public Response testOperation3() {
-//            return Response.ok(new TestResponse()).build();
-//        }
-//
-//        @Operation(responseContainer = "Map", response = TestResponse.class)
-//        @GET
-//        public Response testOperation4() {
-//            return Response.ok(new TestResponse()).build();
-//        }
+        //        @Operation(responses = @ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = TestResponse.class)))))
+        //        @GET
+        //        public Response testOperation2() {
+        //            return Response.ok(new TestResponse()).build();
+        //        }
+        //
+        //        @Operation(responses = @ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = TestResponse.class)))))
+        //        @GET
+        //        public Response testOperation3() {
+        //            return Response.ok(new TestResponse()).build();
+        //        }
+        //
+        //        @Operation(responseContainer = "Map", response = TestResponse.class)
+        //        @GET
+        //        public Response testOperation4() {
+        //            return Response.ok(new TestResponse()).build();
+        //        }
 
-        @ApiResponses({@ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = TestError.class))})})
+        @ApiResponses({ @ApiResponse(responseCode = "400", content = {
+                @Content(schema = @Schema(implementation = TestError.class)) }) })
         @GET
         public Response testOperationError() {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -144,7 +147,6 @@ public class Swagger3Test {
     private static class TestError {
     }
 
-
     private static class DocumentedApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
@@ -157,8 +159,8 @@ public class Swagger3Test {
 
         @Operation(description = "Documentation for operation 1.")
         @ApiResponses({
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "404", description = "Not Found"),
+                @ApiResponse(responseCode = "400", description = "Bad Request"),
+                @ApiResponse(responseCode = "404", description = "Not Found"),
         })
         @GET
         public DocumentedBean documentedOperation1() {

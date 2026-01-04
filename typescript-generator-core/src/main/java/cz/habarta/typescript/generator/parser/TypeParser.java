@@ -1,47 +1,19 @@
 
 package cz.habarta.typescript.generator.parser;
 
-import cz.habarta.typescript.generator.type.JGenericArrayType;
-import cz.habarta.typescript.generator.type.JParameterizedType;
-import cz.habarta.typescript.generator.type.JTypeVariable;
-import cz.habarta.typescript.generator.type.JTypeWithNullability;
-import cz.habarta.typescript.generator.type.JWildcardType;
+import cz.habarta.typescript.generator.type.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedArrayType;
-import java.lang.reflect.AnnotatedParameterizedType;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kotlin.Metadata;
 import kotlin.NotImplementedError;
 import kotlin.jvm.JvmClassMappingKt;
-import kotlin.reflect.KClass;
-import kotlin.reflect.KClassifier;
-import kotlin.reflect.KFunction;
-import kotlin.reflect.KParameter;
-import kotlin.reflect.KProperty;
-import kotlin.reflect.KProperty1;
-import kotlin.reflect.KType;
-import kotlin.reflect.KTypeParameter;
-import kotlin.reflect.KTypeProjection;
+import kotlin.reflect.*;
 import kotlin.reflect.full.KClasses;
 import kotlin.reflect.jvm.ReflectJvmMapping;
-
 
 public class TypeParser {
 
@@ -55,8 +27,11 @@ public class TypeParser {
 
     private interface LanguageTypeParser {
         public Type getFieldType(Field field);
+
         public Type getMethodReturnType(Method method);
+
         public List<Type> getMethodParameterTypes(Method method);
+
         public List<Type> getConstructorParameterTypes(Constructor<?> constructor);
     }
 
@@ -221,8 +196,7 @@ public class TypeParser {
                         kParameters.stream()
                                 .map(parameter -> parameter.getType())
                                 .collect(Collectors.toList()),
-                        new LinkedHashMap<>()
-                );
+                        new LinkedHashMap<>());
             }
             return javaTypeParser.getExecutableParameterTypes(executable);
         }
@@ -268,10 +242,10 @@ public class TypeParser {
                             /*bounds*/ null,
                             typeVariable != null ? getTypeVariableAnnotatedBounds(typeVariable) : null,
                             typeVariable != null ? typeVariable.getAnnotations() : null,
-                            typeVariable != null ? typeVariable.getDeclaredAnnotations() : null
-                    );
+                            typeVariable != null ? typeVariable.getDeclaredAnnotations() : null);
                     typeParameters.put(kTypeParameter.getName(), newTypeVariable);
-                    final Type[] bounds = getTypes(kTypeParameter.getUpperBounds(), typeParameters).toArray(new Type[0]);
+                    final Type[] bounds = getTypes(kTypeParameter.getUpperBounds(), typeParameters)
+                            .toArray(new Type[0]);
                     newTypeVariable.setBounds(bounds);
                     return newTypeVariable;
                 }
@@ -287,7 +261,8 @@ public class TypeParser {
             }
         }
 
-        private <D extends GenericDeclaration> AnnotatedType[] getTypeVariableAnnotatedBounds(TypeVariable<D> typeVariable) {
+        private <D extends GenericDeclaration> AnnotatedType[] getTypeVariableAnnotatedBounds(
+                TypeVariable<D> typeVariable) {
             try {
                 return typeVariable.getAnnotatedBounds();
             } catch (AbstractMethodError e) {
@@ -323,7 +298,8 @@ public class TypeParser {
     private static boolean isArrayOfPrimitiveType(Type type) {
         if (type instanceof Class<?>) {
             final Class<?> cls = (Class<?>) type;
-            if (cls.isArray() && (cls.getComponentType().isPrimitive() || isArrayOfPrimitiveType(cls.getComponentType()))) {
+            if (cls.isArray()
+                    && (cls.getComponentType().isPrimitive() || isArrayOfPrimitiveType(cls.getComponentType()))) {
                 return true;
             }
         }

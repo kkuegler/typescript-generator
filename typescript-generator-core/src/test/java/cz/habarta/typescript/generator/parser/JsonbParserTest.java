@@ -1,16 +1,7 @@
 package cz.habarta.typescript.generator.parser;
 
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.JsonLibrary;
-import cz.habarta.typescript.generator.OptionalProperties;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonNumber;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonString;
-import jakarta.json.JsonValue;
+import cz.habarta.typescript.generator.*;
+import jakarta.json.*;
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -18,12 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,7 +139,8 @@ public class JsonbParserTest {
         public String bar;
 
         @JsonbCreator
-        public ObjectWithRequiredPropertyAndConstructor(@RequiredAnnotation final String foo, final String bar) {}
+        public ObjectWithRequiredPropertyAndConstructor(@RequiredAnnotation final String foo, final String bar) {
+        }
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -184,12 +171,12 @@ public class JsonbParserTest {
     public void testJsonTypes() {
         Assertions.assertEquals(
                 "interface JsonTypes {\n" +
-                "    jsonArray?: any[];\n" +
-                "    jsonNumber?: number;\n" +
-                "    jsonObject?: { [index: string]: any };\n" +
-                "    jsonString?: string;\n" +
-                "    jsonValue?: any;\n" +
-                "}",
+                        "    jsonArray?: any[];\n" +
+                        "    jsonNumber?: number;\n" +
+                        "    jsonObject?: { [index: string]: any };\n" +
+                        "    jsonString?: string;\n" +
+                        "    jsonValue?: any;\n" +
+                        "}",
                 generate(settings, JsonTypes.class).trim());
     }
 
@@ -273,11 +260,13 @@ public class JsonbParserTest {
         Assertions.assertTrue(output.contains(" $foo?:"), output);
         Assertions.assertFalse(output.contains(" foo?:"), output);
     }
+
     @Test
     public void tesImplicitName() {
         final String output = generate(settings, DirectName.class);
         Assertions.assertTrue(output.contains(" foo?:"), output);
     }
+
     @Test
     public void optionality() {
         {
@@ -332,7 +321,7 @@ public class JsonbParserTest {
         public boolean isVisible(Field field) {
             return false;
         }
-    
+
         @Override
         public boolean isVisible(Method method) {
             return false;

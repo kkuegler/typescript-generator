@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MapExtensionTest {
 
@@ -38,8 +39,8 @@ public class MapExtensionTest {
         public MapExtension<String> mapExt;
     }
 
-    public static class MapExtension<T> extends HashMap<T, Long> {}
-
+    public static class MapExtension<T> extends HashMap<T, Long> {
+    }
 
     @Test
     public void testStringList() {
@@ -48,7 +49,8 @@ public class MapExtensionTest {
         Assertions.assertTrue(output.contains("stringList: string[];"));
     }
 
-    public static interface StringList extends List<String> {}
+    public static interface StringList extends List<String> {
+    }
 
     public static class C {
         public StringList stringList;
@@ -76,6 +78,7 @@ public class MapExtensionTest {
         public StringKeyMap<T> stringKeyMap;
     }
 
-    public static interface StringKeyMap<T> extends Map<String, T> {}
+    public static interface StringKeyMap<T> extends Map<String, T> {
+    }
 
 }

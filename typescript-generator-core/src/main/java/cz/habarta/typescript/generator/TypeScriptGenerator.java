@@ -2,31 +2,16 @@
 package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
-import cz.habarta.typescript.generator.emitter.Emitter;
-import cz.habarta.typescript.generator.emitter.InfoJsonEmitter;
-import cz.habarta.typescript.generator.emitter.NpmPackageJson;
-import cz.habarta.typescript.generator.emitter.NpmPackageJsonEmitter;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.parser.GsonParser;
-import cz.habarta.typescript.generator.parser.Jackson2Parser;
-import cz.habarta.typescript.generator.parser.JsonbParser;
-import cz.habarta.typescript.generator.parser.Model;
-import cz.habarta.typescript.generator.parser.ModelParser;
-import cz.habarta.typescript.generator.parser.RestApplicationParser;
+import cz.habarta.typescript.generator.emitter.*;
+import cz.habarta.typescript.generator.parser.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 public class TypeScriptGenerator {
 
@@ -51,7 +36,7 @@ public class TypeScriptGenerator {
     }
 
     public TypeScriptGenerator() {
-        this (new Settings());
+        this(new Settings());
     }
 
     public TypeScriptGenerator(Settings settings) {
@@ -84,7 +69,8 @@ public class TypeScriptGenerator {
     private void generateInfoJson(TsModel tsModel, Output output) {
         if (settings.generateInfoJson) {
             if (output.getName() == null) {
-                throw new RuntimeException("Generating info JSON can only be used when output is specified using file name");
+                throw new RuntimeException(
+                        "Generating info JSON can only be used when output is specified using file name");
             }
             final File outputFile = new File(output.getName());
             final Output out = Output.to(new File(outputFile.getParent(), "typescript-generator-info.json"));
@@ -95,7 +81,8 @@ public class TypeScriptGenerator {
     private void generateNpmPackageJson(Output output) {
         if (settings.generateNpmPackageJson) {
             if (output.getName() == null) {
-                throw new RuntimeException("Generating NPM package.json can only be used when output is specified using file name");
+                throw new RuntimeException(
+                        "Generating NPM package.json can only be used when output is specified using file name");
             }
             final File outputFile = new File(output.getName());
             final Output npmOutput = Output.to(new File(outputFile.getParent(), "package.json"));
@@ -121,7 +108,8 @@ public class TypeScriptGenerator {
                 npmPackageJson.dependencies.putAll(settings.npmPackageDependencies);
                 npmPackageJson.devDependencies.putAll(settings.npmDevDependencies);
                 npmPackageJson.peerDependencies.putAll(settings.npmPeerDependencies);
-                final String typescriptVersion = settings.npmTypescriptVersion != null ? settings.npmTypescriptVersion : settings.typescriptVersion;
+                final String typescriptVersion = settings.npmTypescriptVersion != null ? settings.npmTypescriptVersion
+                        : settings.typescriptVersion;
                 npmPackageJson.devDependencies.put("typescript", typescriptVersion);
                 final String npmBuildScript = settings.npmBuildScript != null
                         ? settings.npmBuildScript
@@ -138,7 +126,8 @@ public class TypeScriptGenerator {
             if (npmPackageJson.peerDependencies.isEmpty()) {
                 npmPackageJson.peerDependencies = null;
             }
-            getNpmPackageJsonEmitter().emit(npmPackageJson, npmOutput.getWriter(), npmOutput.getName(), npmOutput.shouldCloseWriter());
+            getNpmPackageJsonEmitter().emit(npmPackageJson, npmOutput.getWriter(), npmOutput.getName(),
+                    npmOutput.shouldCloseWriter());
         }
     }
 
@@ -149,8 +138,7 @@ public class TypeScriptGenerator {
             final List<TypeProcessor> specificTypeProcessors = Stream
                     .concat(
                             restFactories.stream().map(factory -> factory.getSpecificTypeProcessor()),
-                            Stream.of(modelParserFactory.getSpecificTypeProcessor())
-                    )
+                            Stream.of(modelParserFactory.getSpecificTypeProcessor()))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             commonTypeProcessor = createTypeProcessor(specificTypeProcessors);
@@ -188,16 +176,16 @@ public class TypeScriptGenerator {
 
     private ModelParser.Factory getModelParserFactory() {
         switch (settings.jsonLibrary) {
-            case jackson2:
-                return new Jackson2Parser.Jackson2ParserFactory();
-            case jaxb:
-                return new Jackson2Parser.JaxbParserFactory();
-            case gson:
-                return new GsonParser.Factory();
-            case jsonb:
-                return new JsonbParser.Factory();
-            default:
-                throw new RuntimeException();
+        case jackson2:
+            return new Jackson2Parser.Jackson2ParserFactory();
+        case jaxb:
+            return new Jackson2Parser.JaxbParserFactory();
+        case gson:
+            return new GsonParser.Factory();
+        case jsonb:
+            return new JsonbParser.Factory();
+        default:
+            throw new RuntimeException();
         }
     }
 

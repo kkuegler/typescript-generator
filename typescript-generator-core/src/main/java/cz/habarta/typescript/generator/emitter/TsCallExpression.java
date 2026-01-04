@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 public class TsCallExpression extends TsExpression {
 
     private final TsExpression expression;
@@ -38,7 +37,8 @@ public class TsCallExpression extends TsExpression {
 
     @Override
     public String format(Settings settings) {
-        final String typeArgumentsString = typeArguments.isEmpty() ? "" : "<" + Emitter.formatList(settings, typeArguments) + ">";
+        final String typeArgumentsString = typeArguments.isEmpty() ? ""
+                : "<" + Emitter.formatList(settings, typeArguments) + ">";
         return expression.format(settings) + typeArgumentsString + "(" + Emitter.formatList(settings, arguments) + ")";
     }
 

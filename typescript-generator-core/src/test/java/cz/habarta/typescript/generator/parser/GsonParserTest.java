@@ -1,15 +1,7 @@
 package cz.habarta.typescript.generator.parser;
 
 import com.google.gson.annotations.SerializedName;
-import cz.habarta.typescript.generator.DefaultTypeProcessor;
-import cz.habarta.typescript.generator.DummyBean;
-import cz.habarta.typescript.generator.GsonConfiguration;
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.JsonLibrary;
-import cz.habarta.typescript.generator.OptionalProperties;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;

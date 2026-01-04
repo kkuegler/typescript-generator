@@ -27,7 +27,7 @@ public class TestEnums {
             this.value = value;
         }
     }
-    
+
     public enum NumberMethodValuedEnum {
         A(1), B(2), C(3);
 
@@ -68,8 +68,11 @@ public class TestEnums {
     }
 
     public enum JsonPropertyValuedEnum {
-        @JsonProperty("_A") A,
-        @JsonProperty("_B") B,
-        @JsonProperty("_C") C
+        @JsonProperty("_A")
+        A,
+        @JsonProperty("_B")
+        B,
+        @JsonProperty("_C")
+        C
     }
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import java.io.IOException;
 
-
 /**
  * Jackson2 PrettyPrinter implementation that produces JSON format similar to JSON.stringify() output.
  */

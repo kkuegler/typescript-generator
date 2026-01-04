@@ -1,10 +1,6 @@
 package cz.habarta.typescript.generator.spring
 
-import cz.habarta.typescript.generator.Input
-import cz.habarta.typescript.generator.NullabilityDefinition
-import cz.habarta.typescript.generator.TestUtils
-import cz.habarta.typescript.generator.TypeScriptFileType
-import cz.habarta.typescript.generator.TypeScriptGenerator
+import cz.habarta.typescript.generator.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.web.bind.annotation.PostMapping

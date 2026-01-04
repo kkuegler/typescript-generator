@@ -7,7 +7,6 @@ import cz.habarta.typescript.generator.util.Utils;
 import java.io.IOException;
 import java.io.Writer;
 
-
 public class NpmPackageJsonEmitter {
 
     private Writer writer;

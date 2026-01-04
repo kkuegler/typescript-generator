@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.File;
 
-
-@JsonInclude(JsonInclude.Include.NON_DEFAULT) 
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ModuleDependency {
 
     public boolean global;
@@ -20,7 +19,8 @@ public class ModuleDependency {
     public ModuleDependency() {
     }
 
-    private ModuleDependency(boolean global, String importFrom, String importAs, File infoJson, String npmPackageName, String npmVersionRange, boolean peerDependency) {
+    private ModuleDependency(boolean global, String importFrom, String importAs, File infoJson, String npmPackageName,
+            String npmVersionRange, boolean peerDependency) {
         this.global = global;
         this.importFrom = importFrom;
         this.importAs = importAs;
@@ -30,7 +30,8 @@ public class ModuleDependency {
         this.peerDependency = peerDependency;
     }
 
-    public static ModuleDependency module(String importFrom, String importAs, File infoJson, String npmPackageName, String npmVersionRange) {
+    public static ModuleDependency module(String importFrom, String importAs, File infoJson, String npmPackageName,
+            String npmVersionRange) {
         return new ModuleDependency(false, importFrom, importAs, infoJson, npmPackageName, npmVersionRange, false);
     }
 

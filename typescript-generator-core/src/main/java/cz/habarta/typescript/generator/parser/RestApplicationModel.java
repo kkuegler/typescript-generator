@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class RestApplicationModel {
 
     private final RestApplicationType type;
@@ -18,7 +17,8 @@ public class RestApplicationModel {
         this.methods = new ArrayList<>();
     }
 
-    public RestApplicationModel(RestApplicationType type, String applicationPath, String applicationName, List<RestMethodModel> methods) {
+    public RestApplicationModel(RestApplicationType type, String applicationPath, String applicationName,
+            List<RestMethodModel> methods) {
         this.type = Objects.requireNonNull(type);
         this.applicationPath = applicationPath;
         this.applicationName = applicationName;

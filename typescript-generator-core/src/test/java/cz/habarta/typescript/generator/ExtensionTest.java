@@ -30,20 +30,22 @@ public class ExtensionTest {
 
             @Override
             public List<TransformerDefinition> getTransformers() {
-                return Collections.singletonList(new TransformerDefinition(TransformationPhase.BeforeTsModel, new ModelTransformer() {
-                    @Override
-                    public Model transformModel(SymbolTable symbolTable, Model model) {
-                        List<BeanModel> beans = new ArrayList<>(model.getBeans());
+                return Collections.singletonList(
+                        new TransformerDefinition(TransformationPhase.BeforeTsModel, new ModelTransformer() {
+                            @Override
+                            public Model transformModel(SymbolTable symbolTable, Model model) {
+                                List<BeanModel> beans = new ArrayList<>(model.getBeans());
 
-                        BeanModel implementationBean = model.getBean(Implementation.class);
-                        BeanModel beanWithComments = implementationBean.withComments(Collections.singletonList("My new comment"));
+                                BeanModel implementationBean = model.getBean(Implementation.class);
+                                BeanModel beanWithComments = implementationBean
+                                        .withComments(Collections.singletonList("My new comment"));
 
-                        beans.remove(implementationBean);
-                        beans.add(beanWithComments);
+                                beans.remove(implementationBean);
+                                beans.add(beanWithComments);
 
-                        return new Model(beans, model.getEnums(), model.getRestApplications());
-                    }
-                }));
+                                return new Model(beans, model.getEnums(), model.getRestApplications());
+                            }
+                        }));
             }
         });
 
@@ -57,6 +59,7 @@ public class ExtensionTest {
         Assertions.assertTrue(result.getBean(Implementation.class).getComments().get(0).contains("My new comment"));
     }
 
-    private static class Implementation { }
+    private static class Implementation {
+    }
 
 }

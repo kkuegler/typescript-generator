@@ -3,23 +3,10 @@ package cz.habarta.typescript.generator.library;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.Jackson2ConfigurationResolved;
-import cz.habarta.typescript.generator.Logger;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
 import io.vavr.Lazy;
-import io.vavr.collection.CharSeq;
-import io.vavr.collection.LinkedHashMap;
-import io.vavr.collection.LinkedHashMultimap;
-import io.vavr.collection.LinkedHashSet;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Multimap;
-import io.vavr.collection.PriorityQueue;
-import io.vavr.collection.Set;
+import io.vavr.collection.*;
 import io.vavr.control.Option;
 import io.vavr.jackson.datatype.VavrModule;
 import java.math.BigDecimal;
@@ -27,7 +14,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 @SuppressWarnings("unused")
 public class VavrTest {
@@ -37,7 +23,7 @@ public class VavrTest {
         final ObjectMapper objectMapper = Utils.getObjectMapper();
         objectMapper.registerModule(new VavrModule());
         final String json = objectMapper.writeValueAsString(new VavrSerializedClasses());
-//        System.out.println(json);
+        //        System.out.println(json);
     }
 
     @Test
@@ -46,7 +32,8 @@ public class VavrTest {
         final Settings settings = TestUtils.settings();
         settings.jackson2Configuration = new Jackson2ConfigurationResolved();
         settings.additionalDataLibraries = Arrays.asList("vavr");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(VavrSerializedClasses.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(VavrSerializedClasses.class));
         Assertions.assertTrue(output.contains("lazy: number"));
         Assertions.assertTrue(output.contains("option?: number"));
         Assertions.assertTrue(output.contains("charSeq: string"));
@@ -71,7 +58,8 @@ public class VavrTest {
         public PriorityQueue<Integer> priorityQueue = PriorityQueue.of(1, 2, 3);
         public Map<String, BigInteger> map = LinkedHashMap.of("a", BigInteger.ONE, "b", BigInteger.TEN);
         public Multimap<String, Integer> multimap = LinkedHashMultimap.withSeq().of("a", 1, "a", 1, "b", 2);
-        public Multimap<Key, Value> multimap2 = LinkedHashMultimap.withSeq().of(aKey, new Value("1"), aKey, new Value("1"), bKey, new Value("2"), bKey, null);
+        public Multimap<Key, Value> multimap2 = LinkedHashMultimap.withSeq().of(aKey, new Value("1"), aKey,
+                new Value("1"), bKey, new Value("2"), bKey, null);
     }
 
     private static class Key {

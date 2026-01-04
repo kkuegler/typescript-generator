@@ -15,30 +15,16 @@ import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.File;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 /**
  * See cz.habarta.typescript.generator.maven.GenerateMojo
@@ -103,7 +89,7 @@ public class Settings {
     public boolean scanSpringApplication;
     public RestNamespacing restNamespacing;
     public Class<? extends Annotation> restNamespacingAnnotation = null;
-    public String restNamespacingAnnotationElement;  // default is "value"
+    public String restNamespacingAnnotationElement; // default is "value"
     public String restResponseType = null;
     public String restOptionsType = null;
     public boolean restOptionsTypeIsGeneric;
@@ -227,12 +213,14 @@ public class Settings {
         }
     }
 
-    public void loadExtensions(ClassLoader classLoader, List<String> extensions, List<Settings.ConfiguredExtension> extensionsWithConfiguration) {
+    public void loadExtensions(ClassLoader classLoader, List<String> extensions,
+            List<Settings.ConfiguredExtension> extensionsWithConfiguration) {
         this.extensions = new ArrayList<>();
         this.extensions.addAll(loadInstances(classLoader, extensions, EmitterExtension.class));
         if (extensionsWithConfiguration != null) {
             for (ConfiguredExtension configuredExtension : extensionsWithConfiguration) {
-                final EmitterExtension emitterExtension = loadInstance(classLoader, configuredExtension.className, EmitterExtension.class);
+                final EmitterExtension emitterExtension = loadInstance(classLoader, configuredExtension.className,
+                        EmitterExtension.class);
                 if (emitterExtension instanceof Extension) {
                     final Extension extension = (Extension) emitterExtension;
                     extension.setConfiguration(Utils.mapFromNullable(configuredExtension.configuration));
@@ -287,7 +275,7 @@ public class Settings {
         }
         return result;
     }
-    
+
     public void validate() {
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
@@ -295,7 +283,8 @@ public class Settings {
         if (outputKind == null) {
             throw new RuntimeException("Required 'outputKind' parameter is not configured. " + seeLink());
         }
-        if (outputKind == TypeScriptOutputKind.ambientModule && outputFileType == TypeScriptFileType.implementationFile) {
+        if (outputKind == TypeScriptOutputKind.ambientModule
+                && outputFileType == TypeScriptFileType.implementationFile) {
             throw new RuntimeException("Ambient modules are not supported in implementation files. " + seeLink());
         }
         if (outputKind == TypeScriptOutputKind.ambientModule && module == null) {
@@ -308,10 +297,12 @@ public class Settings {
             throw new RuntimeException("'umdNamespace' parameter is only applicable to modules. " + seeLink());
         }
         if (outputFileType == TypeScriptFileType.implementationFile && umdNamespace != null) {
-            throw new RuntimeException("'umdNamespace' parameter is not applicable to implementation files. " + seeLink());
+            throw new RuntimeException(
+                    "'umdNamespace' parameter is not applicable to implementation files. " + seeLink());
         }
         if (umdNamespace != null && !ModelCompiler.isValidIdentifierName(umdNamespace)) {
-            throw new RuntimeException("Value of 'umdNamespace' parameter is not valid identifier: " + umdNamespace + ". " + seeLink());
+            throw new RuntimeException(
+                    "Value of 'umdNamespace' parameter is not valid identifier: " + umdNamespace + ". " + seeLink());
         }
         if (jsonLibrary == null) {
             throw new RuntimeException("Required 'jsonLibrary' parameter is not configured.");
@@ -319,8 +310,10 @@ public class Settings {
         if (jackson2Configuration != null && jsonLibrary != JsonLibrary.jackson2) {
             throw new RuntimeException("'jackson2Configuration' parameter is only applicable to 'jackson2' library.");
         }
-        if (!generateNpmPackageJson && (!npmPackageDependencies.isEmpty() || !npmDevDependencies.isEmpty() || !npmPeerDependencies.isEmpty())) {
-            throw new RuntimeException("'npmDependencies', 'npmDevDependencies' and 'npmPeerDependencies' parameters are only applicable when generating NPM 'package.json'.");
+        if (!generateNpmPackageJson && (!npmPackageDependencies.isEmpty() || !npmDevDependencies.isEmpty()
+                || !npmPeerDependencies.isEmpty())) {
+            throw new RuntimeException(
+                    "'npmDependencies', 'npmDevDependencies' and 'npmPeerDependencies' parameters are only applicable when generating NPM 'package.json'.");
         }
         getValidatedCustomTypeMappings();
         getValidatedCustomTypeAliases();
@@ -328,17 +321,23 @@ public class Settings {
             final String extensionName = extension.getClass().getSimpleName();
             final DeprecationText deprecation = extension.getClass().getAnnotation(DeprecationText.class);
             if (deprecation != null) {
-                TypeScriptGenerator.getLogger().warning(String.format("Extension '%s' is deprecated: %s", extensionName, deprecation.value()));
+                TypeScriptGenerator.getLogger()
+                        .warning(String.format("Extension '%s' is deprecated: %s", extensionName, deprecation.value()));
             }
             final EmitterExtensionFeatures features = extension.getFeatures();
             if (features.generatesRuntimeCode && outputFileType != TypeScriptFileType.implementationFile) {
-                throw new RuntimeException(String.format("Extension '%s' generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.", extensionName));
+                throw new RuntimeException(String.format(
+                        "Extension '%s' generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.",
+                        extensionName));
             }
             if (features.generatesModuleCode && outputKind != TypeScriptOutputKind.module) {
-                throw new RuntimeException(String.format("Extension '%s' generates code as module but 'outputKind' parameter is not set to 'module'.", extensionName));
+                throw new RuntimeException(String.format(
+                        "Extension '%s' generates code as module but 'outputKind' parameter is not set to 'module'.",
+                        extensionName));
             }
             if (!features.worksWithPackagesMappedToNamespaces && mapPackagesToNamespaces) {
-                throw new RuntimeException(String.format("Extension '%s' doesn't work with 'mapPackagesToNamespaces' parameter.", extensionName));
+                throw new RuntimeException(String.format(
+                        "Extension '%s' doesn't work with 'mapPackagesToNamespaces' parameter.", extensionName));
             }
             if (features.generatesJaxrsApplicationClient) {
                 reportConfigurationChange(extensionName, "generateJaxrsApplicationClient", "true");
@@ -366,19 +365,25 @@ public class Settings {
             }
         }
         if (enumMemberCasing != null && mapEnum != EnumMapping.asEnum && mapEnum != EnumMapping.asNumberBasedEnum) {
-            throw new RuntimeException("'enumMemberCasing' parameter can only be used when 'mapEnum' parameter is set to 'asEnum' or 'asNumberBasedEnum'.");
+            throw new RuntimeException(
+                    "'enumMemberCasing' parameter can only be used when 'mapEnum' parameter is set to 'asEnum' or 'asNumberBasedEnum'.");
         }
-        if ((nonConstEnums || !nonConstEnumAnnotations.isEmpty()) && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("Non-const enums can only be used in implementation files but 'outputFileType' parameter is not set to 'implementationFile'.");
+        if ((nonConstEnums || !nonConstEnumAnnotations.isEmpty())
+                && outputFileType != TypeScriptFileType.implementationFile) {
+            throw new RuntimeException(
+                    "Non-const enums can only be used in implementation files but 'outputFileType' parameter is not set to 'implementationFile'.");
         }
         if (mapClasses == ClassMapping.asClasses && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("'mapClasses' parameter is set to 'asClasses' which generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.");
+            throw new RuntimeException(
+                    "'mapClasses' parameter is set to 'asClasses' which generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.");
         }
         if (mapClassesAsClassesPatterns != null && mapClasses != ClassMapping.asClasses) {
-            throw new RuntimeException("'mapClassesAsClassesPatterns' parameter can only be used when 'mapClasses' parameter is set to 'asClasses'.");
+            throw new RuntimeException(
+                    "'mapClassesAsClassesPatterns' parameter can only be used when 'mapClasses' parameter is set to 'asClasses'.");
         }
         if (generateConstructors && mapClasses != ClassMapping.asClasses) {
-            throw new RuntimeException("'generateConstructors' parameter can only be used when 'mapClasses' parameter is set to 'asClasses'.");
+            throw new RuntimeException(
+                    "'generateConstructors' parameter can only be used when 'mapClasses' parameter is set to 'asClasses'.");
         }
         checkAnnotationsHaveRuntimeRetention(this.nonConstEnumAnnotations);
         checkAnnotationsHaveRuntimeRetention(this.disableTaggedUnionAnnotations);
@@ -398,10 +403,12 @@ public class Settings {
             }
         }
         if (!optionalAnnotations.isEmpty() && !requiredAnnotations.isEmpty()) {
-            throw new RuntimeException("Only one of 'optionalAnnotations' and 'requiredAnnotations' can be used at the same time.");
+            throw new RuntimeException(
+                    "Only one of 'optionalAnnotations' and 'requiredAnnotations' can be used at the same time.");
         }
         if (primitivePropertiesRequired && requiredAnnotations.isEmpty()) {
-            throw new RuntimeException("'primitivePropertiesRequired' parameter can only be used with 'requiredAnnotations' parameter.");
+            throw new RuntimeException(
+                    "'primitivePropertiesRequired' parameter can only be used with 'requiredAnnotations' parameter.");
         }
         for (Class<? extends Annotation> annotation : nullableAnnotations) {
             final Target target = annotation.getAnnotation(Target.class);
@@ -413,53 +420,68 @@ public class Settings {
             }
         }
         if (generateJaxrsApplicationClient && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("'generateJaxrsApplicationClient' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
+            throw new RuntimeException(
+                    "'generateJaxrsApplicationClient' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
         }
         if (generateSpringApplicationClient && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("'generateSpringApplicationClient' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
+            throw new RuntimeException(
+                    "'generateSpringApplicationClient' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
         }
         if (restNamespacing != null && !isGenerateRest()) {
-            throw new RuntimeException("'restNamespacing' parameter can only be used when generating REST client or interface.");
+            throw new RuntimeException(
+                    "'restNamespacing' parameter can only be used when generating REST client or interface.");
         }
         if (restNamespacingAnnotation != null && restNamespacing != RestNamespacing.byAnnotation) {
-            throw new RuntimeException("'restNamespacingAnnotation' parameter can only be used when 'restNamespacing' parameter is set to 'byAnnotation'.");
+            throw new RuntimeException(
+                    "'restNamespacingAnnotation' parameter can only be used when 'restNamespacing' parameter is set to 'byAnnotation'.");
         }
         if (restNamespacingAnnotation == null && restNamespacing == RestNamespacing.byAnnotation) {
-            throw new RuntimeException("'restNamespacingAnnotation' must be specified when 'restNamespacing' parameter is set to 'byAnnotation'.");
+            throw new RuntimeException(
+                    "'restNamespacingAnnotation' must be specified when 'restNamespacing' parameter is set to 'byAnnotation'.");
         }
         if (restResponseType != null && !isGenerateRest()) {
-            throw new RuntimeException("'restResponseType' parameter can only be used when generating REST client or interface.");
+            throw new RuntimeException(
+                    "'restResponseType' parameter can only be used when generating REST client or interface.");
         }
         if (restOptionsType != null && !isGenerateRest()) {
-            throw new RuntimeException("'restOptionsType' parameter can only be used when generating REST client or interface.");
+            throw new RuntimeException(
+                    "'restOptionsType' parameter can only be used when generating REST client or interface.");
         }
-        if (generateInfoJson && (outputKind != TypeScriptOutputKind.module && outputKind != TypeScriptOutputKind.global)) {
-            throw new RuntimeException("'generateInfoJson' can only be used when 'outputKind' parameter is 'module' or 'global'.");
+        if (generateInfoJson
+                && (outputKind != TypeScriptOutputKind.module && outputKind != TypeScriptOutputKind.global)) {
+            throw new RuntimeException(
+                    "'generateInfoJson' can only be used when 'outputKind' parameter is 'module' or 'global'.");
         }
         if (generateNpmPackageJson && outputKind != TypeScriptOutputKind.module) {
-            throw new RuntimeException("'generateNpmPackageJson' can only be used when generating proper module ('outputKind' parameter is 'module').");
+            throw new RuntimeException(
+                    "'generateNpmPackageJson' can only be used when generating proper module ('outputKind' parameter is 'module').");
         }
         if (generateNpmPackageJson) {
             if (npmName == null || npmVersion == null) {
-                throw new RuntimeException("'npmName' and 'npmVersion' must be specified when generating NPM 'package.json'.");
+                throw new RuntimeException(
+                        "'npmName' and 'npmVersion' must be specified when generating NPM 'package.json'.");
             }
         }
         if (!generateNpmPackageJson) {
             if (npmName != null || npmVersion != null) {
-                throw new RuntimeException("'npmName' and 'npmVersion' is only applicable when generating NPM 'package.json'.");
+                throw new RuntimeException(
+                        "'npmName' and 'npmVersion' is only applicable when generating NPM 'package.json'.");
             }
             if (npmTypescriptVersion != null) {
-                throw new RuntimeException("'npmTypescriptVersion' is only applicable when generating NPM 'package.json'.");
+                throw new RuntimeException(
+                        "'npmTypescriptVersion' is only applicable when generating NPM 'package.json'.");
             }
             if (npmBuildScript != null) {
                 throw new RuntimeException("'npmBuildScript' is only applicable when generating NPM 'package.json'.");
             }
         }
         if (npmTypescriptVersion != null && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("'npmTypescriptVersion' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
+            throw new RuntimeException(
+                    "'npmTypescriptVersion' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
         }
         if (npmBuildScript != null && outputFileType != TypeScriptFileType.implementationFile) {
-            throw new RuntimeException("'npmBuildScript' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
+            throw new RuntimeException(
+                    "'npmBuildScript' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
         }
         getModuleDependencies();
         getLoadedDataLibraries();
@@ -485,7 +507,8 @@ public class Settings {
         return validatedCustomTypeMappings;
     }
 
-    private List<CustomTypeMapping> validateCustomTypeMappings(Map<String, String> customTypeMappings, boolean matchSubclasses) {
+    private List<CustomTypeMapping> validateCustomTypeMappings(Map<String, String> customTypeMappings,
+            boolean matchSubclasses) {
         final List<CustomTypeMapping> mappings = new ArrayList<>();
         for (Map.Entry<String, String> entry : customTypeMappings.entrySet()) {
             final String javaName = entry.getKey();
@@ -497,7 +520,8 @@ public class Settings {
                 validateTypeParameters(genericTsName.typeParameters);
                 final Class<?> cls = loadClass(classLoader, genericJavaName.rawName, null);
                 final int required = cls.getTypeParameters().length;
-                final int specified = genericJavaName.typeParameters != null ? genericJavaName.typeParameters.size() : 0;
+                final int specified = genericJavaName.typeParameters != null ? genericJavaName.typeParameters.size()
+                        : 0;
                 if (specified != required) {
                     final String parameters = Stream.of(cls.getTypeParameters())
                             .map(TypeVariable::getName)
@@ -509,7 +533,8 @@ public class Settings {
                 }
                 mappings.add(new CustomTypeMapping(cls, matchSubclasses, genericJavaName, genericTsName));
             } catch (Exception e) {
-                throw new RuntimeException(String.format("Failed to parse configured custom type mapping '%s:%s': %s", javaName, tsName, e.getMessage()), e);
+                throw new RuntimeException(String.format("Failed to parse configured custom type mapping '%s:%s': %s",
+                        javaName, tsName, e.getMessage()), e);
             }
         }
         return mappings;
@@ -537,7 +562,8 @@ public class Settings {
                 validateTypeParameters(genericTsName.typeParameters);
                 aliases.add(new CustomTypeAlias(genericTsName, tsDefinition));
             } catch (Exception e) {
-                throw new RuntimeException(String.format("Failed to parse configured custom type alias '%s:%s': %s", tsName, tsDefinition, e.getMessage()), e);
+                throw new RuntimeException(String.format("Failed to parse configured custom type alias '%s:%s': %s",
+                        tsName, tsDefinition, e.getMessage()), e);
             }
         }
         return aliases;
@@ -549,7 +575,7 @@ public class Settings {
         final Matcher matcher = Pattern.compile("([^<\\[]+)(<|\\[)([^>\\]]+)(>|\\])").matcher(name);
         final String rawName;
         final List<String> typeParameters;
-        if (matcher.matches()) {  // is generic?
+        if (matcher.matches()) { // is generic?
             rawName = matcher.group(1);
             typeParameters = Stream.of(matcher.group(3).split(","))
                     .map(String::trim)
@@ -573,7 +599,8 @@ public class Settings {
     }
 
     private static void reportConfigurationChange(String extensionName, String parameterName, String parameterValue) {
-        TypeScriptGenerator.getLogger().info(String.format("Configuration: '%s' extension set '%s' parameter to '%s'", extensionName, parameterName, parameterValue));
+        TypeScriptGenerator.getLogger().info(String.format("Configuration: '%s' extension set '%s' parameter to '%s'",
+                extensionName, parameterName, parameterValue));
     }
 
     public String getExtension() {
@@ -584,7 +611,8 @@ public class Settings {
         if (outputFileType == TypeScriptFileType.declarationFile && !outputFile.getName().endsWith(".d.ts")) {
             throw new RuntimeException("Declaration file must have 'd.ts' extension: " + outputFile);
         }
-        if (outputFileType == TypeScriptFileType.implementationFile && (!outputFile.getName().endsWith(".ts") || outputFile.getName().endsWith(".d.ts"))) {
+        if (outputFileType == TypeScriptFileType.implementationFile
+                && (!outputFile.getName().endsWith(".ts") || outputFile.getName().endsWith(".d.ts"))) {
             throw new RuntimeException("Implementation file must have 'ts' extension: " + outputFile);
         }
     }
@@ -626,32 +654,30 @@ public class Settings {
                     .filter(mapping -> mapping.customType != null)
                     .collect(Utils.toMap(
                             mapping -> mapping.className,
-                            mapping -> mapping.customType
-                    ));
+                            mapping -> mapping.customType));
             final Map<String, String> typeAliases = Utils.listFromNullable(dataLibrary.typeAliases).stream()
                     .collect(Utils.toMap(
                             alias -> alias.name,
-                            alias -> alias.definition
-                    ));
+                            alias -> alias.definition));
             loaded.add(new LoadedDataLibraries(
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.String),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Number),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Boolean),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Date),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Any),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Void),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.List),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Map),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Optional),
-                loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Wrapper),
-                validateCustomTypeMappings(typeMappings, true),
-                validateCustomTypeAliases(typeAliases)
-            ));
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.String),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Number),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Boolean),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Date),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Any),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Void),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.List),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Map),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Optional),
+                    loadDataLibraryClasses(dataLibrary, DataLibraryJson.SemanticType.Wrapper),
+                    validateCustomTypeMappings(typeMappings, true),
+                    validateCustomTypeAliases(typeAliases)));
         }
         return LoadedDataLibraries.join(loaded);
     }
 
-    private List<Class<?>> loadDataLibraryClasses(DataLibraryJson dataLibrary, DataLibraryJson.SemanticType semanticType) {
+    private List<Class<?>> loadDataLibraryClasses(DataLibraryJson dataLibrary,
+            DataLibraryJson.SemanticType semanticType) {
         final List<String> classNames = dataLibrary.classMappings.stream()
                 .filter(mapping -> mapping.semanticType == semanticType)
                 .map(mapping -> mapping.className)
@@ -670,10 +696,13 @@ public class Settings {
         this.excludeFilter = createExcludeFilter(excludedClasses, excludedClassPatterns);
     }
 
-    public static Predicate<String> createExcludeFilter(List<String> excludedClasses, List<String> excludedClassPatterns) {
-        final Set<String> names = new LinkedHashSet<>(excludedClasses != null ? excludedClasses : Collections.<String>emptyList());
+    public static Predicate<String> createExcludeFilter(List<String> excludedClasses,
+            List<String> excludedClassPatterns) {
+        final Set<String> names = new LinkedHashSet<>(
+                excludedClasses != null ? excludedClasses : Collections.<String>emptyList());
         names.add("java.lang.Record");
-        final List<Pattern> patterns = Utils.globsToRegexps(excludedClassPatterns != null ? excludedClassPatterns : Collections.<String>emptyList());
+        final List<Pattern> patterns = Utils.globsToRegexps(
+                excludedClassPatterns != null ? excludedClassPatterns : Collections.<String>emptyList());
         return new Predicate<String>() {
             @Override
             public boolean test(String className) {
@@ -697,14 +726,16 @@ public class Settings {
     }
 
     public void setRestNamespacingAnnotation(ClassLoader classLoader, String restNamespacingAnnotation) {
-        final Pair<Class<? extends Annotation>, String> pair = resolveRestNamespacingAnnotation(classLoader, restNamespacingAnnotation);
+        final Pair<Class<? extends Annotation>, String> pair = resolveRestNamespacingAnnotation(classLoader,
+                restNamespacingAnnotation);
         if (pair != null) {
             this.restNamespacingAnnotation = pair.getValue1();
             this.restNamespacingAnnotationElement = pair.getValue2();
         }
     }
 
-    private static Pair<Class<? extends Annotation>, String> resolveRestNamespacingAnnotation(ClassLoader classLoader, String restNamespacingAnnotation) {
+    private static Pair<Class<? extends Annotation>, String> resolveRestNamespacingAnnotation(ClassLoader classLoader,
+            String restNamespacingAnnotation) {
         if (restNamespacingAnnotation == null) {
             return null;
         }
@@ -739,10 +770,11 @@ public class Settings {
                 try {
                     springClass = Class.forName(springClassName);
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeException("'generateStringApplicationInterface' or 'generateStringApplicationClient' parameter "
-                            + "was specified but '" + springClassName + "' was not found. "
-                            + "Please add 'cz.habarta.typescript-generator:typescript-generator-spring' artifact "
-                            + "to typescript-generator plugin dependencies (not module dependencies).");
+                    throw new RuntimeException(
+                            "'generateStringApplicationInterface' or 'generateStringApplicationClient' parameter "
+                                    + "was specified but '" + springClassName + "' was not found. "
+                                    + "Please add 'cz.habarta.typescript-generator:typescript-generator-spring' artifact "
+                                    + "to typescript-generator plugin dependencies (not module dependencies).");
                 }
                 try {
                     final Object instance = springClass.getConstructor().newInstance();
@@ -776,7 +808,8 @@ public class Settings {
         return "For more information see 'http://vojtechhabarta.github.io/typescript-generator/doc/ModulesAndNamespaces.html'.";
     }
 
-    private static <T> List<Class<? extends T>> loadClasses(ClassLoader classLoader, List<String> classNames, Class<T> requiredClassType) {
+    private static <T> List<Class<? extends T>> loadClasses(ClassLoader classLoader, List<String> classNames,
+            Class<T> requiredClassType) {
         if (classNames == null) {
             return Collections.emptyList();
         }
@@ -803,9 +836,10 @@ public class Settings {
                 loadedClass = loadPrimitiveOrRegularClass(classLoader, className);
             }
             if (requiredClassType != null && !requiredClassType.isAssignableFrom(loadedClass)) {
-                throw new RuntimeException(String.format("Class '%s' is not assignable to '%s'.", loadedClass, requiredClassType));
+                throw new RuntimeException(
+                        String.format("Class '%s' is not assignable to '%s'.", loadedClass, requiredClassType));
             }
-            @SuppressWarnings("unchecked") 
+            @SuppressWarnings("unchecked")
             final Class<? extends T> castedClass = (Class<? extends T>) loadedClass;
             return castedClass;
         } catch (ReflectiveOperationException e) {
@@ -824,8 +858,8 @@ public class Settings {
         final Retention retention = annotationClass.getAnnotation(Retention.class);
         if (retention == null || retention.value() != RetentionPolicy.RUNTIME) {
             TypeScriptGenerator.getLogger().warning(String.format(
-                "Annotation '%s' has no effect because it doesn't have 'RUNTIME' retention.",
-                annotationClass.getName()));
+                    "Annotation '%s' has no effect because it doesn't have 'RUNTIME' retention.",
+                    annotationClass.getName()));
         }
     }
 
@@ -838,7 +872,8 @@ public class Settings {
         return Pair.of(className, dimensions);
     }
 
-    private static Class<?> loadPrimitiveOrRegularClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
+    private static Class<?> loadPrimitiveOrRegularClass(ClassLoader classLoader, String className)
+            throws ClassNotFoundException {
         final Class<?> primitiveType = Utils.getPrimitiveType(className);
         return primitiveType != null
                 ? primitiveType
@@ -867,40 +902,52 @@ public class Settings {
 
     public static int parseModifiers(String modifiers, int allowedModifiers) {
         return Stream.of(modifiers.split("\\|"))
-            .map(String::trim)
-            .filter(s -> !s.isEmpty())
-            .map(s -> {
-                try {
-                    return javax.lang.model.element.Modifier.valueOf(s.toUpperCase(Locale.US));
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid modifier: " + s);
-                }
-            })
-            .mapToInt(modifier -> {
-                final int mod = Settings.modifierToBitMask(modifier);
-                if ((mod & allowedModifiers) == 0) {
-                    throw new RuntimeException("Modifier not allowed: " + modifier);
-                }
-                return mod;
-            })
-            .reduce(0, (a, b) -> a | b);
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    try {
+                        return javax.lang.model.element.Modifier.valueOf(s.toUpperCase(Locale.US));
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Invalid modifier: " + s);
+                    }
+                })
+                .mapToInt(modifier -> {
+                    final int mod = Settings.modifierToBitMask(modifier);
+                    if ((mod & allowedModifiers) == 0) {
+                        throw new RuntimeException("Modifier not allowed: " + modifier);
+                    }
+                    return mod;
+                })
+                .reduce(0, (a, b) -> a | b);
     }
 
     private static int modifierToBitMask(javax.lang.model.element.Modifier modifier) {
         switch (modifier) {
-            case PUBLIC: return java.lang.reflect.Modifier.PUBLIC;
-            case PROTECTED: return java.lang.reflect.Modifier.PROTECTED;
-            case PRIVATE: return java.lang.reflect.Modifier.PRIVATE;
-            case ABSTRACT: return java.lang.reflect.Modifier.ABSTRACT;
-            // case DEFAULT: no equivalent
-            case STATIC: return java.lang.reflect.Modifier.STATIC;
-            case FINAL: return java.lang.reflect.Modifier.FINAL;
-            case TRANSIENT: return java.lang.reflect.Modifier.TRANSIENT;
-            case VOLATILE: return java.lang.reflect.Modifier.VOLATILE;
-            case SYNCHRONIZED: return java.lang.reflect.Modifier.SYNCHRONIZED;
-            case NATIVE: return java.lang.reflect.Modifier.NATIVE;
-            case STRICTFP: return java.lang.reflect.Modifier.STRICT;
-            default: return 0;
+        case PUBLIC:
+            return java.lang.reflect.Modifier.PUBLIC;
+        case PROTECTED:
+            return java.lang.reflect.Modifier.PROTECTED;
+        case PRIVATE:
+            return java.lang.reflect.Modifier.PRIVATE;
+        case ABSTRACT:
+            return java.lang.reflect.Modifier.ABSTRACT;
+        // case DEFAULT: no equivalent
+        case STATIC:
+            return java.lang.reflect.Modifier.STATIC;
+        case FINAL:
+            return java.lang.reflect.Modifier.FINAL;
+        case TRANSIENT:
+            return java.lang.reflect.Modifier.TRANSIENT;
+        case VOLATILE:
+            return java.lang.reflect.Modifier.VOLATILE;
+        case SYNCHRONIZED:
+            return java.lang.reflect.Modifier.SYNCHRONIZED;
+        case NATIVE:
+            return java.lang.reflect.Modifier.NATIVE;
+        case STRICTFP:
+            return java.lang.reflect.Modifier.STRICT;
+        default:
+            return 0;
         }
     }
 

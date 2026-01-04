@@ -5,9 +5,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Date;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
 
 public class CustomTypeConversionTest {
 
@@ -66,7 +67,8 @@ public class CustomTypeConversionTest {
             assertEquals(Arrays.asList(SomeObject.class), result.getDiscoveredClasses());
         }
         {
-            final String dts = new TypeScriptGenerator(settings).generateTypeScript(Input.from(CustomOptionalUsage.class));
+            final String dts = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(CustomOptionalUsage.class));
             assertTrue(dts.contains("maybeObject?: SomeObject;"));
             assertTrue(dts.contains("maybeDate?: DateAsString;"));
         }

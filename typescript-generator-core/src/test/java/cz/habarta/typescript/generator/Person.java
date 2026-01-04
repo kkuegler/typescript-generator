@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator;
 import java.util.List;
 import java.util.Map;
 
-
 public class Person {
 
     public String name;

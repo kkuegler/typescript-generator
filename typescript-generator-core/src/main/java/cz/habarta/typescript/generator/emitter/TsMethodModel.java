@@ -5,16 +5,18 @@ import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.util.Utils;
 import java.util.List;
 
-
 public class TsMethodModel extends TsCallableModel {
 
     protected final List<TsDecorator> decorators;
 
-    public TsMethodModel(String name, TsModifierFlags modifiers, List<TsType.GenericVariableType> typeParameters, List<TsParameterModel> parameters, TsType returnType, List<TsStatement> body, List<String> comments) {
+    public TsMethodModel(String name, TsModifierFlags modifiers, List<TsType.GenericVariableType> typeParameters,
+            List<TsParameterModel> parameters, TsType returnType, List<TsStatement> body, List<String> comments) {
         this(name, null, modifiers, typeParameters, parameters, returnType, body, comments);
     }
 
-    private TsMethodModel(String name, List<TsDecorator> decorators, TsModifierFlags modifiers, List<TsType.GenericVariableType> typeParameters, List<TsParameterModel> parameters, TsType returnType, List<TsStatement> body, List<String> comments) {
+    private TsMethodModel(String name, List<TsDecorator> decorators, TsModifierFlags modifiers,
+            List<TsType.GenericVariableType> typeParameters, List<TsParameterModel> parameters, TsType returnType,
+            List<TsStatement> body, List<String> comments) {
         super(name, modifiers, typeParameters, parameters, returnType, body, comments);
         this.decorators = Utils.listFromNullable(decorators);
     }

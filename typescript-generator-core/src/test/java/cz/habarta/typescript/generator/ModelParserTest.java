@@ -12,14 +12,13 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class ModelParserTest {
 
     @Test
     public void testClassDiscovery1() {
         final Model model = parseModel(RootClass1.class);
         Assertions.assertEquals(2, model.getBeans().size());
-        
+
     }
 
     @Test
@@ -60,7 +59,8 @@ public class ModelParserTest {
 
     @Test
     public void testExcludedInputInList() {
-        final Model model = parseModel(new TypeReference<List<RootClass3>>() {}.getType(), RootClass3.class.getName());
+        final Model model = parseModel(new TypeReference<List<RootClass3>>() {
+        }.getType(), RootClass3.class.getName());
         Assertions.assertEquals(0, model.getBeans().size());
     }
 
@@ -69,8 +69,7 @@ public class ModelParserTest {
         settings.setExcludeFilter(Arrays.asList(excludedClassNames), null);
         final ModelParser parser = new Jackson2Parser(settings, new TypeProcessor.Chain(
                 new ExcludingTypeProcessor(settings.getExcludeFilter()),
-                new DefaultTypeProcessor()
-        ));
+                new DefaultTypeProcessor()));
         final Model model = parser.parseModel(type);
         return model;
     }

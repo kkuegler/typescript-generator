@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class TsNewExpression extends TsExpression {
 
     private final TsExpression expression;
@@ -18,10 +17,13 @@ public class TsNewExpression extends TsExpression {
         this(expression, null, arguments);
     }
 
-    public TsNewExpression(TsExpression expression, List<? extends TsType> typeArguments, List<? extends TsExpression> arguments) {
+    public TsNewExpression(TsExpression expression, List<? extends TsType> typeArguments,
+            List<? extends TsExpression> arguments) {
         this.expression = expression;
-        this.typeArguments = typeArguments != null ? new ArrayList<TsType>(typeArguments) : Collections.<TsType>emptyList();
-        this.arguments = arguments != null ? new ArrayList<TsExpression>(arguments) : Collections.<TsExpression>emptyList();
+        this.typeArguments = typeArguments != null ? new ArrayList<TsType>(typeArguments)
+                : Collections.<TsType>emptyList();
+        this.arguments = arguments != null ? new ArrayList<TsExpression>(arguments)
+                : Collections.<TsExpression>emptyList();
     }
 
     public TsExpression getExpression() {

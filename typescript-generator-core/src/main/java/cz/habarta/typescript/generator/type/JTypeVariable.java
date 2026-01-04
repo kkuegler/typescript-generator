@@ -8,10 +8,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Objects;
 
-
 public class JTypeVariable<D extends GenericDeclaration> implements TypeVariable<D> {
 
-    private final D genericDeclaration;  // should not be null but for Kotlin KTypeParameter we don't have it
+    private final D genericDeclaration; // should not be null but for Kotlin KTypeParameter we don't have it
     private final String name;
     private Type[] bounds;
     private final AnnotatedType[] annotatedBounds;
@@ -22,7 +21,8 @@ public class JTypeVariable<D extends GenericDeclaration> implements TypeVariable
         this(genericDeclaration, name, null, null, null, null);
     }
 
-    public JTypeVariable(D genericDeclaration, String name, Type[] bounds, AnnotatedType[] annotatedBounds, Annotation[] annotations, Annotation[] declaredAnnotations) {
+    public JTypeVariable(D genericDeclaration, String name, Type[] bounds, AnnotatedType[] annotatedBounds,
+            Annotation[] annotations, Annotation[] declaredAnnotations) {
         this.genericDeclaration = genericDeclaration;
         this.name = Objects.requireNonNull(name, "name");
         this.bounds = bounds != null ? bounds : new Type[0];

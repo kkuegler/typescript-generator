@@ -8,23 +8,26 @@ import java.util.LinkedHashMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class NamingTest {
 
     @Test
     public void testConflictReport() {
         final Settings settings = TestUtils.settings();
-        Assertions.assertThrows(SymbolTable.NameConflictException.class, () -> new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class)));
+        Assertions.assertThrows(SymbolTable.NameConflictException.class, () -> new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class)));
     }
 
     @Test
     public void testConflictResolved() {
         final Settings settings = TestUtils.settings();
         settings.customTypeNaming = new LinkedHashMap<>();
-        settings.customTypeNaming.put("cz.habarta.typescript.generator.NamingTest$A$ConflictingClass", "A$ConflictingClass");
-        settings.customTypeNaming.put("cz.habarta.typescript.generator.NamingTest$B$ConflictingClass", "B$ConflictingClass");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class));
+        settings.customTypeNaming.put("cz.habarta.typescript.generator.NamingTest$A$ConflictingClass",
+                "A$ConflictingClass");
+        settings.customTypeNaming.put("cz.habarta.typescript.generator.NamingTest$B$ConflictingClass",
+                "B$ConflictingClass");
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class));
         Assertions.assertTrue(output.contains("A$ConflictingClass"));
         Assertions.assertTrue(output.contains("B$ConflictingClass"));
     }
@@ -33,7 +36,8 @@ public class NamingTest {
     public void testConflictPrevented() {
         final Settings settings = TestUtils.settings();
         settings.mapPackagesToNamespaces = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(A.ConflictingClass.class, B.ConflictingClass.class));
         Assertions.assertTrue(output.contains("namespace cz.habarta.typescript.generator.NamingTest.A {"));
         Assertions.assertTrue(output.contains("namespace cz.habarta.typescript.generator.NamingTest.B {"));
     }

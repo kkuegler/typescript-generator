@@ -10,32 +10,10 @@ import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.type.JUnionType;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Scanner;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -45,7 +23,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 public final class Utils {
 
     private Utils() {
@@ -53,10 +30,10 @@ public final class Utils {
 
     public static String joinPath(String part1, String part2) {
         final String path = Stream.of(part1, part2)
-            .filter(part -> part != null && !part.isEmpty())  // remove empty parts
-            .reduce((a, b) -> trimRightSlash(a) + "/" + trimLeftSlash(b))  // join
-            .orElse("");  // if all parts are empty
-        return trimLeftSlash(path);  // trim leading slash
+                .filter(part -> part != null && !part.isEmpty()) // remove empty parts
+                .reduce((a, b) -> trimRightSlash(a) + "/" + trimLeftSlash(b)) // join
+                .orElse(""); // if all parts are empty
+        return trimLeftSlash(path); // trim leading slash
     }
 
     private static String trimLeftSlash(String path) {
@@ -64,20 +41,20 @@ public final class Utils {
     }
 
     private static String trimRightSlash(String path) {
-        return  path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+        return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
     }
 
     public static Class<?> getRawClassOrNull(Type type) {
         final Pair<Class<?>, Optional<List<Type>>> rawClassAndTypeArguments = getRawClassAndTypeArguments(type);
         return rawClassAndTypeArguments != null ? rawClassAndTypeArguments.getValue1() : null;
     }
-    
+
     public static Pair<Class<?>, Optional<List<Type>>> getRawClassAndTypeArguments(Type type) {
         if (type instanceof Class) {
             final Class<?> javaClass = (Class<?>) type;
             return javaClass.getTypeParameters().length != 0
-                    ? Pair.of(javaClass, Optional.empty())  // raw usage of generic class
-                    : Pair.of(javaClass, Optional.of(Collections.emptyList()));  // non-generic class
+                    ? Pair.of(javaClass, Optional.empty()) // raw usage of generic class
+                    : Pair.of(javaClass, Optional.of(Collections.emptyList())); // non-generic class
         }
         if (type instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -95,7 +72,8 @@ public final class Utils {
             if (nameDiff != 0) {
                 return nameDiff;
             }
-            final int parameterTypesDiff = Arrays.asList(m1.getParameterTypes()).toString().compareTo(Arrays.asList(m2.getParameterTypes()).toString());
+            final int parameterTypesDiff = Arrays.asList(m1.getParameterTypes()).toString()
+                    .compareTo(Arrays.asList(m2.getParameterTypes()).toString());
             if (parameterTypesDiff != 0) {
                 return parameterTypesDiff;
             }
@@ -125,22 +103,23 @@ public final class Utils {
         return Collector.<T, ArrayDeque<T>, Collection<T>>of(
                 ArrayDeque::new,
                 (deque, item) -> deque.addFirst(item),
-                (deque1, deque2) -> { deque2.addAll(deque1); return deque2; },
+                (deque1, deque2) -> {
+                    deque2.addAll(deque1);
+                    return deque2;
+                },
                 deque -> deque);
     }
 
-    public static <T, K, U> Collector<T, ?, Map<K,U>> toMap(
+    public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
             Function<? super T, ? extends K> keyMapper,
-            Function<? super T, ? extends U> valueMapper
-    ) {
+            Function<? super T, ? extends U> valueMapper) {
         return Collectors.toMap(
                 keyMapper,
                 valueMapper,
                 (a, b) -> {
                     throw new IllegalStateException("Duplicate key " + a);
                 },
-                LinkedHashMap::new
-        );
+                LinkedHashMap::new);
     }
 
     public static boolean hasAnyAnnotation(
@@ -151,7 +130,8 @@ public final class Utils {
                 .anyMatch(Objects::nonNull);
     }
 
-    public static <T> T getAnnotationElementValue(AnnotatedElement annotatedElement, String annotationClassName, String annotationElementName, Class<T> annotationElementType) {
+    public static <T> T getAnnotationElementValue(AnnotatedElement annotatedElement, String annotationClassName,
+            String annotationElementName, Class<T> annotationElementType) {
         final Annotation annotation = getAnnotation(annotatedElement, annotationClassName);
         return getAnnotationElementValue(annotation, annotationElementName, annotationElementType);
     }
@@ -168,7 +148,8 @@ public final class Utils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getAnnotationElementValue(Annotation annotation, String annotationElementName, Class<T> annotationElementType) {
+    public static <T> T getAnnotationElementValue(Annotation annotation, String annotationElementName,
+            Class<T> annotationElementType) {
         try {
             if (annotation != null) {
                 for (Method method : annotation.getClass().getMethods()) {
@@ -186,26 +167,30 @@ public final class Utils {
         }
     }
 
-    public static List<Annotation> getRepeatableAnnotation(Annotation directAnnotation, Annotation containerAnnotation) {
+    public static List<Annotation> getRepeatableAnnotation(Annotation directAnnotation,
+            Annotation containerAnnotation) {
         final List<Annotation> repeatableAnnotations = new ArrayList<>();
         if (directAnnotation != null) {
             repeatableAnnotations.add(directAnnotation);
         }
         if (containerAnnotation != null) {
-            final Annotation[] annotations = Utils.getAnnotationElementValue(containerAnnotation, "value", Annotation[].class);
+            final Annotation[] annotations = Utils.getAnnotationElementValue(containerAnnotation, "value",
+                    Annotation[].class);
             Stream.of(annotations).forEach(repeatableAnnotations::add);
         }
         return repeatableAnnotations;
     }
 
     @SuppressWarnings("unchecked")
-    public static <A extends Annotation> A getMigratedAnnotation(AnnotatedElement annotatedElement, Class<A> annotationClass, Class<?> fallbackAnnotationClass) {
+    public static <A extends Annotation> A getMigratedAnnotation(AnnotatedElement annotatedElement,
+            Class<A> annotationClass, Class<?> fallbackAnnotationClass) {
         final A annotation = annotatedElement.getAnnotation(annotationClass);
         if (annotation != null) {
             return annotation;
         }
         if (fallbackAnnotationClass != null) {
-            final Object fallbackAnnotation = annotatedElement.getAnnotation((Class<Annotation>)fallbackAnnotationClass);
+            final Object fallbackAnnotation = annotatedElement
+                    .getAnnotation((Class<Annotation>) fallbackAnnotationClass);
             if (fallbackAnnotation != null) {
                 return asMigrationProxy(fallbackAnnotation, annotationClass);
             }
@@ -217,18 +202,17 @@ public final class Utils {
     public static <T> T asMigrationProxy(Object object, Class<T> clazz) {
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
-                new Class<?>[]{clazz},
+                new Class<?>[] { clazz },
                 (proxy, method, args) -> {
                     try {
-                        final Method fallbackMethod = object.getClass().getMethod(method.getName(), method.getParameterTypes());
+                        final Method fallbackMethod = object.getClass().getMethod(method.getName(),
+                                method.getParameterTypes());
                         return fallbackMethod.invoke(object, args);
                     } catch (ReflectiveOperationException e) {
                         return null;
                     }
-                }
-        );
+                });
     }
-
 
     public static Type replaceRawClassInType(Type type, Class<?> newClass) {
         if (type instanceof ParameterizedType) {
@@ -252,27 +236,23 @@ public final class Utils {
             return new JParameterizedType(
                     parameterizedType.getRawType(),
                     transformTypes(parameterizedType.getActualTypeArguments(), transformer),
-                    parameterizedType.getOwnerType()
-            );
+                    parameterizedType.getOwnerType());
         }
         if (type instanceof GenericArrayType) {
             final GenericArrayType genericArrayType = (GenericArrayType) type;
             return new JGenericArrayType(
-                    transformer.apply(genericArrayType.getGenericComponentType())
-            );
+                    transformer.apply(genericArrayType.getGenericComponentType()));
         }
         if (type instanceof JUnionType) {
             final JUnionType unionType = (JUnionType) type;
             return new JUnionType(
-                    transformTypes(unionType.getTypes(), transformer)
-            );
+                    transformTypes(unionType.getTypes(), transformer));
         }
         if (type instanceof JTypeWithNullability) {
             final JTypeWithNullability typeWithNullability = (JTypeWithNullability) type;
             return new JTypeWithNullability(
                     transformer.apply(typeWithNullability.getType()),
-                    typeWithNullability.isNullable()
-            );
+                    typeWithNullability.isNullable());
         }
         return type;
     }
@@ -298,7 +278,8 @@ public final class Utils {
     }
 
     private static final Map<String, Class<?>> primitiveTypes = Stream
-            .of(byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class, void.class)
+            .of(byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class,
+                    void.class)
             .collect(Utils.toMap(cls -> cls.getName(), cls -> cls));
 
     public static Class<?> getPrimitiveType(String typeName) {
@@ -314,8 +295,10 @@ public final class Utils {
             return null;
         }
         final List<T> result = new ArrayList<>();
-        if (list1 != null) result.addAll(list1);
-        if (list2 != null) result.addAll(list2);
+        if (list1 != null)
+            result.addAll(list1);
+        if (list2 != null)
+            result.addAll(list2);
         return result;
     }
 
@@ -349,8 +332,7 @@ public final class Utils {
                 list -> {
                     list.sort(comparator);
                     return list;
-                }
-        );
+                });
     }
 
     public static <T1, T2> List<Pair<T1, T2>> zip(List<T1> list1, List<T2> list2) {

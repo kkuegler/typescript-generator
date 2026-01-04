@@ -7,16 +7,10 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import java.lang.reflect.Type;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 
 public class Input {
 
@@ -59,7 +53,8 @@ public class Input {
             if (parameters.classLoader != null) {
                 Thread.currentThread().setContextClassLoader(parameters.classLoader);
             }
-            try (final ClasspathScanner classpathScanner = new ClasspathScanner(parameters.classLoader, parameters.scanningAcceptedPackages, parameters.debug)) {
+            try (final ClasspathScanner classpathScanner = new ClasspathScanner(parameters.classLoader,
+                    parameters.scanningAcceptedPackages, parameters.debug)) {
                 final List<SourceType<Type>> types = new ArrayList<>();
                 if (parameters.classNames != null) {
                     types.addAll(fromClassNames(parameters.classNames));
@@ -72,8 +67,7 @@ public class Input {
                     final List<SourceType<Type>> c = fromClassNames(parameters.classesImplementingInterfaces.stream()
                             .flatMap(interf -> scanResult.getClassesImplementing(interf).getNames().stream())
                             .distinct()
-                            .collect(Collectors.toList())
-                    );
+                            .collect(Collectors.toList()));
                     types.addAll(c);
                 }
                 if (parameters.classesExtendingClasses != null) {
@@ -81,8 +75,7 @@ public class Input {
                     final List<SourceType<Type>> c = fromClassNames(parameters.classesExtendingClasses.stream()
                             .flatMap(superclass -> scanResult.getSubclasses(superclass).getNames().stream())
                             .distinct()
-                            .collect(Collectors.toList())
-                    );
+                            .collect(Collectors.toList()));
                     types.addAll(c);
                 }
                 if (parameters.classesWithAnnotations != null) {
@@ -90,14 +83,14 @@ public class Input {
                     types.addAll(fromClassNames(parameters.classesWithAnnotations.stream()
                             .flatMap(annotation -> scanResult.getClassesWithAnnotation(annotation).getNames().stream())
                             .distinct()
-                            .collect(Collectors.toList())
-                    ));
+                            .collect(Collectors.toList())));
                 }
                 if (parameters.jaxrsApplicationClassName != null) {
                     types.addAll(fromClassNames(Arrays.asList(parameters.jaxrsApplicationClassName)));
                 }
                 if (parameters.automaticJaxrsApplication) {
-                    types.addAll(JaxrsApplicationScanner.scanAutomaticJaxrsApplication(classpathScanner.getScanResult(), parameters.isClassNameExcluded));
+                    types.addAll(JaxrsApplicationScanner.scanAutomaticJaxrsApplication(classpathScanner.getScanResult(),
+                            parameters.isClassNameExcluded));
                 }
                 if (types.isEmpty()) {
                     final String errorMessage = "No input classes found.";
@@ -133,7 +126,7 @@ public class Input {
                         .enableAnnotationInfo()
                         .ignoreClassVisibility();
                 if (classLoader != null) {
-                    classGraph = classGraph.overrideClasspath((Object[])classLoader.getURLs());
+                    classGraph = classGraph.overrideClasspath((Object[]) classLoader.getURLs());
                 }
                 if (acceptedPackages != null && !acceptedPackages.isEmpty()) {
                     classGraph = classGraph.acceptPackages(acceptedPackages.toArray(new String[0]));
@@ -145,7 +138,8 @@ public class Input {
                 final int count = result.getAllClasses().size();
                 final Date scanEnd = new Date();
                 final double timeInSeconds = (scanEnd.getTime() - scanStart.getTime()) / 1000.0;
-                TypeScriptGenerator.getLogger().info(String.format("Scanning finished in %.2f seconds. Total number of classes: %d.", timeInSeconds, count));
+                TypeScriptGenerator.getLogger().info(String.format(
+                        "Scanning finished in %.2f seconds. Total number of classes: %d.", timeInSeconds, count));
                 scanResult = result;
             }
             return scanResult;

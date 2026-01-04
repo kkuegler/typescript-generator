@@ -2,16 +2,8 @@ package cz.habarta.typescript.generator.ext;
 
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TsType;
-import cz.habarta.typescript.generator.emitter.EmitterExtension;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import cz.habarta.typescript.generator.emitter.*;
+import java.util.*;
 
 /**
  * Emitter which generates type-safe property path getters.
@@ -41,7 +33,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
         Set<TsBeanModel> emittedBeans = new HashSet<>();
         for (TsBeanModel bean : model.getBeans()) {
             emittedBeans.addAll(
-                writeBeanAndParentsFieldSpecs(writer, settings, model, emittedBeans, bean));
+                    writeBeanAndParentsFieldSpecs(writer, settings, model, emittedBeans, bean));
         }
         for (TsBeanModel bean : model.getBeans()) {
             createBeanFieldConstant(writer, exportKeyword, bean);
@@ -50,21 +42,21 @@ public class BeanPropertyPathExtension extends EmitterExtension {
 
     private static void emitFieldsClass(Writer writer, Settings settings) {
         List<String> fieldsClassLines = Arrays.asList(
-            "export class Fields {",
-            "    protected $$parent: Fields | undefined;",
-            "    protected $$name: string;",
-            "    constructor(parent?: Fields, name?: string) {",
-            "        this.$$parent = parent;",
-            "        this.$$name = name || '';",
-            "    };",
-            "    get(): string {",
-            "        if (this.$$parent && this.$$parent.get().length > 0) {",
-            "            return this.$$parent.get() + \".\" + this.$$name;",
-            "        } else {",
-            "            return this.$$name;",
-            "        }",
-            "    }",
-            "}");
+                "export class Fields {",
+                "    protected $$parent: Fields | undefined;",
+                "    protected $$name: string;",
+                "    constructor(parent?: Fields, name?: string) {",
+                "        this.$$parent = parent;",
+                "        this.$$name = name || '';",
+                "    };",
+                "    get(): string {",
+                "        if (this.$$parent && this.$$parent.get().length > 0) {",
+                "            return this.$$parent.get() + \".\" + this.$$name;",
+                "        } else {",
+                "            return this.$$name;",
+                "        }",
+                "    }",
+                "}");
         writer.writeIndentedLine("");
         for (String fieldsClassLine : fieldsClassLines) {
             writer.writeIndentedLine(fieldsClassLine.replace("    ", settings.indentString));
@@ -76,22 +68,22 @@ public class BeanPropertyPathExtension extends EmitterExtension {
      * Returns the list of beans that were emitted.
      */
     private static Set<TsBeanModel> writeBeanAndParentsFieldSpecs(
-        Writer writer, Settings settings, TsModel model, Set<TsBeanModel> emittedSoFar, TsBeanModel bean) {
+            Writer writer, Settings settings, TsModel model, Set<TsBeanModel> emittedSoFar, TsBeanModel bean) {
         if (emittedSoFar.contains(bean)) {
             return new HashSet<>();
         }
         final TsBeanModel parentBean = getBeanModelByType(model, bean.getParent());
         final Set<TsBeanModel> emittedBeans = parentBean != null
-            ? writeBeanAndParentsFieldSpecs(writer, settings, model, emittedSoFar, parentBean)
-            : new HashSet<TsBeanModel>();
+                ? writeBeanAndParentsFieldSpecs(writer, settings, model, emittedSoFar, parentBean)
+                : new HashSet<TsBeanModel>();
         final String parentClassName = parentBean != null
-            ? getBeanModelClassName(parentBean) + "Fields"
-            : "Fields";
+                ? getBeanModelClassName(parentBean) + "Fields"
+                : "Fields";
         writer.writeIndentedLine("");
         writer.writeIndentedLine(
-            "class " + getBeanModelClassName(bean) + "Fields extends " + parentClassName + " {");
+                "class " + getBeanModelClassName(bean) + "Fields extends " + parentClassName + " {");
         writer.writeIndentedLine(
-            settings.indentString + "constructor(parent?: Fields, name?: string) { super(parent, name); }");
+                settings.indentString + "constructor(parent?: Fields, name?: string) { super(parent, name); }");
         for (TsPropertyModel property : bean.getProperties()) {
             writeBeanProperty(writer, settings, model, bean, property);
         }
@@ -108,7 +100,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
      */
     private static boolean isOriginalTsType(TsType type) {
         if (type instanceof TsType.BasicType) {
-            TsType.BasicType basicType = (TsType.BasicType)type;
+            TsType.BasicType basicType = (TsType.BasicType) type;
             return !(basicType.name.equals("null") || basicType.name.equals("undefined"));
         }
         return true;
@@ -123,10 +115,10 @@ public class BeanPropertyPathExtension extends EmitterExtension {
      */
     private static TsType extractOriginalTsType(TsType type) {
         if (type instanceof TsType.OptionalType) {
-            return extractOriginalTsType(((TsType.OptionalType)type).type);
+            return extractOriginalTsType(((TsType.OptionalType) type).type);
         }
         if (type instanceof TsType.UnionType) {
-            TsType.UnionType union = (TsType.UnionType)type;
+            TsType.UnionType union = (TsType.UnionType) type;
             List<TsType> originalTypes = new ArrayList<>();
             for (TsType curType : union.types) {
                 if (isOriginalTsType(curType)) {
@@ -134,11 +126,11 @@ public class BeanPropertyPathExtension extends EmitterExtension {
                 }
             }
             return originalTypes.size() == 1
-                ? extractOriginalTsType(originalTypes.get(0))
-                : type;
+                    ? extractOriginalTsType(originalTypes.get(0))
+                    : type;
         }
         if (type instanceof TsType.BasicArrayType) {
-            return extractOriginalTsType(((TsType.BasicArrayType)type).elementType);
+            return extractOriginalTsType(((TsType.BasicArrayType) type).elementType);
         }
         return type;
     }
@@ -148,7 +140,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
         if (!(originalType instanceof TsType.ReferenceType)) {
             return null;
         }
-        TsType.ReferenceType originalTypeBean = (TsType.ReferenceType)originalType;
+        TsType.ReferenceType originalTypeBean = (TsType.ReferenceType) originalType;
 
         for (TsBeanModel curBean : model.getBeans()) {
             if (curBean.getName().equals(originalTypeBean.symbol)) {
@@ -163,8 +155,8 @@ public class BeanPropertyPathExtension extends EmitterExtension {
     }
 
     private static void writeBeanProperty(
-        Writer writer, Settings settings, TsModel model, TsBeanModel bean,
-        TsPropertyModel property) {
+            Writer writer, Settings settings, TsModel model, TsBeanModel bean,
+            TsPropertyModel property) {
         TsBeanModel fieldBeanModel = getBeanModelByType(model, property.getTsType());
         String fieldClassName = fieldBeanModel != null ? getBeanModelClassName(fieldBeanModel) : "";
         // if a class has a field of its own type, we get stackoverflow exception
@@ -172,11 +164,12 @@ public class BeanPropertyPathExtension extends EmitterExtension {
             fieldClassName = "";
         }
         writer.writeIndentedLine(
-            settings.indentString + property.getName() + " = new " + fieldClassName + "Fields(this, \"" + property.getName() + "\");");
+                settings.indentString + property.getName() + " = new " + fieldClassName + "Fields(this, \""
+                        + property.getName() + "\");");
     }
 
     private static void createBeanFieldConstant(Writer writer, boolean exportKeyword, TsBeanModel bean) {
         writer.writeIndentedLine((exportKeyword ? "export " : "")
-            + "const " + getBeanModelClassName(bean) + " = new " + getBeanModelClassName(bean) + "Fields();");
+                + "const " + getBeanModelClassName(bean) + " = new " + getBeanModelClassName(bean) + "Fields();");
     }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 /**
  * Represents TypeScript type.
  * That means something which can appear in type position (after ":" character).
@@ -51,7 +50,7 @@ public abstract class TsType implements Emittable {
     public String toString() {
         return format(new Settings());
     }
-    
+
     public static class BasicType extends TsType {
 
         public final String name;
@@ -135,7 +134,7 @@ public abstract class TsType implements Emittable {
             return super.format(settings) + "<" + Emitter.formatList(settings, typeArguments) + ">";
         }
     }
-    
+
     public static class GenericVariableType extends TsType.BasicType {
 
         public GenericVariableType(String name) {
@@ -223,7 +222,7 @@ public abstract class TsType implements Emittable {
             public String toString() {
                 return token;
             }
-            
+
         }
 
     }
@@ -250,8 +249,7 @@ public abstract class TsType implements Emittable {
                             return Stream.of(type);
                         }
                     })
-                    .collect(Collectors.toList())
-            );
+                    .collect(Collectors.toList()));
         }
 
         public UnionType add(List<TsType> types) {
@@ -470,7 +468,8 @@ public abstract class TsType implements Emittable {
             final TsType.FunctionType functionType = (TsType.FunctionType) type;
             final List<TsParameter> parameters = new ArrayList<>();
             for (TsParameter parameter : functionType.parameters) {
-                parameters.add(new TsParameter(parameter.name, transformTsType(context, parameter.tsType, transformer)));
+                parameters
+                        .add(new TsParameter(parameter.name, transformTsType(context, parameter.tsType, transformer)));
             }
             return new TsType.FunctionType(parameters, transformTsType(context, functionType.type, transformer));
         }

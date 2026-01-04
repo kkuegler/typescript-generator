@@ -5,7 +5,6 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-
 public class JGenericArrayType implements GenericArrayType {
 
     private final Type genericComponentType;

@@ -1,7 +1,8 @@
 package cz.habarta.typescript.generator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StyleConfigurationTest {
 
@@ -9,6 +10,7 @@ public class StyleConfigurationTest {
         public int getX() {
             return -1;
         }
+
         public B getB() {
             return null;
         }

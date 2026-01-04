@@ -5,7 +5,6 @@ import cz.habarta.typescript.generator.parser.PathTemplate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class PathTemplateTest {
 
     @Test

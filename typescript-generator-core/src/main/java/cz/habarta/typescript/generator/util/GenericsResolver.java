@@ -4,16 +4,8 @@ package cz.habarta.typescript.generator.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class GenericsResolver {
 
@@ -46,7 +38,8 @@ public class GenericsResolver {
     }
 
     public static List<Type> resolveBaseGenericVariables(Class<?> baseClass, Type contextType) {
-        final Pair<Class<?>, Optional<List<Type>>> rawClassAndTypeArguments = Utils.getRawClassAndTypeArguments(contextType);
+        final Pair<Class<?>, Optional<List<Type>>> rawClassAndTypeArguments = Utils
+                .getRawClassAndTypeArguments(contextType);
         if (rawClassAndTypeArguments != null) {
             if (!rawClassAndTypeArguments.getValue2().isPresent()) {
                 return Collections.nCopies(baseClass.getTypeParameters().length, Object.class);
@@ -118,7 +111,8 @@ public class GenericsResolver {
         }
 
         public ResolvedClass resolveAncestor(Type ancestor) {
-            final Pair<Class<?>, Optional<List<Type>>> rawClassAndTypeArguments = Utils.getRawClassAndTypeArguments(ancestor);
+            final Pair<Class<?>, Optional<List<Type>>> rawClassAndTypeArguments = Utils
+                    .getRawClassAndTypeArguments(ancestor);
             if (rawClassAndTypeArguments == null || !rawClassAndTypeArguments.getValue2().isPresent()) {
                 return null;
             }

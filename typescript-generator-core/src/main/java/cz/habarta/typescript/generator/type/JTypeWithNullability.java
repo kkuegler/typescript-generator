@@ -5,7 +5,6 @@ import cz.habarta.typescript.generator.util.Utils;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-
 public class JTypeWithNullability implements Type {
 
     private final Type type;

@@ -1,52 +1,23 @@
 
 package cz.habarta.typescript.generator.parser;
 
-import cz.habarta.typescript.generator.JaxrsApplicationScanner;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TsType;
-import cz.habarta.typescript.generator.TypeProcessor;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.Utils;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.BeanParam;
-import jakarta.ws.rs.CookieParam;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.MatrixParam;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.Suspended;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.GenericEntity;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.core.*;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 
 public class JaxrsApplicationParser extends RestApplicationParser {
 
@@ -97,7 +68,8 @@ public class JaxrsApplicationParser extends RestApplicationParser {
                 model.setApplicationPath(applicationPathAnnotation.value());
             }
             model.setApplicationName(cls.getSimpleName());
-            final List<SourceType<Type>> discoveredTypes = JaxrsApplicationScanner.scanJaxrsApplication(cls, isClassNameExcluded);
+            final List<SourceType<Type>> discoveredTypes = JaxrsApplicationScanner.scanJaxrsApplication(cls,
+                    isClassNameExcluded);
             return new Result(discoveredTypes);
         }
 
@@ -168,7 +140,8 @@ public class JaxrsApplicationParser extends RestApplicationParser {
                     final PathTemplate.Parameter parameter = (PathTemplate.Parameter) part;
                     final Type type = context.pathParamTypes.get(parameter.getOriginalName());
                     final Type paramType = type != null ? type : String.class;
-                    final Type resolvedParamType = GenericsResolver.resolveType(resourceClass, paramType, method.getDeclaringClass());
+                    final Type resolvedParamType = GenericsResolver.resolveType(resourceClass, paramType,
+                            method.getDeclaringClass());
                     pathParams.add(new MethodParameterModel(parameter.getValidName(), resolvedParamType));
                     foundType(result, resolvedParamType, resourceClass, method.getName());
                 }
@@ -178,7 +151,9 @@ public class JaxrsApplicationParser extends RestApplicationParser {
             for (Parameter param : method.getParameters()) {
                 final QueryParam queryParamAnnotation = getRsAnnotation(param, QueryParam.class);
                 if (queryParamAnnotation != null) {
-                    queryParams.add(new RestQueryParam.Single(new MethodParameterModel(queryParamAnnotation.value(), param.getParameterizedType()), false));
+                    queryParams.add(new RestQueryParam.Single(
+                            new MethodParameterModel(queryParamAnnotation.value(), param.getParameterizedType()),
+                            false));
                     foundType(result, param.getParameterizedType(), resourceClass, method.getName());
                 }
                 final BeanParam beanParamAnnotation = getRsAnnotation(param, BeanParam.class);
@@ -195,7 +170,8 @@ public class JaxrsApplicationParser extends RestApplicationParser {
             }
             // JAX-RS specification - 3.3.2.1 Entity Parameters
             final List<Type> parameterTypes = settings.getTypeParser().getMethodParameterTypes(method);
-            final List<Pair<Parameter, Type>> parameters = Utils.zip(Arrays.asList(method.getParameters()), parameterTypes);
+            final List<Pair<Parameter, Type>> parameters = Utils.zip(Arrays.asList(method.getParameters()),
+                    parameterTypes);
             final MethodParameterModel entityParameter = getEntityParameter(resourceClass, method, parameters);
             if (entityParameter != null) {
                 foundType(result, entityParameter.getType(), resourceClass, method.getName());
@@ -222,19 +198,22 @@ public class JaxrsApplicationParser extends RestApplicationParser {
                 } else {
                     modelReturnType = Object.class;
                 }
-            } else if (plainReturnType instanceof ParameterizedType && (returnType == GenericEntity.class || returnType == javax(GenericEntity.class))) {
+            } else if (plainReturnType instanceof ParameterizedType
+                    && (returnType == GenericEntity.class || returnType == javax(GenericEntity.class))) {
                 final ParameterizedType parameterizedReturnType = (ParameterizedType) plainReturnType;
                 modelReturnType = parameterizedReturnType.getActualTypeArguments()[0];
             } else {
                 modelReturnType = parsedReturnType;
             }
-            final Type resolvedModelReturnType = GenericsResolver.resolveType(resourceClass, modelReturnType, method.getDeclaringClass());
+            final Type resolvedModelReturnType = GenericsResolver.resolveType(resourceClass, modelReturnType,
+                    method.getDeclaringClass());
             foundType(result, resolvedModelReturnType, resourceClass, method.getName());
             // comments
             final List<String> comments = Swagger.getOperationComments(swaggerOperation);
             // create method
             model.getMethods().add(new RestMethodModel(resourceClass, method.getName(), resolvedModelReturnType, method,
-                    context.rootResource, httpMethod.value(), context.path, pathParams, queryParams, entityParameter, comments));
+                    context.rootResource, httpMethod.value(), context.path, pathParams, queryParams, entityParameter,
+                    comments));
         }
         // JAX-RS specification - 3.4.1 Sub Resources
         if (pathAnnotation != null && httpMethod == null) {
@@ -258,7 +237,8 @@ public class JaxrsApplicationParser extends RestApplicationParser {
         for (Field field : fields) {
             final QueryParam annotation = getRsAnnotation(field, QueryParam.class);
             if (annotation != null) {
-                properties.add(new PropertyModel(annotation.value(), field.getGenericType(), /*optional*/true, null, field, null, null, null));
+                properties.add(new PropertyModel(annotation.value(), field.getGenericType(), /*optional*/true, null,
+                        field, null, null, null));
             }
         }
         try {
@@ -268,12 +248,14 @@ public class JaxrsApplicationParser extends RestApplicationParser {
                 if (writeMethod != null) {
                     final QueryParam annotation = getRsAnnotation(writeMethod, QueryParam.class);
                     if (annotation != null) {
-                        properties.add(new PropertyModel(annotation.value(), propertyDescriptor.getPropertyType(), /*optional*/true, null, writeMethod, null, null, null));
+                        properties.add(new PropertyModel(annotation.value(), propertyDescriptor.getPropertyType(),
+                                /*optional*/true, null, writeMethod, null, null, null));
                     }
                 }
             }
         } catch (IntrospectionException e) {
-            TypeScriptGenerator.getLogger().warning(String.format("Cannot introspect '%s' class: " + e.getMessage(), paramBean));
+            TypeScriptGenerator.getLogger()
+                    .warning(String.format("Cannot introspect '%s' class: " + e.getMessage(), paramBean));
         }
         if (properties.isEmpty()) {
             return null;
@@ -282,31 +264,34 @@ public class JaxrsApplicationParser extends RestApplicationParser {
         }
     }
 
-    private MethodParameterModel getEntityParameter(Class<?> resourceClass, Method method, List<Pair<Parameter, Type>> parameters) {
+    private MethodParameterModel getEntityParameter(Class<?> resourceClass, Method method,
+            List<Pair<Parameter, Type>> parameters) {
         for (Pair<Parameter, Type> pair : parameters) {
-            if (!Utils.hasAnyAnnotation(annotationClass -> pair.getValue1().getAnnotation(annotationClass), Arrays.asList(
-                    MatrixParam.class, javax(MatrixParam.class),
-                    QueryParam.class, javax(QueryParam.class),
-                    PathParam.class, javax(PathParam.class),
-                    CookieParam.class, javax(CookieParam.class),
-                    HeaderParam.class, javax(HeaderParam.class),
-                    Suspended.class, javax(Suspended.class),
-                    Context.class, javax(Context.class),
-                    FormParam.class, javax(FormParam.class),
-                    BeanParam.class, javax(BeanParam.class)
-            ))) {
-                final Type resolvedType = GenericsResolver.resolveType(resourceClass, pair.getValue2(), method.getDeclaringClass());
+            if (!Utils.hasAnyAnnotation(annotationClass -> pair.getValue1().getAnnotation(annotationClass),
+                    Arrays.asList(
+                            MatrixParam.class, javax(MatrixParam.class),
+                            QueryParam.class, javax(QueryParam.class),
+                            PathParam.class, javax(PathParam.class),
+                            CookieParam.class, javax(CookieParam.class),
+                            HeaderParam.class, javax(HeaderParam.class),
+                            Suspended.class, javax(Suspended.class),
+                            Context.class, javax(Context.class),
+                            FormParam.class, javax(FormParam.class),
+                            BeanParam.class, javax(BeanParam.class)))) {
+                final Type resolvedType = GenericsResolver.resolveType(resourceClass, pair.getValue2(),
+                        method.getDeclaringClass());
                 return new MethodParameterModel(pair.getValue1().getName(), resolvedType);
             }
         }
         return null;
     }
-    
-    private static boolean hasAnyAnnotation(Parameter[] parameters, List<Class<? extends Annotation>> annotationClasses) {
+
+    private static boolean hasAnyAnnotation(Parameter[] parameters,
+            List<Class<? extends Annotation>> annotationClasses) {
         return Stream.of(parameters)
                 .anyMatch(parameter -> Utils.hasAnyAnnotation(parameter::getAnnotation, annotationClasses));
     }
-    
+
     private static Map<Class<?>, TsType> getStandardEntityClassesMapping() {
         // JAX-RS specification - 4.2.4 Standard Entity Providers
         if (standardEntityClassesMapping == null) {
@@ -345,11 +330,11 @@ public class JaxrsApplicationParser extends RestApplicationParser {
 
     private static List<String> getDefaultExcludedClassNames() {
         return Arrays.asList(
-                "org.glassfish.jersey.media.multipart.FormDataBodyPart"
-        );
+                "org.glassfish.jersey.media.multipart.FormDataBodyPart");
     }
 
-    static <A extends Annotation> A getRsAnnotation(AnnotatedElement annotatedElement, Class<A> jakartaAnnotationClass) {
+    static <A extends Annotation> A getRsAnnotation(AnnotatedElement annotatedElement,
+            Class<A> jakartaAnnotationClass) {
         final Class<?> javaxAnnotationClass = javax(jakartaAnnotationClass);
         return Utils.getMigratedAnnotation(annotatedElement, jakartaAnnotationClass, javaxAnnotationClass);
     }

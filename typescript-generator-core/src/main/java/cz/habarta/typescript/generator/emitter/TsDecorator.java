@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import java.util.List;
 import java.util.Objects;
 
-
 public class TsDecorator {
 
     private final TsIdentifierReference identifierReference;

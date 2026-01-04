@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
 
-
 public class TsMemberExpression extends TsExpression {
 
     private final TsExpression expression;

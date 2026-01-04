@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator.emitter;
 
 import cz.habarta.typescript.generator.Settings;
 
-
 public class TsStringLiteral extends TsExpression {
 
     private final String literal;

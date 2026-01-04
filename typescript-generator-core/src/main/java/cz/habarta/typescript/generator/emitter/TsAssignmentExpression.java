@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.Settings;
 import java.util.Objects;
 
-
 public class TsAssignmentExpression extends TsExpression {
 
     private final TsExpression leftHandSideExpression;

@@ -1,14 +1,8 @@
 
 package cz.habarta.typescript.generator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
-
 
 public class Output {
 
@@ -37,7 +31,8 @@ public class Output {
     public static Output to(File file) {
         try {
             file.getParentFile().mkdirs();
-            return new Output(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")), file.toString(), true);
+            return new Output(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")),
+                    file.toString(), true);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

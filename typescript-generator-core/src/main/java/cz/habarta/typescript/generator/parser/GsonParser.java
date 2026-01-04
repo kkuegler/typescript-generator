@@ -5,11 +5,7 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
-import cz.habarta.typescript.generator.ExcludingTypeProcessor;
-import cz.habarta.typescript.generator.GsonConfiguration;
-import cz.habarta.typescript.generator.OptionalProperties;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TypeProcessor;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.PropertyMember;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -50,22 +46,23 @@ public class GsonParser extends ModelParser {
         }
         final GsonConfiguration config = settings.gsonConfiguration;
         int modifiers = config != null && config.excludeFieldsWithModifiers != null
-            ? Settings.parseModifiers(config.excludeFieldsWithModifiers, Modifier.fieldModifiers())
-            : Modifier.STATIC | Modifier.TRANSIENT;
+                ? Settings.parseModifiers(config.excludeFieldsWithModifiers, Modifier.fieldModifiers())
+                : Modifier.STATIC | Modifier.TRANSIENT;
         this.gson = new GsonBuilder()
-            .excludeFieldsWithModifiers(modifiers)
-            .setExclusionStrategies(new ExclusionStrategy() {
-                @Override
-                public boolean shouldSkipField(FieldAttributes fieldAttributes) {
-                    return !isAnnotatedPropertyIncluded(fieldAttributes::getAnnotation, fieldAttributes.getDeclaringClass().getName() + "." + fieldAttributes.getName());
-                }
+                .excludeFieldsWithModifiers(modifiers)
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                        return !isAnnotatedPropertyIncluded(fieldAttributes::getAnnotation,
+                                fieldAttributes.getDeclaringClass().getName() + "." + fieldAttributes.getName());
+                    }
 
-                @Override
-                public boolean shouldSkipClass(Class<?> aClass) {
-                    return false;
-                }
-            })
-            .create();
+                    @Override
+                    public boolean shouldSkipClass(Class<?> aClass) {
+                        return false;
+                    }
+                })
+                .create();
     }
 
     private static TypeProcessor createSpecificTypeProcessor() {
@@ -96,8 +93,10 @@ public class GsonParser extends ModelParser {
                 }
                 final boolean optional = settings.optionalProperties == OptionalProperties.useLibraryDefinition
                         ? true
-                        : isPropertyOptional(new PropertyMember(field, field.getGenericType(), field.getAnnotatedType(), null));
-                properties.add(new PropertyModel(name, field.getGenericType(), optional, null, field, null, null, null));
+                        : isPropertyOptional(
+                                new PropertyMember(field, field.getGenericType(), field.getAnnotatedType(), null));
+                properties
+                        .add(new PropertyModel(name, field.getGenericType(), optional, null, field, null, null, null));
                 addBeanToQueue(new SourceType<>(field.getGenericType(), sourceClass.type, name));
             }
             cls = cls.getSuperclass();

@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-
 public class DeprecationEnricher {
 
     public Model enrichModel(Model model) {
         final List<BeanModel> beans = mapList(model.getBeans(), this::enrichBean);
         final List<EnumModel> enums = mapList(model.getEnums(), this::enrichEnum);
-        final List<RestApplicationModel> restApplications = mapList(model.getRestApplications(), this::enrichRestApplication);
+        final List<RestApplicationModel> restApplications = mapList(model.getRestApplications(),
+                this::enrichRestApplication);
         return new Model(beans, enums, restApplications);
     }
 
@@ -52,7 +52,8 @@ public class DeprecationEnricher {
     }
 
     private EnumModel enrichEnum(EnumModel enumModel) {
-        final List<EnumMemberModel> members = mapList(enumModel.getMembers(), enumMember -> enrichEnumMember(enumMember));
+        final List<EnumMemberModel> members = mapList(enumModel.getMembers(),
+                enumMember -> enrichEnumMember(enumMember));
         return enumModel
                 .withMembers(members)
                 .withComments(addDeprecation(enumModel.getComments(), enumModel.getOrigin()));
@@ -64,7 +65,8 @@ public class DeprecationEnricher {
     }
 
     private RestApplicationModel enrichRestApplication(RestApplicationModel restApplicationModel) {
-        final List<RestMethodModel> enrichedRestMethods = mapList(restApplicationModel.getMethods(), restMethod -> enrichRestMethod(restMethod));
+        final List<RestMethodModel> enrichedRestMethods = mapList(restApplicationModel.getMethods(),
+                restMethod -> enrichRestMethod(restMethod));
         return restApplicationModel.withMethods(enrichedRestMethods);
     }
 
@@ -78,7 +80,8 @@ public class DeprecationEnricher {
     }
 
     private static List<String> addDeprecation(List<String> comments, AnnotatedElement annotatedElement) {
-        if (annotatedElement == null || !annotatedElement.isAnnotationPresent(Deprecated.class) || containsDeprecatedTag(comments)) {
+        if (annotatedElement == null || !annotatedElement.isAnnotationPresent(Deprecated.class)
+                || containsDeprecatedTag(comments)) {
             return comments;
         }
 

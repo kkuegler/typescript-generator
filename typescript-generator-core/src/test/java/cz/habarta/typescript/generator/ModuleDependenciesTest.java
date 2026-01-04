@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class ModuleDependenciesTest {
 
@@ -25,7 +24,8 @@ public class ModuleDependenciesTest {
     private void generateModuleA() {
         final Settings settings = TestUtils.settings();
         settings.outputKind = TypeScriptOutputKind.module;
-        settings.customTypeNaming = Collections.singletonMap("cz.habarta.typescript.generator.ModuleDependenciesTest$A2", "NS.A2");
+        settings.customTypeNaming = Collections
+                .singletonMap("cz.habarta.typescript.generator.ModuleDependenciesTest$A2", "NS.A2");
         settings.generateNpmPackageJson = true;
         settings.npmName = "a";
         settings.npmVersion = "1.0.0";
@@ -47,8 +47,8 @@ public class ModuleDependenciesTest {
         settings.npmName = "b";
         settings.npmVersion = "1.0.0";
         settings.moduleDependencies = Arrays.asList(
-                ModuleDependency.module("../a", "a", new File("target/test-module-dependencies/a/typescript-generator-info.json"), "a", "1.0.0")
-        );
+                ModuleDependency.module("../a", "a",
+                        new File("target/test-module-dependencies/a/typescript-generator-info.json"), "a", "1.0.0"));
         new TypeScriptGenerator(settings).generateTypeScript(
                 Input.from(B1.class, B2.class, C.class, D1.class, D2.class),
                 Output.to(new File("target/test-module-dependencies/b/b.d.ts")));
@@ -80,14 +80,16 @@ public class ModuleDependenciesTest {
         generateGlobalA("global-a1");
         generateGlobalA("global-a2");
 
-        RuntimeException e = Assertions.assertThrows(RuntimeException.class, () -> generateGlobalB("global-b-conflict", "global-a1", "global-a2"));
+        RuntimeException e = Assertions.assertThrows(RuntimeException.class,
+                () -> generateGlobalB("global-b-conflict", "global-a1", "global-a2"));
         System.out.println("Exception (expected): " + e.getMessage());
     }
 
     private void generateGlobalA(String directory) {
         final Settings settings = TestUtils.settings();
         settings.outputKind = TypeScriptOutputKind.global;
-        settings.customTypeNaming = Collections.singletonMap("cz.habarta.typescript.generator.ModuleDependenciesTest$A2", "NS.A2");
+        settings.customTypeNaming = Collections
+                .singletonMap("cz.habarta.typescript.generator.ModuleDependenciesTest$A2", "NS.A2");
         settings.generateInfoJson = true;
         new TypeScriptGenerator(settings).generateTypeScript(
                 Input.from(A1.class, A2.class, Enum1.class, ABase.class),
@@ -106,7 +108,8 @@ public class ModuleDependenciesTest {
                 .map(depDir -> "../" + depDir + "/global.d.ts")
                 .collect(Collectors.toList());
         settings.moduleDependencies = Stream.of(dependencyDirectories)
-                .map(depDir -> ModuleDependency.global(new File("target/test-module-dependencies/" + depDir + "/typescript-generator-info.json")))
+                .map(depDir -> ModuleDependency.global(
+                        new File("target/test-module-dependencies/" + depDir + "/typescript-generator-info.json")))
                 .collect(Collectors.toList());
         new TypeScriptGenerator(settings).generateTypeScript(
                 Input.from(B1.class, B2.class, C.class, D1.class, D2.class),
@@ -144,8 +147,8 @@ public class ModuleDependenciesTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
     @JsonSubTypes({
-        @JsonSubTypes.Type(name = "ADerived1", value = ADerived1.class),
-        @JsonSubTypes.Type(name = "ADerived2", value = ADerived2.class),
+            @JsonSubTypes.Type(name = "ADerived1", value = ADerived1.class),
+            @JsonSubTypes.Type(name = "ADerived2", value = ADerived2.class),
     })
     private static abstract class ABase<T> {
     }

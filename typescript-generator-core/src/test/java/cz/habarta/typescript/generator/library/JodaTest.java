@@ -4,30 +4,14 @@ package cz.habarta.typescript.generator.library;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import cz.habarta.typescript.generator.DateMapping;
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.MonthDay;
-import org.joda.time.Period;
-import org.joda.time.YearMonth;
+import org.joda.time.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class JodaTest {
 
@@ -85,7 +69,7 @@ public class JodaTest {
         objectMapper.registerModule(new JodaModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         final String json = objectMapper.writeValueAsString(new JodaSerializedClasses());
-//        System.out.println(json);
+        //        System.out.println(json);
     }
 
     @Test
@@ -93,7 +77,8 @@ public class JodaTest {
         final Settings settings = TestUtils.settings();
         settings.additionalDataLibraries = Arrays.asList("joda");
         settings.mapDate = DateMapping.asString;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(JodaSerializedClasses.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(JodaSerializedClasses.class));
         Assertions.assertTrue(output.contains("dateTime: DateAsString;"));
         Assertions.assertTrue(output.contains("dateTimeZone: string;"));
         Assertions.assertTrue(output.contains("duration: number;"));

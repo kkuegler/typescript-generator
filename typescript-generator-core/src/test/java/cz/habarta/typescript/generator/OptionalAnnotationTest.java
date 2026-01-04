@@ -1,23 +1,14 @@
 package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.habarta.typescript.generator.parser.BeanModel;
-import cz.habarta.typescript.generator.parser.Jackson2Parser;
-import cz.habarta.typescript.generator.parser.Model;
-import cz.habarta.typescript.generator.parser.ModelParser;
-import cz.habarta.typescript.generator.parser.PropertyModel;
+import cz.habarta.typescript.generator.parser.*;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class OptionalAnnotationTest {
 
@@ -54,7 +45,8 @@ public class OptionalAnnotationTest {
         Settings settings = TestUtils.settings();
         settings.jsonLibrary = jsonLibrary;
         settings.optionalAnnotations.add(javax.annotation.Nullable.class);
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(BeanWithJavaxNullable.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(BeanWithJavaxNullable.class));
         Assertions.assertTrue(output.contains("property1?: string;"));
     }
 
@@ -84,13 +76,14 @@ public class OptionalAnnotationTest {
     public void testNullableTypeAnnotation() {
         Settings settings = TestUtils.settings();
         settings.optionalAnnotations.add(NullableType.class);
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(BeanWithNullableType.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(BeanWithNullableType.class));
         Assertions.assertTrue(output.contains("property1?: string;"));
         Assertions.assertTrue(output.contains("property2?: string;"));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+    @Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
     public @interface NullableType {
     }
 
@@ -139,7 +132,8 @@ public class OptionalAnnotationTest {
             final Settings settings = TestUtils.settings();
             settings.optionalAnnotations = Arrays.asList();
             settings.requiredAnnotations = Arrays.asList();
-            final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithMarkedField.class));
+            final String output = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a: string;"));
             Assertions.assertTrue(output.contains("b: string;"));
         }
@@ -147,7 +141,8 @@ public class OptionalAnnotationTest {
             final Settings settings = TestUtils.settings();
             settings.optionalAnnotations = Arrays.asList(MarkerAnnotation.class);
             settings.requiredAnnotations = Arrays.asList();
-            final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithMarkedField.class));
+            final String output = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a: string;"));
             Assertions.assertTrue(output.contains("b?: string;"));
         }
@@ -155,7 +150,8 @@ public class OptionalAnnotationTest {
             final Settings settings = TestUtils.settings();
             settings.optionalAnnotations = Arrays.asList();
             settings.requiredAnnotations = Arrays.asList(MarkerAnnotation.class);
-            final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithMarkedField.class));
+            final String output = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithMarkedField.class));
             Assertions.assertTrue(output.contains("a?: string;"));
             Assertions.assertTrue(output.contains("b: string;"));
         }
@@ -172,7 +168,8 @@ public class OptionalAnnotationTest {
 
     public class ClassWithMarkedField {
         public String a;
-        @MarkerAnnotation public String b;
+        @MarkerAnnotation
+        public String b;
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -185,7 +182,8 @@ public class OptionalAnnotationTest {
             final Settings settings = TestUtils.settings();
             settings.requiredAnnotations = Arrays.asList(MarkerAnnotation.class);
             settings.primitivePropertiesRequired = true;
-            final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithPrimitiveField.class));
+            final String output = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithPrimitiveField.class));
             Assertions.assertTrue(output.contains("charVar1: string;"));
             Assertions.assertTrue(output.contains("byteVar1: number;"));
             Assertions.assertTrue(output.contains("shortVar1: number;"));

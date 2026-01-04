@@ -9,9 +9,8 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class ReadOnlyWriteOnlyTest {
-    
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ReadOnlyWriteOnlyUser {
 
@@ -23,7 +22,7 @@ public class ReadOnlyWriteOnlyTest {
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         public String password1;
 
-        private String _id2;  // Jackson would use `id2` field as writable property
+        private String _id2; // Jackson would use `id2` field as writable property
 
         public String getId2() {
             return _id2;
@@ -72,7 +71,8 @@ public class ReadOnlyWriteOnlyTest {
     public void test() {
         final Settings settings = TestUtils.settings();
         settings.generateReadonlyAndWriteonlyJSDocTags = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ReadOnlyWriteOnlyUser.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ReadOnlyWriteOnlyUser.class));
         final String expected = "\n"
                 + "interface ReadOnlyWriteOnlyUser {\n"
                 + "    name: string;\n"

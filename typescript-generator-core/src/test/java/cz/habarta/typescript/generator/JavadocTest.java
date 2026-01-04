@@ -2,16 +2,11 @@
 package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.habarta.typescript.generator.parser.BeanModel;
-import cz.habarta.typescript.generator.parser.EnumModel;
-import cz.habarta.typescript.generator.parser.Jackson2Parser;
-import cz.habarta.typescript.generator.parser.Model;
-import cz.habarta.typescript.generator.parser.PropertyModel;
+import cz.habarta.typescript.generator.parser.*;
 import java.io.File;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class JavadocTest {
 
@@ -55,14 +50,16 @@ public class JavadocTest {
             Assertions.assertTrue(generated.contains("@return value of getterPropery"));
             Assertions.assertTrue(generated.contains("@deprecated replaced by something else\n"));
             Assertions.assertTrue(!generated.contains("@deprecated\n"));
-            Assertions.assertTrue(generated.contains(" *     // indentation and line breaks are kept\n * \n *     {@literal @}"));
+            Assertions.assertTrue(
+                    generated.contains(" *     // indentation and line breaks are kept\n * \n *     {@literal @}"));
             Assertions.assertTrue(generated.contains(" *     public List<String> generics() {\n"));
             Assertions.assertTrue(generated.contains("ff0000"));
             Assertions.assertTrue(generated.contains("00ff00"));
             Assertions.assertTrue(generated.contains("0000ff"));
         }
         {
-            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DeprecatedClassWithoutJavadoc.class));
+            final String generated = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(DeprecatedClassWithoutJavadoc.class));
             final String expected = ""
                     + "/**\n"
                     + " * @deprecated\n"
@@ -76,7 +73,8 @@ public class JavadocTest {
             Assertions.assertEquals(expected.trim(), generated.trim());
         }
         {
-            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DeprecatedEnumWithoutJavadoc.class));
+            final String generated = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(DeprecatedEnumWithoutJavadoc.class));
             final String expected = ""
                     + "/**\n"
                     + " * @deprecated\n"
@@ -92,7 +90,8 @@ public class JavadocTest {
             Assertions.assertEquals(expected.trim(), generated.trim());
         }
         {
-            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithBrElements.class));
+            final String generated = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithBrElements.class));
             Assertions.assertTrue(!generated.contains("<br>"));
             Assertions.assertTrue(!generated.contains("<br/>"));
             Assertions.assertTrue(!generated.contains("<br />"));
@@ -100,7 +99,8 @@ public class JavadocTest {
             Assertions.assertTrue(generated.contains("Some documentation\n * \n * for this class."));
         }
         {
-            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithPElements.class));
+            final String generated = new TypeScriptGenerator(settings)
+                    .generateTypeScript(Input.from(ClassWithPElements.class));
             Assertions.assertTrue(!generated.contains("<p>"));
             Assertions.assertTrue(!generated.contains("</p>"));
             Assertions.assertTrue(generated.contains("Long\n * paragraph\n * \n * Second\n * paragraph"));
@@ -171,7 +171,8 @@ public class JavadocTest {
     public static enum DeprecatedEnumWithoutJavadoc {
 
         North,
-        @Deprecated East,
+        @Deprecated
+        East,
         South,
         West;
 

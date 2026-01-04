@@ -3,27 +3,24 @@ package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class UtilsTest {
 
     @Test
     public void testReplaceExtension() {
         Assertions.assertEquals(new File("test.dir/test.js"), Utils.replaceExtension(new File("test.dir/test"), ".js"));
-        Assertions.assertEquals(new File("test.dir/test.1.js"), Utils.replaceExtension(new File("test.dir/test.1.ts"), ".js"));
+        Assertions.assertEquals(new File("test.dir/test.1.js"),
+                Utils.replaceExtension(new File("test.dir/test.1.ts"), ".js"));
     }
 
     @Test
     public void testGlobToRegexp() {
         Assertions.assertEquals("\\Q\\E.*\\QJson\\E", Utils.globsToRegexps(Arrays.asList("**Json")).get(0).toString());
-        Assertions.assertEquals("\\Qcz.habarta.test.\\E[^.\\$]*\\Q\\E", Utils.globsToRegexps(Arrays.asList("cz.habarta.test.*")).get(0).toString());
+        Assertions.assertEquals("\\Qcz.habarta.test.\\E[^.\\$]*\\Q\\E",
+                Utils.globsToRegexps(Arrays.asList("cz.habarta.test.*")).get(0).toString());
     }
 
     @Test
@@ -72,7 +69,8 @@ public class UtilsTest {
         Assertions.assertFalse(Utils.isPrimitiveType(Date.class));
         Assertions.assertFalse(Utils.isPrimitiveType(Collection.class));
         Assertions.assertFalse(Utils.isPrimitiveType(Map.class));
-        class NewClass{}
+        class NewClass {
+        }
         Assertions.assertFalse(Utils.isPrimitiveType(NewClass.class));
     }
 

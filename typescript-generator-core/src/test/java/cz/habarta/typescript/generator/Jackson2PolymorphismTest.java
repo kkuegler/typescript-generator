@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class Jackson2PolymorphismTest {
 
     @Test
     public void testPropertyNameQuoting() {
-        final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(BadFieldClass.class));
+        final String output = new TypeScriptGenerator(TestUtils.settings())
+                .generateTypeScript(Input.from(BadFieldClass.class));
         Assertions.assertTrue(output.contains("\"@class\""));
     }
 

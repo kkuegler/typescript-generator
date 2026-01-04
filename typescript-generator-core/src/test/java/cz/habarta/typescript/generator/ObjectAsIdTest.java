@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class ObjectAsIdTest {
 
@@ -114,9 +113,10 @@ public class ObjectAsIdTest {
         return Stream.of(values).collect(Collectors.toMap(
                 v -> "k" + index.incrementAndGet(),
                 v -> v,
-                (v1, v2) -> { throw new RuntimeException(); },
-                LinkedHashMap::new
-        ));
+                (v1, v2) -> {
+                    throw new RuntimeException();
+                },
+                LinkedHashMap::new));
     }
 
     @Test
@@ -158,10 +158,12 @@ public class ObjectAsIdTest {
     @Test
     public void testNestedMaps() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(WrapperWithNestedMaps.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(WrapperWithNestedMaps.class));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectA: { [index: string]: string }[]"));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectB: { [index: string]: TestObjectB | string }[]"));
-        Assertions.assertTrue(output.contains("listOfMapOfTestObjectC: { [index: string]: TestObjectC<string> | string }[]"));
+        Assertions.assertTrue(
+                output.contains("listOfMapOfTestObjectC: { [index: string]: TestObjectC<string> | string }[]"));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectD: { [index: string]: string }[]"));
         Assertions.assertTrue(output.contains("listOfMapOfTestObjectE: { [index: string]: string }[]"));
         Assertions.assertTrue(!output.contains("interface TestObjectA"));
@@ -171,11 +173,11 @@ public class ObjectAsIdTest {
         Assertions.assertTrue(!output.contains("interface TestObjectE"));
     }
 
-
     @Test
     public void testGenerics() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(TestObjectWithGeneric.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(TestObjectWithGeneric.class));
         Assertions.assertTrue(output.contains("objectReference: string"));
     }
 
@@ -237,7 +239,6 @@ public class ObjectAsIdTest {
         public String myProperty = "valueD";
     }
 
-
     private static class ObjectWithID {
         @JsonProperty("@@@id")
         public String myIdentification;
@@ -252,17 +253,15 @@ public class ObjectAsIdTest {
         }
     }
 
-
     private static class GenericWrapper<M extends ObjectWithID> {
-        @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "@@@id") @JsonIdentityReference(alwaysAsId = true)
+        @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "@@@id")
+        @JsonIdentityReference(alwaysAsId = true)
         public M objectReference;
-
 
         public GenericWrapper(M objectReference) {
             this.objectReference = objectReference;
         }
     }
-
 
     private static class TestObjectWithGeneric {
         public GenericWrapper<ObjectWithID> genericTestObject;
@@ -271,9 +270,6 @@ public class ObjectAsIdTest {
             this.genericTestObject = genericTestObject;
         }
     }
-
-
-
 
     private static class TestObjectE {
 

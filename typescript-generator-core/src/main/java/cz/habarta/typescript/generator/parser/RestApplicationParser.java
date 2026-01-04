@@ -43,9 +43,11 @@ public abstract class RestApplicationParser {
 
     public static class Result {
         public List<SourceType<Type>> discoveredTypes;
+
         public Result() {
             discoveredTypes = new ArrayList<>();
         }
+
         public Result(List<SourceType<Type>> discoveredTypes) {
             this.discoveredTypes = discoveredTypes;
         }

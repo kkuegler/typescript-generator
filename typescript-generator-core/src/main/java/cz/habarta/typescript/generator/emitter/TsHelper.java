@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.util.Utils;
 import java.util.List;
 
-
 public class TsHelper {
 
     private final List<String> lines;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class BeanModel extends DeclarationModel {
 
     private final Type parent;
@@ -17,7 +16,8 @@ public class BeanModel extends DeclarationModel {
     private final List<Type> interfaces;
     private final List<PropertyModel> properties;
 
-    public BeanModel(Class<?> origin, Type parent, List<Class<?>> taggedUnionClasses, String discriminantProperty, String discriminantLiteral, List<Type> interfaces, List<PropertyModel> properties, List<String> comments) {
+    public BeanModel(Class<?> origin, Type parent, List<Class<?>> taggedUnionClasses, String discriminantProperty,
+            String discriminantLiteral, List<Type> interfaces, List<PropertyModel> properties, List<String> comments) {
         super(origin, comments);
         this.parent = parent;
         this.taggedUnionClasses = taggedUnionClasses;
@@ -68,12 +68,14 @@ public class BeanModel extends DeclarationModel {
     }
 
     public BeanModel withProperties(List<PropertyModel> properties) {
-        return new BeanModel(origin, parent, taggedUnionClasses, discriminantProperty, discriminantLiteral, interfaces, properties, comments);
+        return new BeanModel(origin, parent, taggedUnionClasses, discriminantProperty, discriminantLiteral, interfaces,
+                properties, comments);
     }
 
     @Override
     public BeanModel withComments(List<String> comments) {
-        return new BeanModel(origin, parent, taggedUnionClasses, discriminantProperty, discriminantLiteral, interfaces, properties, comments);
+        return new BeanModel(origin, parent, taggedUnionClasses, discriminantProperty, discriminantLiteral, interfaces,
+                properties, comments);
     }
 
     @Override

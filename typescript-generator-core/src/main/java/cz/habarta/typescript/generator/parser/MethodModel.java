@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
-
 public class MethodModel {
 
     protected final Class<?> originClass;
@@ -16,7 +15,8 @@ public class MethodModel {
     protected final Method originalMethod;
     protected final List<String> comments;
 
-    public MethodModel(Class<?> originClass, String name, List<MethodParameterModel> parameters, Type returnType, Method originalMethod, List<String> comments) {
+    public MethodModel(Class<?> originClass, String name, List<MethodParameterModel> parameters, Type returnType,
+            Method originalMethod, List<String> comments) {
         this.originClass = originClass;
         this.name = name;
         this.parameters = parameters != null ? parameters : Collections.<MethodParameterModel>emptyList();

@@ -5,7 +5,6 @@ import cz.habarta.typescript.generator.compiler.Symbol;
 import java.util.List;
 import java.util.Objects;
 
-
 public class TsDeclarationModel implements Comparable<TsDeclarationModel> {
 
     protected final Class<?> origin;

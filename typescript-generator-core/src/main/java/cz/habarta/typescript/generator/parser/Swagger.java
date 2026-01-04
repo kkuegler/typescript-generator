@@ -6,14 +6,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
-
 
 public class Swagger {
 
@@ -26,7 +20,8 @@ public class Swagger {
 
     private static SwaggerOperation parseSwaggerAnnotations1(Method method) {
         final Annotation apiOperation = Utils.getAnnotation(method, "io.swagger.annotations.ApiOperation");
-        final Annotation[] apiResponses = Utils.getAnnotationElementValue(method, "io.swagger.annotations.ApiResponses", "value", Annotation[].class);
+        final Annotation[] apiResponses = Utils.getAnnotationElementValue(method, "io.swagger.annotations.ApiResponses",
+                "value", Annotation[].class);
         if (apiOperation == null && apiResponses == null) {
             return null;
         }
@@ -34,20 +29,21 @@ public class Swagger {
         // @ApiOperation
         if (apiOperation != null) {
             final Class<?> response = Utils.getAnnotationElementValue(apiOperation, "response", Class.class);
-            final String responseContainer = Utils.getAnnotationElementValue(apiOperation, "responseContainer", String.class);
+            final String responseContainer = Utils.getAnnotationElementValue(apiOperation, "responseContainer",
+                    String.class);
             if (responseContainer == null || responseContainer.isEmpty()) {
                 swaggerOperation.responseType = response;
             } else {
                 switch (responseContainer) {
-                    case "List":
-                        swaggerOperation.responseType = Utils.createParameterizedType(List.class, response);
-                        break;
-                    case "Set":
-                        swaggerOperation.responseType = Utils.createParameterizedType(Set.class, response);
-                        break;
-                    case "Map":
-                        swaggerOperation.responseType = Utils.createParameterizedType(Map.class, String.class, response);
-                        break;
+                case "List":
+                    swaggerOperation.responseType = Utils.createParameterizedType(List.class, response);
+                    break;
+                case "Set":
+                    swaggerOperation.responseType = Utils.createParameterizedType(Set.class, response);
+                    break;
+                case "Map":
+                    swaggerOperation.responseType = Utils.createParameterizedType(Map.class, String.class, response);
+                    break;
                 }
             }
             swaggerOperation.hidden = Utils.getAnnotationElementValue(apiOperation, "hidden", Boolean.class);
@@ -70,8 +66,10 @@ public class Swagger {
 
     private static SwaggerOperation parseSwaggerAnnotations3(Method method) {
         final Annotation operationAnnotation = Utils.getAnnotation(method, "io.swagger.v3.oas.annotations.Operation");
-        final Annotation apiResponseAnnotation = Utils.getAnnotation(method, "io.swagger.v3.oas.annotations.responses.ApiResponse");
-        final Annotation apiResponsesAnnotation = Utils.getAnnotation(method, "io.swagger.v3.oas.annotations.responses.ApiResponses");
+        final Annotation apiResponseAnnotation = Utils.getAnnotation(method,
+                "io.swagger.v3.oas.annotations.responses.ApiResponse");
+        final Annotation apiResponsesAnnotation = Utils.getAnnotation(method,
+                "io.swagger.v3.oas.annotations.responses.ApiResponses");
         if (operationAnnotation == null && apiResponseAnnotation == null && apiResponsesAnnotation == null) {
             return null;
         }
@@ -79,14 +77,15 @@ public class Swagger {
         // @Operation
         if (operationAnnotation != null) {
             swaggerOperation.hidden = Utils.getAnnotationElementValue(operationAnnotation, "hidden", Boolean.class);
-            swaggerOperation.comment = Utils.getAnnotationElementValue(operationAnnotation, "description", String.class);
+            swaggerOperation.comment = Utils.getAnnotationElementValue(operationAnnotation, "description",
+                    String.class);
             swaggerOperation.comment = swaggerOperation.comment.isEmpty() ? null : swaggerOperation.comment;
         }
         // @ApiResponses
         final List<Annotation> responses = firstResult(
                 () -> emptyToNull(Utils.getRepeatableAnnotation(apiResponseAnnotation, apiResponsesAnnotation)),
-                () -> emptyToNull(Arrays.asList(Utils.getAnnotationElementValue(operationAnnotation, "responses", Annotation[].class)))
-        );
+                () -> emptyToNull(Arrays.asList(
+                        Utils.getAnnotationElementValue(operationAnnotation, "responses", Annotation[].class))));
         if (responses != null) {
             swaggerOperation.possibleResponses = new ArrayList<>();
             for (Annotation apiResponse : responses) {
@@ -94,10 +93,12 @@ public class Swagger {
                 final String code = Utils.getAnnotationElementValue(apiResponse, "responseCode", String.class);
                 response.code = Objects.equals(code, "default") ? null : code;
                 response.comment = Utils.getAnnotationElementValue(apiResponse, "description", String.class);
-                final Annotation[] content = Utils.getAnnotationElementValue(apiResponse, "content", Annotation[].class);
+                final Annotation[] content = Utils.getAnnotationElementValue(apiResponse, "content",
+                        Annotation[].class);
                 if (content.length > 0) {
                     final Annotation schema = Utils.getAnnotationElementValue(content[0], "schema", Annotation.class);
-                    final Class<?> implementation = Utils.getAnnotationElementValue(schema, "implementation", Class.class);
+                    final Class<?> implementation = Utils.getAnnotationElementValue(schema, "implementation",
+                            Class.class);
                     if (!Objects.equals(implementation, Void.class)) {
                         response.responseType = implementation;
                         if (swaggerOperation.responseType == null) {
@@ -148,8 +149,10 @@ public class Swagger {
             enrichedProperties.add(enrichedProperty);
         }
         final String comment = firstResult(
-                () -> Utils.getAnnotationElementValue(bean.getOrigin(), "io.swagger.v3.oas.annotations.media.Schema", "description", String.class),
-                () -> Utils.getAnnotationElementValue(bean.getOrigin(), "io.swagger.annotations.ApiModel", "description", String.class));
+                () -> Utils.getAnnotationElementValue(bean.getOrigin(), "io.swagger.v3.oas.annotations.media.Schema",
+                        "description", String.class),
+                () -> Utils.getAnnotationElementValue(bean.getOrigin(), "io.swagger.annotations.ApiModel",
+                        "description", String.class));
         final List<String> comments = comment != null && !comment.isEmpty() ? Arrays.asList(comment) : null;
         return bean.withProperties(enrichedProperties).withComments(Utils.concat(comments, bean.getComments()));
     }
@@ -167,7 +170,8 @@ public class Swagger {
     }
 
     private static PropertyModel enrichProperty1(PropertyModel property, AnnotatedElement annotatedElement) {
-        final Annotation apiModelProperty = Utils.getAnnotation(annotatedElement, "io.swagger.annotations.ApiModelProperty");
+        final Annotation apiModelProperty = Utils.getAnnotation(annotatedElement,
+                "io.swagger.annotations.ApiModelProperty");
         if (apiModelProperty == null) {
             return null;
         }
@@ -207,7 +211,8 @@ public class Swagger {
         return firstResult(supplier1, supplier2, null);
     }
 
-    private static <T> T firstResult(Supplier<? extends T> supplier1, Supplier<? extends T> supplier2, T defaultResult) {
+    private static <T> T firstResult(Supplier<? extends T> supplier1, Supplier<? extends T> supplier2,
+            T defaultResult) {
         final T result1 = supplier1.get();
         if (result1 != null) {
             return result1;

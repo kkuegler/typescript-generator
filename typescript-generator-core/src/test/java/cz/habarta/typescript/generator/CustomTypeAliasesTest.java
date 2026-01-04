@@ -5,7 +5,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class CustomTypeAliasesTest {
 
@@ -14,8 +13,10 @@ public class CustomTypeAliasesTest {
         final Settings settings = TestUtils.settings();
         settings.outputKind = TypeScriptOutputKind.module;
         settings.customTypeAliases = Collections.singletonMap("Id<T>", "string");
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.CustomTypeAliasesTest$IdRepresentation<T>", "Id<T>");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(MyEntityRepresentation.class));
+        settings.customTypeMappings = Collections
+                .singletonMap("cz.habarta.typescript.generator.CustomTypeAliasesTest$IdRepresentation<T>", "Id<T>");
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(MyEntityRepresentation.class));
         Assertions.assertTrue(output.contains("id: Id<MyEntityRepresentation>"));
         Assertions.assertTrue(output.contains("export type Id<T> = string"));
     }

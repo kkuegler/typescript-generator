@@ -45,19 +45,23 @@ public class AxiosClientExtension extends Extension {
         for (TsBeanModel bean : model.getBeans()) {
             if (bean.isJaxrsApplicationClientBean()) {
                 final String clientName = bean.getName().getSimpleName();
-                final String clientFullName = settings.mapPackagesToNamespaces ? bean.getName().getFullName(): bean.getName().getSimpleName();
+                final String clientFullName = settings.mapPackagesToNamespaces ? bean.getName().getFullName()
+                        : bean.getName().getSimpleName();
                 emitClient(writer, settings, exportKeyword, clientName, clientFullName);
             }
         }
     }
 
     private void emitSharedPart(Writer writer, Settings settings) {
-        final List<String> template = Utils.readLines(getClass().getResourceAsStream("AxiosClientExtension-shared.template.ts"));
+        final List<String> template = Utils
+                .readLines(getClass().getResourceAsStream("AxiosClientExtension-shared.template.ts"));
         Emitter.writeTemplate(writer, settings, template, null);
     }
 
-    private void emitClient(Writer writer, Settings settings, boolean exportKeyword, String clientName, String clientFullName) {
-        final List<String> template = Utils.readLines(getClass().getResourceAsStream("AxiosClientExtension-client.template.ts"));
+    private void emitClient(Writer writer, Settings settings, boolean exportKeyword, String clientName,
+            String clientFullName) {
+        final List<String> template = Utils
+                .readLines(getClass().getResourceAsStream("AxiosClientExtension-client.template.ts"));
         final Map<String, String> replacements = new LinkedHashMap<>();
         replacements.put("\"", settings.quotes);
         replacements.put("/*export*/ ", exportKeyword ? "export " : "");

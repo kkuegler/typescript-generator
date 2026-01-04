@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-
 public class CustomMappingTypeProcessor implements TypeProcessor {
 
     private final List<Settings.CustomTypeMapping> customMappings;
@@ -26,15 +25,15 @@ public class CustomMappingTypeProcessor implements TypeProcessor {
         final Settings.CustomTypeMapping mapping = customMappings.stream()
                 .filter(m -> m.matchSubclasses
                         ? m.rawClass.isAssignableFrom(rawClass)
-                        : m.rawClass.equals(rawClass)
-                )
+                        : m.rawClass.equals(rawClass))
                 .findFirst()
                 .orElse(null);
         if (mapping == null) {
             return null;
         }
 
-        final List<Type> resolvedTypeParameters = GenericsResolver.resolveBaseGenericVariables(mapping.rawClass, javaType);
+        final List<Type> resolvedTypeParameters = GenericsResolver.resolveBaseGenericVariables(mapping.rawClass,
+                javaType);
         final List<Class<?>> discoveredClasses = new ArrayList<>();
         final Function<Integer, TsType> processGenericParameter = index -> {
             final Type typeArgument = resolvedTypeParameters.get(index);

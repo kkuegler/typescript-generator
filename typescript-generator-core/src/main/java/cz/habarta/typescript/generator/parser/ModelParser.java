@@ -1,11 +1,7 @@
 
 package cz.habarta.typescript.generator.parser;
 
-import cz.habarta.typescript.generator.OptionalProperties;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TsType;
-import cz.habarta.typescript.generator.TypeProcessor;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.compiler.EnumKind;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.util.AnnotationGetter;
@@ -13,22 +9,11 @@ import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.PropertyMember;
 import cz.habarta.typescript.generator.util.Utils;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 public abstract class ModelParser {
 
@@ -38,18 +23,20 @@ public abstract class ModelParser {
     private final Queue<SourceType<? extends Type>> typeQueue;
     private final TypeProcessor commonTypeProcessor;
     private final List<RestApplicationParser> restApplicationParsers;
-        
+
     public static abstract class Factory {
 
         public TypeProcessor getSpecificTypeProcessor() {
             return null;
         }
 
-        public abstract ModelParser create(Settings settings, TypeProcessor commonTypeProcessor, List<RestApplicationParser> restApplicationParsers);
+        public abstract ModelParser create(Settings settings, TypeProcessor commonTypeProcessor,
+                List<RestApplicationParser> restApplicationParsers);
 
     }
 
-    public ModelParser(Settings settings, TypeProcessor commonTypeProcessor, List<RestApplicationParser> restApplicationParsers) {
+    public ModelParser(Settings settings, TypeProcessor commonTypeProcessor,
+            List<RestApplicationParser> restApplicationParsers) {
         this.settings = settings;
         this.javadoc = new Javadoc(settings);
         this.deprecationEnricher = new DeprecationEnricher();
@@ -74,7 +61,7 @@ public abstract class ModelParser {
     }
 
     private Model parseQueue() {
-        final Collection<Type> parsedTypes = new ArrayList<>();  // do not use hashcodes, we can only count on `equals` since we use custom `ParameterizedType`s
+        final Collection<Type> parsedTypes = new ArrayList<>(); // do not use hashcodes, we can only count on `equals` since we use custom `ParameterizedType`s
         final List<BeanModel> beans = new ArrayList<>();
         final List<EnumModel> enums = new ArrayList<>();
         SourceType<? extends Type> sourceType;
@@ -97,14 +84,18 @@ public abstract class ModelParser {
                 continue;
             }
 
-            final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null, settings);
+            final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null,
+                    settings);
             if (result != null) {
                 if (sourceType.type instanceof Class<?> && result.getTsType() instanceof TsType.ReferenceType) {
                     final Class<?> cls = (Class<?>) sourceType.type;
                     final TsType.ReferenceType referenceType = (TsType.ReferenceType) result.getTsType();
                     if (!referenceType.symbol.isResolved()) {
                         TypeScriptGenerator.getLogger().verbose("Parsing '" + cls.getName() + "'" +
-                                (sourceType.usedInClass != null ? " used in '" + sourceType.usedInClass.getSimpleName() + "." + sourceType.usedInMember + "'" : ""));
+                                (sourceType.usedInClass != null
+                                        ? " used in '" + sourceType.usedInClass.getSimpleName() + "."
+                                                + sourceType.usedInMember + "'"
+                                        : ""));
                         final DeclarationModel model = parseClass(sourceType.asSourceClass());
                         if (model instanceof EnumModel) {
                             enums.add((EnumModel) model);
@@ -128,29 +119,36 @@ public abstract class ModelParser {
 
     protected abstract DeclarationModel parseClass(SourceType<Class<?>> sourceClass);
 
-    protected static PropertyMember wrapMember(TypeParser typeParser, Member propertyMember, Integer creatorIndex, AnnotationGetter annotationGetter,
+    protected static PropertyMember wrapMember(TypeParser typeParser, Member propertyMember, Integer creatorIndex,
+            AnnotationGetter annotationGetter,
             String propertyName, Class<?> sourceClass) {
         if (propertyMember instanceof Field) {
             final Field field = (Field) propertyMember;
-            return new PropertyMember(field, typeParser.getFieldType(field), field.getAnnotatedType(), annotationGetter);
+            return new PropertyMember(field, typeParser.getFieldType(field), field.getAnnotatedType(),
+                    annotationGetter);
         }
         if (propertyMember instanceof Method) {
             final Method method = (Method) propertyMember;
             if (creatorIndex != null) {
-                return new PropertyMember(method, typeParser.getMethodParameterTypes(method).get(creatorIndex), method.getAnnotatedParameterTypes()[creatorIndex], annotationGetter);
+                return new PropertyMember(method, typeParser.getMethodParameterTypes(method).get(creatorIndex),
+                        method.getAnnotatedParameterTypes()[creatorIndex], annotationGetter);
             } else {
                 switch (method.getParameterCount()) {
-                    case 0:
-                        return new PropertyMember(method, typeParser.getMethodReturnType(method), method.getAnnotatedReturnType(), annotationGetter);
-                    case 1:
-                        return new PropertyMember(method, typeParser.getMethodParameterTypes(method).get(0), method.getAnnotatedParameterTypes()[0], annotationGetter);
+                case 0:
+                    return new PropertyMember(method, typeParser.getMethodReturnType(method),
+                            method.getAnnotatedReturnType(), annotationGetter);
+                case 1:
+                    return new PropertyMember(method, typeParser.getMethodParameterTypes(method).get(0),
+                            method.getAnnotatedParameterTypes()[0], annotationGetter);
                 }
             }
         }
         if (propertyMember instanceof Constructor) {
             final Constructor<?> constructor = (Constructor<?>) propertyMember;
             if (creatorIndex != null) {
-                return new PropertyMember(constructor, typeParser.getConstructorParameterTypes(constructor).get(creatorIndex), constructor.getAnnotatedParameterTypes()[creatorIndex], annotationGetter);
+                return new PropertyMember(constructor,
+                        typeParser.getConstructorParameterTypes(constructor).get(creatorIndex),
+                        constructor.getAnnotatedParameterTypes()[creatorIndex], annotationGetter);
             }
         }
         TypeScriptGenerator.getLogger().verbose(String.format(
@@ -161,16 +159,19 @@ public abstract class ModelParser {
         return null;
     }
 
-    protected boolean isAnnotatedPropertyIncluded(Function<Class<? extends Annotation>, Annotation> getAnnotationFunction, String propertyDescription) {
+    protected boolean isAnnotatedPropertyIncluded(
+            Function<Class<? extends Annotation>, Annotation> getAnnotationFunction, String propertyDescription) {
         boolean isIncluded = settings.includePropertyAnnotations.isEmpty()
                 || Utils.hasAnyAnnotation(getAnnotationFunction, settings.includePropertyAnnotations);
         if (!isIncluded) {
-            TypeScriptGenerator.getLogger().verbose("Skipping '" + propertyDescription + "' because it doesn't have any annotation from 'includePropertyAnnotations'");
+            TypeScriptGenerator.getLogger().verbose("Skipping '" + propertyDescription
+                    + "' because it doesn't have any annotation from 'includePropertyAnnotations'");
             return false;
         }
         boolean isExcluded = Utils.hasAnyAnnotation(getAnnotationFunction, settings.excludePropertyAnnotations);
         if (isExcluded) {
-            TypeScriptGenerator.getLogger().verbose("Skipping '" + propertyDescription + "' because it has some annotation from 'excludePropertyAnnotations'");
+            TypeScriptGenerator.getLogger().verbose("Skipping '" + propertyDescription
+                    + "' because it has some annotation from 'excludePropertyAnnotations'");
             return false;
         }
         return true;
@@ -180,7 +181,8 @@ public abstract class ModelParser {
         if (settings.optionalProperties == OptionalProperties.all) {
             return true;
         }
-        if (settings.optionalProperties == null || settings.optionalProperties == OptionalProperties.useSpecifiedAnnotations) {
+        if (settings.optionalProperties == null
+                || settings.optionalProperties == OptionalProperties.useSpecifiedAnnotations) {
             if (!settings.optionalAnnotations.isEmpty()) {
                 return Utils.hasAnyAnnotation(propertyMember::getAnnotation, settings.optionalAnnotations);
             }
@@ -199,9 +201,11 @@ public abstract class ModelParser {
         if (sourceClass.type.isEnum()) {
             @SuppressWarnings("unchecked")
             final Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) sourceClass.type;
-            final Map<String, Field> fields = Stream.of(enumClass.getDeclaredFields()).collect(Utils.toMap(field -> field.getName(), field -> field));
+            final Map<String, Field> fields = Stream.of(enumClass.getDeclaredFields())
+                    .collect(Utils.toMap(field -> field.getName(), field -> field));
             for (Enum<?> enumConstant : enumClass.getEnumConstants()) {
-                values.add(new EnumMemberModel(enumConstant.name(), enumConstant.name(), fields.get(enumConstant.name()), null));
+                values.add(new EnumMemberModel(enumConstant.name(), enumConstant.name(),
+                        fields.get(enumConstant.name()), null));
             }
         }
         return new EnumModel(sourceClass.type, EnumKind.StringBased, values, null);
@@ -211,13 +215,17 @@ public abstract class ModelParser {
         typeQueue.add(sourceType);
     }
 
-    protected PropertyModel processTypeAndCreateProperty(String name, Type type, Object typeContext, boolean optional, PropertyAccess access, Class<?> usedInClass, Member originalMember, PropertyModel.PullProperties pullProperties, List<String> comments) {
+    protected PropertyModel processTypeAndCreateProperty(String name, Type type, Object typeContext, boolean optional,
+            PropertyAccess access, Class<?> usedInClass, Member originalMember,
+            PropertyModel.PullProperties pullProperties, List<String> comments) {
         final Type resolvedType = GenericsResolver.resolveType(usedInClass, type, originalMember.getDeclaringClass());
-        final List<Class<?>> classes = commonTypeProcessor.discoverClassesUsedInType(resolvedType, typeContext, settings);
+        final List<Class<?>> classes = commonTypeProcessor.discoverClassesUsedInType(resolvedType, typeContext,
+                settings);
         for (Class<?> cls : classes) {
             typeQueue.add(new SourceType<>(cls, usedInClass, name));
         }
-        return new PropertyModel(name, resolvedType, optional, access, originalMember, pullProperties, typeContext, comments);
+        return new PropertyModel(name, resolvedType, optional, access, originalMember, pullProperties, typeContext,
+                comments);
     }
 
     public static boolean containsProperty(List<PropertyModel> properties, String propertyName) {

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-
 @SuppressWarnings("unused")
 public class IncludeExcludePropertyTest {
 
@@ -24,7 +23,8 @@ public class IncludeExcludePropertyTest {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = library;
         settings.includePropertyAnnotations = Arrays.asList(MyInclude.class);
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertTrue(!output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
         Assertions.assertTrue(!output.contains("property3"));
@@ -37,7 +37,8 @@ public class IncludeExcludePropertyTest {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = library;
         settings.excludePropertyAnnotations = Arrays.asList(MyExclude.class);
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertTrue(output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
         Assertions.assertTrue(!output.contains("property3"));
@@ -52,7 +53,8 @@ public class IncludeExcludePropertyTest {
 
         settings.includePropertyAnnotations = Arrays.asList(MyInclude.class);
         settings.excludePropertyAnnotations = Arrays.asList(MyExclude.class);
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ClassWithAnnotatedProperties.class));
         Assertions.assertTrue(!output.contains("property1"));
         Assertions.assertTrue(output.contains("property2"));
         Assertions.assertTrue(!output.contains("property3"));

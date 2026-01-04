@@ -1,11 +1,7 @@
 
 package cz.habarta.typescript.generator.spring;
 
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptFileType;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,16 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 public class SpringTest {
 
@@ -62,9 +49,11 @@ public class SpringTest {
         settings.generateSpringApplicationInterface = true;
         settings.scanSpringApplication = true;
         settings.classLoader = Thread.currentThread().getContextClassLoader();
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SpringTestApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(SpringTestApplication.class));
         Assertions.assertTrue(output.contains("interface RestApplication"));
-        Assertions.assertTrue(output.contains("greeting(queryParams?: { name?: string; count?: number; unnamed?: string; }): RestResponse<Greeting>"));
+        Assertions.assertTrue(output.contains(
+                "greeting(queryParams?: { name?: string; count?: number; unnamed?: string; }): RestResponse<Greeting>"));
         Assertions.assertTrue(output.contains("interface Greeting"));
     }
 
@@ -95,7 +84,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithReservedWord.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithReservedWord.class));
         Assertions.assertTrue(output.contains("getLogs(_class: string): RestResponse<string[]>"));
         Assertions.assertTrue(output.contains("uriEncoding`logs/${_class}`"));
     }
@@ -115,7 +105,8 @@ public class SpringTest {
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Controller2.class));
-        Assertions.assertTrue(output.contains("echo(queryParams: { message: string; count?: number; optionalRequestParam?: number; }): RestResponse<string>"));
+        Assertions.assertTrue(output.contains(
+                "echo(queryParams: { message: string; count?: number; optionalRequestParam?: number; }): RestResponse<string>"));
     }
 
     @Test
@@ -153,7 +144,8 @@ public class SpringTest {
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Controller6.class));
-        Assertions.assertTrue(output.contains("doSomething(input: number[]): RestResponse<{ [P in Controller6Enum]?: any }[]>"));
+        Assertions.assertTrue(
+                output.contains("doSomething(input: number[]): RestResponse<{ [P in Controller6Enum]?: any }[]>"));
         Assertions.assertTrue(output.contains("type Controller6Enum"));
     }
 
@@ -175,8 +167,7 @@ public class SpringTest {
         @GetMapping("/pets/{petId}")
         public Pet findPet(
                 @PathVariable("ownerId") Long ownerId,
-                @PathVariable(name = "petId") Long petId
-        ) {
+                @PathVariable(name = "petId") Long petId) {
             return null;
         }
     }
@@ -187,8 +178,7 @@ public class SpringTest {
         public String echo(
                 @RequestParam("message") String message,
                 @RequestParam(name = "count", defaultValue = "1") Integer count,
-                @RequestParam(required = false) Integer optionalRequestParam
-        ) {
+                @RequestParam(required = false) Integer optionalRequestParam) {
             return message;
         }
     }
@@ -197,8 +187,7 @@ public class SpringTest {
     public static class Controller7 {
         @RequestMapping("/echo2")
         public String echo(
-                @RequestParam(required = false) String message
-        ) {
+                @RequestParam(required = false) String message) {
             return message;
         }
     }
@@ -208,8 +197,10 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithModelAttribute.class));
-        Assertions.assertTrue(output.contains("echoWithModelAttribute(queryParams?: { message?: string; }): RestResponse<string>"));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithModelAttribute.class));
+        Assertions.assertTrue(
+                output.contains("echoWithModelAttribute(queryParams?: { message?: string; }): RestResponse<string>"));
     }
 
     @RestController
@@ -221,8 +212,14 @@ public class SpringTest {
 
         static class FilterParams {
             private String message;
-            public String getMessage() { return message; }
-            public void setMessage(String message) { this.message = message; }
+
+            public String getMessage() {
+                return message;
+            }
+
+            public void setMessage(String message) {
+                this.message = message;
+            }
         }
     }
 
@@ -247,8 +244,7 @@ public class SpringTest {
         @GetMapping("/pets2/{petId}")
         public Pet findPet(
                 @PathVariable Long ownerId,
-                @PathVariable Long petId
-        ) {
+                @PathVariable Long petId) {
             return null;
         }
     }
@@ -307,7 +303,8 @@ public class SpringTest {
         settings.generateSpringApplicationClient = true;
         settings.customTypeMappings.put("cz.habarta.typescript.generator.spring.SpringTest$Wrapper<T>", "Unwrap<T>");
         settings.importDeclarations.add("import { Unwrap } from './unwrap'");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithWrapper.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithWrapper.class));
         Assertions.assertTrue(output.contains("getEntity(): RestResponse<Unwrap<string>>"));
     }
 
@@ -317,7 +314,8 @@ public class SpringTest {
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
         settings.customTypeMappings.put("cz.habarta.typescript.generator.spring.SpringTest$Wrapper<T>", "T");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithWrapper.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithWrapper.class));
         Assertions.assertTrue(output.contains("getEntity(): RestResponse<string>"));
     }
 
@@ -338,7 +336,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ConcreteGenerticController.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ConcreteGenerticController.class));
         Assertions.assertTrue(output.contains("post(input: string): RestResponse<number>"));
     }
 
@@ -363,8 +362,10 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(PageableController.class));
-        Assertions.assertTrue(output.contains(" post(queryParams?: { page?: number; size?: number; sort?: string; }): RestResponse<Page<string>>"));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(PageableController.class));
+        Assertions.assertTrue(output.contains(
+                " post(queryParams?: { page?: number; size?: number; sort?: string; }): RestResponse<Page<string>>"));
     }
 
     @RestController
@@ -380,15 +381,16 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DoubleGenericController.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DoubleGenericController.class));
         Assertions.assertTrue(output.contains(" get(): RestResponse<string[]>"));
     }
 
     @RestController
-    public class DoubleGenericController  {
+    public class DoubleGenericController {
         @GetMapping("/generic2")
-        public ResponseEntity<List<String>> get () {
-            return ResponseEntity.ok(Arrays.asList( "a" , "b" , "c" ));
+        public ResponseEntity<List<String>> get() {
+            return ResponseEntity.ok(Arrays.asList("a", "b", "c"));
         }
     }
 
@@ -397,7 +399,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(CustomAnnotatedController.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(CustomAnnotatedController.class));
         Assertions.assertTrue(output.contains("getText(): RestResponse<string>"));
     }
 
@@ -419,7 +422,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(TestUrlTrailingSlashController.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(TestUrlTrailingSlashController.class));
         Assertions.assertTrue(Pattern.compile("response\\(\\):.*\\n.*uriEncoding`controller/`").matcher(output).find());
         Assertions.assertTrue(Pattern.compile("response2\\(\\):.*\\n.*uriEncoding`controller`").matcher(output).find());
     }
@@ -430,6 +434,7 @@ public class SpringTest {
         @GetMapping("/")
         public void response() {
         }
+
         @GetMapping("")
         public void response2() {
         }
@@ -440,7 +445,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithMultiValueMap.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithMultiValueMap.class));
         Assertions.assertTrue(output.contains("search(queryParams?: { [index: string]: any }): RestResponse<string>"));
     }
 
@@ -457,7 +463,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithSwaggerIgnore.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithSwaggerIgnore.class));
         Assertions.assertTrue(!output.contains("shouldBeExcluded"));
     }
 
@@ -475,7 +482,8 @@ public class SpringTest {
         final Settings settings = TestUtils.settings();
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.generateSpringApplicationClient = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ControllerWithSwagger3Ignore.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ControllerWithSwagger3Ignore.class));
         Assertions.assertTrue(!output.contains("shouldBeExcluded"));
     }
 

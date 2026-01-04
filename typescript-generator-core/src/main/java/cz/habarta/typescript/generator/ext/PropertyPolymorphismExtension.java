@@ -6,22 +6,10 @@ import cz.habarta.typescript.generator.TsType.ReferenceType;
 import cz.habarta.typescript.generator.compiler.ModelCompiler.TransformationPhase;
 import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsBeanCategory;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
+import cz.habarta.typescript.generator.emitter.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -189,7 +177,8 @@ public class PropertyPolymorphismExtension extends Extension {
                                     ReferenceType type = (ReferenceType) property.tsType;
                                     TsBeanModel referencedBean = model.getBean(type.symbol);
                                     if (isPolymorphicBase.test(referencedBean.getOrigin())) {
-                                        Symbol refSymbol = context.getSymbolTable().addSuffixToSymbol(type.symbol, "Ref");
+                                        Symbol refSymbol = context.getSymbolTable().addSuffixToSymbol(type.symbol,
+                                                "Ref");
                                         newProperties.add(property.withTsType(new TsType.ReferenceType(refSymbol)));
                                         continue;
                                     }
@@ -222,10 +211,12 @@ public class PropertyPolymorphismExtension extends Extension {
                                 for (Class<?> subType : subTypes.getOrDefault(base.getOrigin(),
                                         Collections.emptySet())) {
                                     refProperties.add(new TsPropertyModel(getPropertyName.apply(subType),
-                                            new ReferenceType(context.getSymbolTable().getSymbol(subType)), null, true, null));
+                                            new ReferenceType(context.getSymbolTable().getSymbol(subType)), null, true,
+                                            null));
                                 }
                                 newBeans.add(new TsBeanModel(base.getOrigin(), TsBeanCategory.Data, false,
-                                context.getSymbolTable().addSuffixToSymbol(base.getName(), "Ref"), null, null, null, null,
+                                        context.getSymbolTable().addSuffixToSymbol(base.getName(), "Ref"), null, null,
+                                        null, null,
                                         refProperties, null, null, null));
                             }
                         }

@@ -5,21 +5,15 @@ import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.util.Utils;
+import cz.habarta.typescript.generator.xmldoclet.*;
 import cz.habarta.typescript.generator.xmldoclet.Class;
 import cz.habarta.typescript.generator.xmldoclet.Enum;
-import cz.habarta.typescript.generator.xmldoclet.EnumConstant;
-import cz.habarta.typescript.generator.xmldoclet.Field;
-import cz.habarta.typescript.generator.xmldoclet.Interface;
-import cz.habarta.typescript.generator.xmldoclet.Method;
 import cz.habarta.typescript.generator.xmldoclet.Package;
-import cz.habarta.typescript.generator.xmldoclet.Root;
-import cz.habarta.typescript.generator.xmldoclet.TagInfo;
 import jakarta.xml.bind.JAXB;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 
 public class Javadoc {
 
@@ -69,7 +63,8 @@ public class Javadoc {
         if (bean.getOrigin().isInterface()) {
             final Interface dInterface = findJavadocInterface(bean.getOrigin(), dRoots);
             if (dInterface != null) {
-                return enrichBean(bean, dInterface.getComment(), dInterface.getTag(), dInterface.getField(), dInterface.getMethod());
+                return enrichBean(bean, dInterface.getComment(), dInterface.getTag(), dInterface.getField(),
+                        dInterface.getMethod());
             }
         } else {
             final Class dClass = findJavadocClass(bean.getOrigin(), dRoots);
@@ -80,7 +75,8 @@ public class Javadoc {
         return bean;
     }
 
-    private BeanModel enrichBean(BeanModel bean, String beanComment, List<TagInfo> tags, List<Field> dFields, List<Method> dMethods) {
+    private BeanModel enrichBean(BeanModel bean, String beanComment, List<TagInfo> tags, List<Field> dFields,
+            List<Method> dMethods) {
         final List<PropertyModel> enrichedProperties = new ArrayList<>();
         for (PropertyModel property : bean.getProperties()) {
             final PropertyModel enrichedProperty = enrichProperty(property, dFields, dMethods);
@@ -104,8 +100,8 @@ public class Javadoc {
             final Field dField = findJavadocField(field.getName(), dFields);
             propertyComment = dField != null ? dField.getComment() : null;
             tags = dField != null ? dField.getTag() : null;
-        } 
-        if (propertyComment == null )  {
+        }
+        if (propertyComment == null) {
             //give a chance for comments on fields but not on getter setters
             final Field dField = findJavadocField(property.getName(), dFields);
             propertyComment = dField != null ? dField.getComment() : null;
@@ -131,7 +127,7 @@ public class Javadoc {
 
     private EnumMemberModel enrichEnumMember(EnumMemberModel enumMember, Enum dEnum) {
         final EnumConstant dConstant = findJavadocEnumConstant(enumMember.getPropertyName(), dEnum);
-        final List<TagInfo> tags = dConstant != null ? dConstant.getTag(): null;
+        final List<TagInfo> tags = dConstant != null ? dConstant.getTag() : null;
         final String memberComment = dConstant != null ? dConstant.getComment() : null;
         return enumMember
                 .withComments(combineComments(getComments(memberComment, tags), enumMember.getComments()));

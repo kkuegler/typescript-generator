@@ -1,11 +1,7 @@
 
 package cz.habarta.typescript.generator;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,7 +11,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class SwaggerTest {
 
@@ -38,7 +33,8 @@ public class SwaggerTest {
     public void testDocumentation() {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(output.contains("Documentation for operation 1."));
         Assertions.assertTrue(output.contains("Bad Request"));
         Assertions.assertTrue(output.contains("Not Found"));
@@ -52,7 +48,8 @@ public class SwaggerTest {
     public void testDataType() {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(output.contains("property1: string"));
         Assertions.assertTrue(output.contains("property2?: string"));
         Assertions.assertTrue(output.contains("property3: string"));
@@ -63,7 +60,8 @@ public class SwaggerTest {
         final Settings settings = TestUtils.settings();
         settings.generateJaxrsApplicationInterface = true;
         settings.ignoreSwaggerAnnotations = true;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DocumentedApplication.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DocumentedApplication.class));
         Assertions.assertTrue(!output.contains("Documentation for operation 1."));
         Assertions.assertTrue(!output.contains("Bad Request"));
         Assertions.assertTrue(!output.contains("Not Found"));
@@ -110,7 +108,7 @@ public class SwaggerTest {
             return Response.ok(new TestResponse()).build();
         }
 
-        @ApiResponses({@ApiResponse(code = 400, message = "", response = TestError.class)})
+        @ApiResponses({ @ApiResponse(code = 400, message = "", response = TestError.class) })
         @GET
         public Response testOperationError() {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -130,7 +128,6 @@ public class SwaggerTest {
     private static class TestError {
     }
 
-
     private static class DocumentedApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
@@ -143,8 +140,8 @@ public class SwaggerTest {
 
         @ApiOperation("Documentation for operation 1.")
         @ApiResponses({
-            @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "Not Found"),
+                @ApiResponse(code = 400, message = "Bad Request"),
+                @ApiResponse(code = 404, message = "Not Found"),
         })
         @GET
         public DocumentedBean documentedOperation1() {

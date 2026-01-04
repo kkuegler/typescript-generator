@@ -16,8 +16,7 @@ public class ImmutablesTest {
     public void testImmutables() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Shape.class));
-        final String expected = (
-                "\n" +
+        final String expected = ("\n" +
                 "interface Shape {\n" +
                 "    kind: 'square' | 'rectangle' | 'circle';\n" +
                 "}\n" +
@@ -39,17 +38,15 @@ public class ImmutablesTest {
                 "}\n" +
                 "\n" +
                 "type ShapeUnion = Square | Rectangle | Circle;\n" +
-                ""
-                ).replace('\'', '"');
+                "").replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
-
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = Square.class, name = "square"),
-        @JsonSubTypes.Type(value = Rectangle.class, name = "rectangle"),
-        @JsonSubTypes.Type(value = Circle.class, name = "circle"),
+            @JsonSubTypes.Type(value = Square.class, name = "square"),
+            @JsonSubTypes.Type(value = Rectangle.class, name = "rectangle"),
+            @JsonSubTypes.Type(value = Circle.class, name = "circle"),
     })
     public static interface Shape {
     }
@@ -60,17 +57,19 @@ public class ImmutablesTest {
 
     @Value.Immutable
     @JsonSerialize(as = ImmutableRectangle.class)
-    @JsonPropertyOrder({"width", "height"})
+    @JsonPropertyOrder({ "width", "height" })
     @JsonDeserialize(as = ImmutableRectangle.class)
     public static abstract class Rectangle implements Shape {
         public abstract double width();
+
         public abstract double height();
 
         public static Rectangle.Builder builder() {
             return new Rectangle.Builder();
         }
 
-        public static final class Builder extends ImmutableRectangle.Builder {}
+        public static final class Builder extends ImmutableRectangle.Builder {
+        }
     }
 
     @Value.Immutable
@@ -79,7 +78,8 @@ public class ImmutablesTest {
     public static interface Circle extends Shape {
         double radius();
 
-        final class Builder extends ImmutableCircle.Builder {}
+        final class Builder extends ImmutableCircle.Builder {
+        }
     }
 
 }
