@@ -1,13 +1,7 @@
 
 package cz.habarta.typescript.generator.emitter;
 
-import cz.habarta.typescript.generator.ModuleDependency;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TsParameter;
-import cz.habarta.typescript.generator.TsType;
-import cz.habarta.typescript.generator.TypeScriptFileType;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
-import cz.habarta.typescript.generator.TypeScriptOutputKind;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import java.io.IOException;
@@ -18,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 public class Emitter implements EmitterExtension.Writer {
 
@@ -58,7 +51,8 @@ public class Emitter implements EmitterExtension.Writer {
         }
         if (!settings.noFileComment) {
             final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            writeIndentedLine("// Generated using typescript-generator version " + TypeScriptGenerator.Version + " on " + timestamp + ".");
+            writeIndentedLine("// Generated using typescript-generator version " + TypeScriptGenerator.Version + " on "
+                    + timestamp + ".");
         }
     }
 
@@ -76,7 +70,8 @@ public class Emitter implements EmitterExtension.Writer {
             writeNewLine();
             for (ModuleDependency dependency : settings.moduleDependencies) {
                 if (!dependency.global) {
-                    writeIndentedLine("import * as " + dependency.importAs + " from " + quote(dependency.importFrom, settings) + ";");
+                    writeIndentedLine("import * as " + dependency.importAs + " from "
+                            + quote(dependency.importFrom, settings) + ";");
                 }
             }
         }
@@ -106,13 +101,14 @@ public class Emitter implements EmitterExtension.Writer {
         if (settings.namespace != null) {
             writeNewLine();
             String prefix = "";
-            if (settings.outputFileType == TypeScriptFileType.declarationFile && settings.outputKind == TypeScriptOutputKind.global) {
+            if (settings.outputFileType == TypeScriptFileType.declarationFile
+                    && settings.outputKind == TypeScriptOutputKind.global) {
                 prefix = "declare ";
             }
             if (settings.outputKind == TypeScriptOutputKind.module) {
                 prefix = "export ";
             }
-            writeIndentedLine(prefix +  "namespace " + settings.namespace + " {");
+            writeIndentedLine(prefix + "namespace " + settings.namespace + " {");
             indent++;
             final boolean exportElements = settings.outputFileType == TypeScriptFileType.implementationFile;
             emitElements(model, exportElements, false);
@@ -121,7 +117,8 @@ public class Emitter implements EmitterExtension.Writer {
             writeIndentedLine("}");
         } else {
             final boolean exportElements = settings.outputKind == TypeScriptOutputKind.module;
-            final boolean declareElements = settings.outputFileType == TypeScriptFileType.declarationFile && settings.outputKind == TypeScriptOutputKind.global;
+            final boolean declareElements = settings.outputFileType == TypeScriptFileType.declarationFile
+                    && settings.outputKind == TypeScriptOutputKind.global;
             emitElements(model, exportElements, declareElements);
         }
     }
@@ -152,7 +149,8 @@ public class Emitter implements EmitterExtension.Writer {
         }
     }
 
-    private void emitFullyQualifiedDeclaration(TsDeclarationModel declaration, boolean exportKeyword, boolean declareKeyword) {
+    private void emitFullyQualifiedDeclaration(TsDeclarationModel declaration, boolean exportKeyword,
+            boolean declareKeyword) {
         if (declaration.getName().getNamespace() != null) {
             writeNewLine();
             final String prefix = declareKeyword ? "declare " : "";
@@ -184,12 +182,15 @@ public class Emitter implements EmitterExtension.Writer {
         emitComments(bean.getComments());
         emitDecorators(bean.getDecorators());
         final String declarationType = bean.isClass() ? "class" : "interface";
-        final String typeParameters = bean.getTypeParameters().isEmpty() ? "" : "<" + formatList(settings, bean.getTypeParameters()) + ">";
+        final String typeParameters = bean.getTypeParameters().isEmpty() ? ""
+                : "<" + formatList(settings, bean.getTypeParameters()) + ">";
         final List<TsType> extendsList = bean.getExtendsList();
         final List<TsType> implementsList = bean.getImplementsList();
         final String extendsClause = extendsList.isEmpty() ? "" : " extends " + formatList(settings, extendsList);
-        final String implementsClause = implementsList.isEmpty() ? "" : " implements " + formatList(settings, implementsList);
-        writeIndentedLine(exportKeyword, declarationType + " " + bean.getName().getSimpleName() + typeParameters + extendsClause + implementsClause + " {");
+        final String implementsClause = implementsList.isEmpty() ? ""
+                : " implements " + formatList(settings, implementsList);
+        writeIndentedLine(exportKeyword, declarationType + " " + bean.getName().getSimpleName() + typeParameters
+                + extendsClause + implementsClause + " {");
         indent++;
         for (TsPropertyModel property : bean.getProperties()) {
             emitProperty(property);
@@ -211,8 +212,11 @@ public class Emitter implements EmitterExtension.Writer {
         final String staticString = property.modifiers.isStatic ? "static " : "";
         final String readonlyString = property.modifiers.isReadonly ? "readonly " : "";
         final String questionMark = tsType instanceof TsType.OptionalType ? "?" : "";
-        final String defaultString = property.getDefaultValue() != null ? " = " + property.getDefaultValue().format(settings) : "";
-        writeIndentedLine(staticString + readonlyString + quoteIfNeeded(property.getName(), settings) + questionMark + ": " + tsType.format(settings) + defaultString + ";");
+        final String defaultString = property.getDefaultValue() != null
+                ? " = " + property.getDefaultValue().format(settings)
+                : "";
+        writeIndentedLine(staticString + readonlyString + quoteIfNeeded(property.getName(), settings) + questionMark
+                + ": " + tsType.format(settings) + defaultString + ";");
     }
 
     private void emitDecorators(List<TsDecorator> decorators) {
@@ -260,7 +264,8 @@ public class Emitter implements EmitterExtension.Writer {
             emitDecorators(((TsMethodModel) method).getDecorators());
         }
         final String staticString = method.getModifiers().isStatic ? "static " : "";
-        final String typeParametersString = method.getTypeParameters().isEmpty() ? "" : "<" + formatList(settings, method.getTypeParameters()) + ">";
+        final String typeParametersString = method.getTypeParameters().isEmpty() ? ""
+                : "<" + formatList(settings, method.getTypeParameters()) + ">";
         final String parametersString = formatParameterModelList(settings, method.getParameters());
         final String type = method.getReturnType() != null ? ": " + method.getReturnType() : "";
         final String signature = staticString + method.getName() + typeParametersString + parametersString + type;
@@ -279,7 +284,9 @@ public class Emitter implements EmitterExtension.Writer {
         final List<String> params = new ArrayList<>();
         for (TsParameterModel parameter : parameters) {
             final List<TsDecorator> decorators = parameter.getDecorators();
-            final String decoratorsString = decorators != null && !decorators.isEmpty() ? formatDecoratorList(settings, decorators) + " " : "";
+            final String decoratorsString = decorators != null && !decorators.isEmpty()
+                    ? formatDecoratorList(settings, decorators) + " "
+                    : "";
             final TsAccessibilityModifier accessibilityModifier = parameter.getAccessibilityModifier();
             final String access = accessibilityModifier != null ? accessibilityModifier.format() + " " : "";
             params.add(decoratorsString + access + formatParameterNameAndType(parameter));
@@ -353,11 +360,14 @@ public class Emitter implements EmitterExtension.Writer {
     private void emitVariableDeclarationStatement(TsVariableDeclarationStatement variableDeclarationStatement) {
         writeIndentedLine(
                 (variableDeclarationStatement.isConst() ? "const " : "let ")
-                + variableDeclarationStatement.getName()
-                + (variableDeclarationStatement.getType() != null ? ": " + variableDeclarationStatement.getType().format(settings) : "")
-                + (variableDeclarationStatement.getInitializer() != null ? " = " + variableDeclarationStatement.getInitializer().format(settings) : "")
-                + ";"
-        );
+                        + variableDeclarationStatement.getName()
+                        + (variableDeclarationStatement.getType() != null
+                                ? ": " + variableDeclarationStatement.getType().format(settings)
+                                : "")
+                        + (variableDeclarationStatement.getInitializer() != null
+                                ? " = " + variableDeclarationStatement.getInitializer().format(settings)
+                                : "")
+                        + ";");
     }
 
     private void emitTsSwitchStatement(TsSwitchStatement switchStatement) {
@@ -385,7 +395,8 @@ public class Emitter implements EmitterExtension.Writer {
         final String genericParameters = alias.getTypeParameters().isEmpty()
                 ? ""
                 : "<" + formatList(settings, alias.getTypeParameters()) + ">";
-        writeIndentedLine(exportKeyword, "type " + alias.getName().getSimpleName() + genericParameters + " = " + alias.getDefinition().format(settings) + ";");
+        writeIndentedLine(exportKeyword, "type " + alias.getName().getSimpleName() + genericParameters + " = "
+                + alias.getDefinition().format(settings) + ";");
     }
 
     private void emitLiteralEnum(TsEnumModel enumModel, boolean exportKeyword, boolean declareKeyword) {
@@ -393,7 +404,8 @@ public class Emitter implements EmitterExtension.Writer {
         emitComments(enumModel.getComments());
         final String declareText = declareKeyword ? "declare " : "";
         final String constText = enumModel.isNonConstEnum() ? "" : "const ";
-        writeIndentedLine(exportKeyword, declareText + constText + "enum " + enumModel.getName().getSimpleName() + " {");
+        writeIndentedLine(exportKeyword,
+                declareText + constText + "enum " + enumModel.getName().getSimpleName() + " {");
         indent++;
         for (EnumMemberModel member : enumModel.getMembers()) {
             emitComments(member.getComments());
@@ -427,7 +439,8 @@ public class Emitter implements EmitterExtension.Writer {
             if (!extensionLines.isEmpty()) {
                 writeNewLine();
                 writeNewLine();
-                writeIndentedLine(String.format("// Added by '%s' extension", emitterExtension.getClass().getSimpleName()));
+                writeIndentedLine(
+                        String.format("// Added by '%s' extension", emitterExtension.getClass().getSimpleName()));
                 for (String line : extensionLines) {
                     this.writeIndentedLine(line);
                 }
@@ -452,7 +465,8 @@ public class Emitter implements EmitterExtension.Writer {
         }
     }
 
-    public static void writeTemplate(EmitterExtension.Writer writer, Settings settings, List<String> template, Map<String, String> replacements) {
+    public static void writeTemplate(EmitterExtension.Writer writer, Settings settings, List<String> template,
+            Map<String, String> replacements) {
         for (String line : template) {
             if (replacements != null) {
                 for (Map.Entry<String, String> entry : replacements.entrySet()) {
@@ -461,8 +475,7 @@ public class Emitter implements EmitterExtension.Writer {
             }
             writer.writeIndentedLine(line
                     .replace("\t", settings.indentString)
-                    .replace("\"", settings.quotes)
-            );
+                    .replace("\"", settings.quotes));
         }
     }
 

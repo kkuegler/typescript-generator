@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 
-
 public class PropertyModel {
 
     private final String name;
@@ -28,7 +27,8 @@ public class PropertyModel {
         }
     }
 
-    public PropertyModel(String name, Type type, boolean optional, PropertyAccess access, Member originalMember, PullProperties pullProperties, Object context, List<String> comments) {
+    public PropertyModel(String name, Type type, boolean optional, PropertyAccess access, Member originalMember,
+            PullProperties pullProperties, Object context, List<String> comments) {
         this.name = Objects.requireNonNull(name);
         this.type = Objects.requireNonNull(type);
         this.optional = optional;

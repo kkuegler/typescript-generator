@@ -5,14 +5,13 @@ import cz.habarta.typescript.generator.compiler.EnumKind;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import java.util.List;
 
-
 public class EnumModel extends DeclarationModel {
 
     private final EnumKind kind;
     private final List<EnumMemberModel> members;
 
     public EnumModel(Class<?> origin, EnumKind kind, List<EnumMemberModel> members, List<String> comments) {
-        super (origin, comments);
+        super(origin, comments);
         this.kind = kind;
         this.members = members;
     }

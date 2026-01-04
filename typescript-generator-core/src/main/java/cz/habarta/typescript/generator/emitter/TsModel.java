@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class TsModel {
 
     private final List<TsBeanModel> beans;
@@ -18,10 +17,12 @@ public class TsModel {
     private final List<TsHelper> helpers;
 
     public TsModel() {
-        this (new ArrayList<TsBeanModel>(), new ArrayList<TsEnumModel>(), new ArrayList<TsEnumModel>(), new ArrayList<TsAliasModel>(), new ArrayList<TsHelper>());
+        this(new ArrayList<TsBeanModel>(), new ArrayList<TsEnumModel>(), new ArrayList<TsEnumModel>(),
+                new ArrayList<TsAliasModel>(), new ArrayList<TsHelper>());
     }
 
-    public TsModel(List<TsBeanModel> beans, List<TsEnumModel> enums, List<TsEnumModel> originalStringEnums, List<TsAliasModel> typeAliases, List<TsHelper> helpers) {
+    public TsModel(List<TsBeanModel> beans, List<TsEnumModel> enums, List<TsEnumModel> originalStringEnums,
+            List<TsAliasModel> typeAliases, List<TsHelper> helpers) {
         this.beans = Objects.requireNonNull(beans);
         this.enums = Objects.requireNonNull(enums);
         this.originalStringEnums = originalStringEnums;

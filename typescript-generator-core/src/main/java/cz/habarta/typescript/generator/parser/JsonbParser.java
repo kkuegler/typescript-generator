@@ -8,11 +8,7 @@ import cz.habarta.typescript.generator.type.JParameterizedType;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.PropertyMember;
 import cz.habarta.typescript.generator.util.Utils;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonNumber;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonString;
-import jakarta.json.JsonValue;
+import jakarta.json.*;
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -23,30 +19,8 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -68,7 +42,7 @@ public class JsonbParser extends ModelParser {
 
         @Override
         public JsonbParser create(Settings settings, TypeProcessor commonTypeProcessor,
-                                  List<RestApplicationParser> restApplicationParsers) {
+                List<RestApplicationParser> restApplicationParsers) {
             return new JsonbParser(settings, commonTypeProcessor, restApplicationParsers);
         }
 
@@ -79,7 +53,7 @@ public class JsonbParser extends ModelParser {
     }
 
     public JsonbParser(Settings settings, TypeProcessor commonTypeProcessor,
-                       List<RestApplicationParser> restApplicationParsers) {
+            List<RestApplicationParser> restApplicationParsers) {
         super(settings, commonTypeProcessor, restApplicationParsers);
         johnzonAny = loadJohnzonAnyClass();
     }
@@ -106,7 +80,7 @@ public class JsonbParser extends ModelParser {
     // simplistic impl handling @JsonbProperty and @JsonbTransient on fields
     private BeanModel parseBean(final SourceType<Class<?>> sourceClass) {
         final JsonbPropertyExtractor extractor = createExtractor();
-        final  List<PropertyModel> properties = extractor.visit(sourceClass.type);
+        final List<PropertyModel> properties = extractor.visit(sourceClass.type);
 
         final Type superclass = sourceClass.type.getGenericSuperclass() == Object.class ? null
                 : sourceClass.type.getGenericSuperclass();
@@ -125,7 +99,9 @@ public class JsonbParser extends ModelParser {
     private JsonbPropertyExtractor createExtractor() {
         return new JsonbPropertyExtractor(
                 johnzonAny,
-                new PropertyNamingStrategyFactory(Optional.ofNullable(settings.jsonbConfiguration).map(c -> c.namingStrategy).orElse("IDENTITY")).create(),
+                new PropertyNamingStrategyFactory(
+                        Optional.ofNullable(settings.jsonbConfiguration).map(c -> c.namingStrategy).orElse("IDENTITY"))
+                        .create(),
                 new DefaultPropertyVisibilityStrategy(settings.classLoader),
                 new FieldAndMethodAccessMode(johnzonAny));
     }
@@ -162,7 +138,8 @@ public class JsonbParser extends ModelParser {
             // to user feedbacks so for our libraryDefinition let's assume it is true.
             // only exception is about optional wrappers which can be optional indeed
             final List<Type> parameterTypes = settings.getTypeParser().getConstructorParameterTypes(constructor);
-            final List<Pair<Parameter, Type>> parameters = Utils.zip(Arrays.asList(constructor.getParameters()), parameterTypes);
+            final List<Pair<Parameter, Type>> parameters = Utils.zip(Arrays.asList(constructor.getParameters()),
+                    parameterTypes);
             return parameters.stream()
                     .map(it -> {
                         final Type type = it.getValue2();
@@ -173,15 +150,15 @@ public class JsonbParser extends ModelParser {
                                 parameter, it.getValue2(), parameter.getAnnotatedType(), parameter::getAnnotation);
                         return JsonbParser.this.processTypeAndCreateProperty(
                                 property
-                                    .map(JsonbProperty::value)
-                                    .filter(p -> !p.isEmpty())
-                                    .orElseGet(parameter::getName),
+                                        .map(JsonbProperty::value)
+                                        .filter(p -> !p.isEmpty())
+                                        .orElseGet(parameter::getName),
                                 type, null,
-                                settings.optionalProperties != OptionalProperties.useLibraryDefinition ?
-                                        isPropertyOptional(propertyMember) :
-                                        (isOptional(type) || OptionalInt.class == type ||
-                                        OptionalLong.class == type || OptionalDouble.class == type ||
-                                        property.map(JsonbProperty::nillable).orElse(false)),
+                                settings.optionalProperties != OptionalProperties.useLibraryDefinition
+                                        ? isPropertyOptional(propertyMember)
+                                        : (isOptional(type) || OptionalInt.class == type ||
+                                                OptionalLong.class == type || OptionalDouble.class == type ||
+                                                property.map(JsonbProperty::nillable).orElse(false)),
                                 null, constructor.getDeclaringClass(), new ParameterMember(parameter),
                                 null, null);
                     });
@@ -195,16 +172,19 @@ public class JsonbParser extends ModelParser {
                         final DecoratedType decoratedType = e.getValue();
                         final Member member = findMember(decoratedType);
                         final PropertyMember propertyMember = wrapMember(
-                                settings.getTypeParser(), member, /*creatorIndex*/ null, decoratedType::getAnnotation, member.getName(), member.getDeclaringClass());
+                                settings.getTypeParser(), member, /*creatorIndex*/ null, decoratedType::getAnnotation,
+                                member.getName(), member.getDeclaringClass());
                         if (propertyMember == null) {
                             return null;
                         }
 
                         final JsonbProperty property = decoratedType.getAnnotation(JsonbProperty.class);
-                        final String key = property == null || property.value().isEmpty() ? naming.translateName(e.getKey()) : property.value();
-                        final Type type = Field.class.isInstance(member) ?
-                                settings.getTypeParser().getFieldType(Field.class.cast(member)) :
-                                settings.getTypeParser().getMethodReturnType(Method.class.cast(member));
+                        final String key = property == null || property.value().isEmpty()
+                                ? naming.translateName(e.getKey())
+                                : property.value();
+                        final Type type = Field.class.isInstance(member)
+                                ? settings.getTypeParser().getFieldType(Field.class.cast(member))
+                                : settings.getTypeParser().getMethodReturnType(Method.class.cast(member));
                         return JsonbParser.this.processTypeAndCreateProperty(
                                 key, replaceType(type),
                                 null, settings.optionalProperties == OptionalProperties.useLibraryDefinition ||
@@ -221,10 +201,10 @@ public class JsonbParser extends ModelParser {
                 return Object.class;
             }
             if (type == JsonObject.class || type == javax.json.JsonObject.class) {
-                return new JParameterizedType(Map.class, new Type[]{String.class, Object.class}, null);
+                return new JParameterizedType(Map.class, new Type[] { String.class, Object.class }, null);
             }
             if (type == JsonArray.class || type == javax.json.JsonArray.class) {
-                return new JParameterizedType(List.class, new Type[]{Object.class}, null);
+                return new JParameterizedType(List.class, new Type[] { Object.class }, null);
             }
             if (type == JsonString.class || type == javax.json.JsonString.class) {
                 return String.class;
@@ -237,30 +217,33 @@ public class JsonbParser extends ModelParser {
 
         private Member findMember(final DecoratedType value) {
             if (FieldAndMethodAccessMode.CompositeDecoratedType.class.isInstance(value)) { // unwrap to use the right reader
-                final FieldAndMethodAccessMode.CompositeDecoratedType<?> decoratedType = FieldAndMethodAccessMode.CompositeDecoratedType.class.cast(value);
+                final FieldAndMethodAccessMode.CompositeDecoratedType<?> decoratedType = FieldAndMethodAccessMode.CompositeDecoratedType.class
+                        .cast(value);
                 final DecoratedType type1 = decoratedType.getType1();
                 final DecoratedType type2 = decoratedType.getType2();
                 if (FieldAccessMode.FieldDecoratedType.class.isInstance(type1)) {
                     return findMember(type1);
                 }
                 return findMember(type2);
-            } else if (JsonbParser.FieldAccessMode.FieldDecoratedType.class.isInstance(value)){
+            } else if (JsonbParser.FieldAccessMode.FieldDecoratedType.class.isInstance(value)) {
                 return JsonbParser.FieldAccessMode.FieldDecoratedType.class.cast(value).getField();
-            } else if (MethodAccessMode.MethodDecoratedType.class.isInstance(value)){
+            } else if (MethodAccessMode.MethodDecoratedType.class.isInstance(value)) {
                 return MethodAccessMode.MethodDecoratedType.class.cast(value).getMethod();
             }
             throw new IllegalArgumentException("Unsupported reader: " + value);
         }
 
         private boolean isOptional(final Type type) {
-            return ParameterizedType.class.isInstance(type) && Optional.class == ParameterizedType.class.cast(type).getRawType();
+            return ParameterizedType.class.isInstance(type)
+                    && Optional.class == ParameterizedType.class.cast(type).getRawType();
         }
 
         private boolean isTransient(final JsonbParser.DecoratedType dt, final PropertyVisibilityStrategy visibility) {
             if (!FieldAndMethodAccessMode.CompositeDecoratedType.class.isInstance(dt)) {
                 return isTransient(dt) || shouldSkip(visibility, dt);
             }
-            final FieldAndMethodAccessMode.CompositeDecoratedType<?> cdt = FieldAndMethodAccessMode.CompositeDecoratedType.class.cast(dt);
+            final FieldAndMethodAccessMode.CompositeDecoratedType<?> cdt = FieldAndMethodAccessMode.CompositeDecoratedType.class
+                    .cast(dt);
             return isTransient(cdt.getType1()) || isTransient(cdt.getType2()) ||
                     (shouldSkip(visibility, cdt.getType1()) && shouldSkip(visibility, cdt.getType2()));
         }
@@ -281,20 +264,22 @@ public class JsonbParser extends ModelParser {
         }
 
         private boolean isNotVisible(final PropertyVisibilityStrategy visibility, final JsonbParser.DecoratedType t) {
-            return !(JsonbParser.FieldAccessMode.FieldDecoratedType.class.isInstance(t) ?
-                    visibility.isVisible(JsonbParser.FieldAccessMode.FieldDecoratedType.class.cast(t).getField())
+            return !(JsonbParser.FieldAccessMode.FieldDecoratedType.class.isInstance(t)
+                    ? visibility.isVisible(JsonbParser.FieldAccessMode.FieldDecoratedType.class.cast(t).getField())
                     : (MethodAccessMode.MethodDecoratedType.class.isInstance(t) &&
-                    visibility.isVisible(MethodAccessMode.MethodDecoratedType.class.cast(t).getMethod())));
+                            visibility.isVisible(MethodAccessMode.MethodDecoratedType.class.cast(t).getMethod())));
         }
     }
 
     private interface DecoratedType {
         Type getType();
+
         <T extends Annotation> T getAnnotation(Class<T> clazz);
+
         <T extends Annotation> T getClassOrPackageAnnotation(Class<T> clazz);
     }
 
-    private interface BaseAccessMode  {
+    private interface BaseAccessMode {
         Map<String, JsonbParser.DecoratedType> find(Class<?> clazz);
     }
 
@@ -396,24 +381,29 @@ public class JsonbParser extends ModelParser {
                 readers.putAll(Stream.of(clazz.getMethods())
                         .filter(it -> it.getDeclaringClass() != Object.class && it.getParameterCount() == 0)
                         .filter(it -> !"toString".equals(it.getName()) && !"hashCode".equals(it.getName()))
-                        .filter(it -> !isIgnored(it.getName()) && johnzonAny != null && Meta.getAnnotation(it, johnzonAny) == null)
-                        .collect(Collectors.toMap(Method::getName, it -> new MethodDecoratedType(it, it.getGenericReturnType()) {
-                        })));
+                        .filter(it -> !isIgnored(it.getName()) && johnzonAny != null
+                                && Meta.getAnnotation(it, johnzonAny) == null)
+                        .collect(Collectors.toMap(Method::getName,
+                                it -> new MethodDecoratedType(it, it.getGenericReturnType()) {
+                                })));
             } else {
                 final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
                 for (final PropertyDescriptor descriptor : propertyDescriptors) {
                     final Method readMethod = descriptor.getReadMethod();
                     final String name = descriptor.getName();
                     if (readMethod != null && readMethod.getDeclaringClass() != Object.class) {
-                        if (isIgnored(name) || johnzonAny != null && Meta.getAnnotation(readMethod, johnzonAny) != null) {
+                        if (isIgnored(name)
+                                || johnzonAny != null && Meta.getAnnotation(readMethod, johnzonAny) != null) {
                             continue;
                         }
                         readers.put(name, new MethodDecoratedType(readMethod, readMethod.getGenericReturnType()));
                     } else if (readMethod == null && descriptor.getWriteMethod() != null && // isXXX, not supported by javabeans
-                            (descriptor.getPropertyType() == Boolean.class || descriptor.getPropertyType() == boolean.class)) {
+                            (descriptor.getPropertyType() == Boolean.class
+                                    || descriptor.getPropertyType() == boolean.class)) {
                         try {
                             final Method method = clazz.getMethod(
-                                    "is" + Character.toUpperCase(name.charAt(0)) + (name.length() > 1 ? name.substring(1) : ""));
+                                    "is" + Character.toUpperCase(name.charAt(0))
+                                            + (name.length() > 1 ? name.substring(1) : ""));
                             readers.put(name, new MethodDecoratedType(method, method.getGenericReturnType()));
                         } catch (final NoSuchMethodException e) {
                             // no-op
@@ -498,10 +488,9 @@ public class JsonbParser extends ModelParser {
 
             for (final Map.Entry<String, JsonbParser.DecoratedType> entry : methodReaders.entrySet()) {
                 final Method mr = MethodAccessMode.MethodDecoratedType.class.cast(entry.getValue()).getMethod();
-                final String fieldName = record ?
-                        mr.getName() :
-                        Introspector.decapitalize(mr.getName().startsWith("is") ?
-                                mr.getName().substring(2) : mr.getName().substring(3));
+                final String fieldName = record ? mr.getName()
+                        : Introspector.decapitalize(
+                                mr.getName().startsWith("is") ? mr.getName().substring(2) : mr.getName().substring(3));
                 final Field f = getField(fieldName, clazz);
 
                 final JsonbParser.DecoratedType existing = readers.get(entry.getKey());
@@ -577,7 +566,6 @@ public class JsonbParser extends ModelParser {
         }
     }
 
-
     private static class DefaultPropertyVisibilityStrategy implements PropertyVisibilityStrategy {
         private final ClassLoader classLoader;
         private final ConcurrentMap<Class<?>, PropertyVisibilityStrategy> strategies = new ConcurrentHashMap<>();
@@ -634,7 +622,8 @@ public class JsonbParser extends ModelParser {
 
         private PropertyVisibilityStrategy newVisibilityStrategy(JsonbVisibility visibility) {
             try {
-                return Utils.asMigrationProxy(visibility.value().getConstructor().newInstance(), PropertyVisibilityStrategy.class);
+                return Utils.asMigrationProxy(visibility.value().getConstructor().newInstance(),
+                        PropertyVisibilityStrategy.class);
             } catch (final ReflectiveOperationException e) {
                 throw new IllegalArgumentException(e);
             }
@@ -652,22 +641,22 @@ public class JsonbParser extends ModelParser {
             if (String.class.isInstance(value)) {
                 final String val = value.toString();
                 switch (val) {
-                    case PropertyNamingStrategy.IDENTITY:
-                        return propertyName -> propertyName;
-                    case PropertyNamingStrategy.LOWER_CASE_WITH_DASHES:
-                        return new ConfigurableNamingStrategy(Character::toLowerCase, '-');
-                    case PropertyNamingStrategy.LOWER_CASE_WITH_UNDERSCORES:
-                        return new ConfigurableNamingStrategy(Character::toLowerCase, '_');
-                    case PropertyNamingStrategy.UPPER_CAMEL_CASE:
-                        return camelCaseStrategy();
-                    case PropertyNamingStrategy.UPPER_CAMEL_CASE_WITH_SPACES:
-                        final PropertyNamingStrategy camelCase = camelCaseStrategy();
-                        final PropertyNamingStrategy space = new ConfigurableNamingStrategy(Function.identity(), ' ');
-                        return propertyName -> camelCase.translateName(space.translateName(propertyName));
-                    case PropertyNamingStrategy.CASE_INSENSITIVE:
-                        return propertyName -> propertyName;
-                    default:
-                        throw new IllegalArgumentException(val + " unknown as PropertyNamingStrategy");
+                case PropertyNamingStrategy.IDENTITY:
+                    return propertyName -> propertyName;
+                case PropertyNamingStrategy.LOWER_CASE_WITH_DASHES:
+                    return new ConfigurableNamingStrategy(Character::toLowerCase, '-');
+                case PropertyNamingStrategy.LOWER_CASE_WITH_UNDERSCORES:
+                    return new ConfigurableNamingStrategy(Character::toLowerCase, '_');
+                case PropertyNamingStrategy.UPPER_CAMEL_CASE:
+                    return camelCaseStrategy();
+                case PropertyNamingStrategy.UPPER_CAMEL_CASE_WITH_SPACES:
+                    final PropertyNamingStrategy camelCase = camelCaseStrategy();
+                    final PropertyNamingStrategy space = new ConfigurableNamingStrategy(Function.identity(), ' ');
+                    return propertyName -> camelCase.translateName(space.translateName(propertyName));
+                case PropertyNamingStrategy.CASE_INSENSITIVE:
+                    return propertyName -> propertyName;
+                default:
+                    throw new IllegalArgumentException(val + " unknown as PropertyNamingStrategy");
                 }
             }
             if (PropertyNamingStrategy.class.isInstance(value)) {
@@ -677,7 +666,8 @@ public class JsonbParser extends ModelParser {
         }
 
         private PropertyNamingStrategy camelCaseStrategy() {
-            return propertyName -> Character.toUpperCase(propertyName.charAt(0)) + (propertyName.length() > 1 ? propertyName.substring(1) : "");
+            return propertyName -> Character.toUpperCase(propertyName.charAt(0))
+                    + (propertyName.length() > 1 ? propertyName.substring(1) : "");
         }
 
         private static class ConfigurableNamingStrategy implements PropertyNamingStrategy {
@@ -769,8 +759,8 @@ public class JsonbParser extends ModelParser {
         }
 
         private static <T extends Annotation> T getIndirectAnnotation(final Class<T> api,
-                                                                      final Supplier<Class<?>> ownerSupplier,
-                                                                      final Supplier<Package> packageSupplier) {
+                final Supplier<Class<?>> ownerSupplier,
+                final Supplier<Package> packageSupplier) {
             final T ownerAnnotation = getJsonbAnnotation(ownerSupplier.get(), api);
             if (ownerAnnotation != null) {
                 return ownerAnnotation;
@@ -804,8 +794,10 @@ public class JsonbParser extends ModelParser {
         }
 
         @SuppressWarnings("unchecked")
-        private static <T extends Annotation> T newAnnotation(final Map<String, Method> methodMapping, final Annotation user, final T johnzon) {
-            return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{johnzon.annotationType()},
+        private static <T extends Annotation> T newAnnotation(final Map<String, Method> methodMapping,
+                final Annotation user, final T johnzon) {
+            return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                    new Class<?>[] { johnzon.annotationType() },
                     (proxy, method, args) -> {
                         final Method m = methodMapping.get(method.getName());
                         try {
@@ -847,7 +839,6 @@ public class JsonbParser extends ModelParser {
             return parameter.isSynthetic();
         }
 
-
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> type) {
             return parameter.getAnnotation(type);
@@ -864,7 +855,8 @@ public class JsonbParser extends ModelParser {
         }
     }
 
-    static <A extends Annotation> A getJsonbAnnotation(AnnotatedElement annotatedElement, Class<A> jakartaAnnotationClass) {
+    static <A extends Annotation> A getJsonbAnnotation(AnnotatedElement annotatedElement,
+            Class<A> jakartaAnnotationClass) {
         final Class<?> javaxAnnotationClass = javax(jakartaAnnotationClass);
         return Utils.getMigratedAnnotation(annotatedElement, jakartaAnnotationClass, javaxAnnotationClass);
     }
@@ -881,8 +873,10 @@ public class JsonbParser extends ModelParser {
         map.put(jakarta.json.bind.annotation.JsonbProperty.class, javax.json.bind.annotation.JsonbProperty.class);
         map.put(jakarta.json.bind.annotation.JsonbTransient.class, javax.json.bind.annotation.JsonbTransient.class);
         map.put(jakarta.json.bind.annotation.JsonbVisibility.class, javax.json.bind.annotation.JsonbVisibility.class);
-        map.put(jakarta.json.bind.config.PropertyNamingStrategy.class, javax.json.bind.config.PropertyNamingStrategy.class);
-        map.put(jakarta.json.bind.config.PropertyVisibilityStrategy.class, javax.json.bind.config.PropertyVisibilityStrategy.class);
+        map.put(jakarta.json.bind.config.PropertyNamingStrategy.class,
+                javax.json.bind.config.PropertyNamingStrategy.class);
+        map.put(jakarta.json.bind.config.PropertyVisibilityStrategy.class,
+                javax.json.bind.config.PropertyVisibilityStrategy.class);
         return map;
     });
 

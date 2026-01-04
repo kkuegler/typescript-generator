@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-
 public class ExcludingTypeProcessor implements TypeProcessor {
 
     private final Predicate<String> excludeFilter;
 
     public ExcludingTypeProcessor(List<String> excludedTypes) {
         this(new Predicate<String>() {
-            final Set<String> excludedTypesSet = excludedTypes != null ? new LinkedHashSet<>(excludedTypes) : Collections.emptySet();
+            final Set<String> excludedTypesSet = excludedTypes != null ? new LinkedHashSet<>(excludedTypes)
+                    : Collections.emptySet();
+
             @Override
             public boolean test(String typeName) {
                 return excludedTypesSet.contains(typeName);

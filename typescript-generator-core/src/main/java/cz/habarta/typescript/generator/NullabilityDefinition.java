@@ -4,15 +4,14 @@ package cz.habarta.typescript.generator;
 import java.util.Arrays;
 import java.util.List;
 
-
 public enum NullabilityDefinition {
 
-    nullAndUndefinedUnion       (false, TsType.Null, TsType.Undefined),
-    nullUnion                   (false, TsType.Null),
-    undefinedUnion              (false, TsType.Undefined),
-    nullAndUndefinedInlineUnion (true,  TsType.Null, TsType.Undefined),
-    nullInlineUnion             (true,  TsType.Null),
-    undefinedInlineUnion        (true,  TsType.Undefined);
+    nullAndUndefinedUnion(false, TsType.Null, TsType.Undefined),
+    nullUnion(false, TsType.Null),
+    undefinedUnion(false, TsType.Undefined),
+    nullAndUndefinedInlineUnion(true, TsType.Null, TsType.Undefined),
+    nullInlineUnion(true, TsType.Null),
+    undefinedInlineUnion(true, TsType.Undefined);
 
     private final boolean isInline;
     private final List<TsType> types;

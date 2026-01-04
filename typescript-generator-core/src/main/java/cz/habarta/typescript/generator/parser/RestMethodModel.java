@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
-
 public class RestMethodModel extends MethodModel {
 
     private final Class<?> rootResource;
@@ -16,7 +15,8 @@ public class RestMethodModel extends MethodModel {
     private final MethodParameterModel entityParam;
 
     public RestMethodModel(Class<?> originClass, String name, Type returnType, Method originalMethod,
-            Class<?> rootResource, String httpMethod, String path, List<MethodParameterModel> pathParams, List<RestQueryParam> queryParams, MethodParameterModel entityParam,
+            Class<?> rootResource, String httpMethod, String path, List<MethodParameterModel> pathParams,
+            List<RestQueryParam> queryParams, MethodParameterModel entityParam,
             List<String> comments) {
         super(originClass, name, null, returnType, originalMethod, comments);
         this.rootResource = rootResource;
@@ -53,7 +53,8 @@ public class RestMethodModel extends MethodModel {
 
     @Override
     public RestMethodModel withComments(List<String> comments) {
-        return new RestMethodModel(originClass, name, returnType, originalMethod, rootResource, httpMethod, path, pathParams, queryParams, entityParam, comments);
+        return new RestMethodModel(originClass, name, returnType, originalMethod, rootResource, httpMethod, path,
+                pathParams, queryParams, entityParam, comments);
     }
 
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class JsonViewTest {
 
     public static void main(String[] args) throws Exception {
@@ -72,10 +71,10 @@ public class JsonViewTest {
 
     public static class SomeClass {
 
-        @JsonView({Views.BaseConfig.class, Views.REST.class})
+        @JsonView({ Views.BaseConfig.class, Views.REST.class })
         public Integer id;
 
-        @JsonView({Views.BaseConfig.class, Views.REST.class})
+        @JsonView({ Views.BaseConfig.class, Views.REST.class })
         public Integer parentID;
 
         @JsonView(Views.Exclude.class)
@@ -97,12 +96,12 @@ public class JsonViewTest {
         private String someProperty;
         private Long anotherProperty;
 
-        @JsonView({Views.BaseConfig.class, Views.REST.class})
+        @JsonView({ Views.BaseConfig.class, Views.REST.class })
         public Integer getId() {
             return id;
         }
 
-        @JsonView({Views.BaseConfig.class, Views.REST.class})
+        @JsonView({ Views.BaseConfig.class, Views.REST.class })
         public Integer getParentID() {
             return parentID;
         }

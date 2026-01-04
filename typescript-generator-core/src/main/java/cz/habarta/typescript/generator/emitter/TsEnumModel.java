@@ -8,14 +8,14 @@ import cz.habarta.typescript.generator.parser.EnumModel;
 import java.util.List;
 import java.util.Objects;
 
-
 public class TsEnumModel extends TsDeclarationModel {
 
     private final EnumKind kind;
     private final List<EnumMemberModel> members;
     private final boolean isNonConstEnum;
 
-    public TsEnumModel(Class<?> origin, Symbol name, EnumKind kind, List<EnumMemberModel> members, List<String> comments, boolean isNonConstEnum) {
+    public TsEnumModel(Class<?> origin, Symbol name, EnumKind kind, List<EnumMemberModel> members,
+            List<String> comments, boolean isNonConstEnum) {
         super(origin, null, name, comments);
         this.kind = Objects.requireNonNull(kind);
         this.members = Objects.requireNonNull(members);
@@ -23,7 +23,8 @@ public class TsEnumModel extends TsDeclarationModel {
     }
 
     public static TsEnumModel fromEnumModel(Symbol name, EnumModel enumModel, boolean isNonConstEnum) {
-        return new TsEnumModel(enumModel.getOrigin(), name, enumModel.getKind(), enumModel.getMembers(), enumModel.getComments(), isNonConstEnum);
+        return new TsEnumModel(enumModel.getOrigin(), name, enumModel.getKind(), enumModel.getMembers(),
+                enumModel.getComments(), isNonConstEnum);
     }
 
     public EnumKind getKind() {

@@ -10,7 +10,6 @@ import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
 import cz.habarta.typescript.generator.emitter.TsBeanModel;
 import cz.habarta.typescript.generator.emitter.TsModel;
 
-
 public class TypeGuardsForJackson2PolymorphismExtension extends EmitterExtension {
 
     @Override
@@ -27,7 +26,8 @@ public class TypeGuardsForJackson2PolymorphismExtension extends EmitterExtension
             if (beanClass != null) {
                 final JsonSubTypes jsonSubTypes = beanClass.getAnnotation(JsonSubTypes.class);
                 final JsonTypeInfo jsonTypeInfo = beanClass.getAnnotation(JsonTypeInfo.class);
-                if (jsonSubTypes != null && jsonTypeInfo != null && jsonTypeInfo.include() == JsonTypeInfo.As.PROPERTY) {
+                if (jsonSubTypes != null && jsonTypeInfo != null
+                        && jsonTypeInfo.include() == JsonTypeInfo.As.PROPERTY) {
                     final String propertyName = jsonTypeInfo.property();
                     for (JsonSubTypes.Type subType : jsonSubTypes.value()) {
                         String propertyValue = null;
@@ -46,7 +46,8 @@ public class TypeGuardsForJackson2PolymorphismExtension extends EmitterExtension
                             final String subTypeName = findTypeName(subType.value(), model);
                             if (baseTypeName != null && subTypeName != null) {
                                 writer.writeIndentedLine("");
-                                emitTypeGuard(writer, settings, exportKeyword, baseTypeName, subTypeName, propertyName, propertyValue);
+                                emitTypeGuard(writer, settings, exportKeyword, baseTypeName, subTypeName, propertyName,
+                                        propertyValue);
                             }
                         }
                     }
@@ -64,15 +65,18 @@ public class TypeGuardsForJackson2PolymorphismExtension extends EmitterExtension
         return null;
     }
 
-// Example:
-//    function isCartesianPoint(point: Point): point is CartesianPoint {
-//        return point.type === "cartesian";
-//    }
-    static void emitTypeGuard(Writer writer, Settings settings, boolean exportKeyword, String baseType, String subType, String propertyName, String propertyValue) {
+    // Example:
+    //    function isCartesianPoint(point: Point): point is CartesianPoint {
+    //        return point.type === "cartesian";
+    //    }
+    static void emitTypeGuard(Writer writer, Settings settings, boolean exportKeyword, String baseType, String subType,
+            String propertyName, String propertyValue) {
         final String argument = Character.toLowerCase(baseType.charAt(0)) + baseType.substring(1);
         final String exportPrefix = exportKeyword ? "export " : "";
-        writer.writeIndentedLine(String.format(exportPrefix + "function is%s(%s: %s): %s is %s {", subType, argument, baseType, argument, subType));
-        writer.writeIndentedLine(String.format("%sreturn %s.%s === %s;", settings.indentString, argument, propertyName, settings.quotes + propertyValue + settings.quotes));
+        writer.writeIndentedLine(String.format(exportPrefix + "function is%s(%s: %s): %s is %s {", subType, argument,
+                baseType, argument, subType));
+        writer.writeIndentedLine(String.format("%sreturn %s.%s === %s;", settings.indentString, argument, propertyName,
+                settings.quotes + propertyValue + settings.quotes));
         writer.writeIndentedLine("}");
     }
 

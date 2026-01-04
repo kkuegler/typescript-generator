@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.TsType;
 import java.util.Objects;
 
-
 public class TsVariableDeclarationStatement extends TsStatement {
 
     private final boolean isConst;

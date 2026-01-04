@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-
 public interface TypeProcessor {
 
     /**
@@ -42,7 +41,8 @@ public interface TypeProcessor {
             this(symbolTable, typeProcessor, typeContext, false);
         }
 
-        public Context(SymbolTable symbolTable, TypeProcessor typeProcessor, Object typeContext, boolean insideCollection) {
+        public Context(SymbolTable symbolTable, TypeProcessor typeProcessor, Object typeContext,
+                boolean insideCollection) {
             this.symbolTable = Objects.requireNonNull(symbolTable, "symbolTable");
             this.typeProcessor = Objects.requireNonNull(typeProcessor, "typeProcessor");
             this.typeContext = typeContext;

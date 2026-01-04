@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
-
 public class InfoJsonEmitter {
 
     private Writer writer;
@@ -42,8 +41,7 @@ public class InfoJsonEmitter {
                 .of(
                         tsModel.getBeans(),
                         tsModel.getEnums(),
-                        tsModel.getTypeAliases()
-                )
+                        tsModel.getTypeAliases())
                 .flatMap(s -> s.stream())
                 .filter(declaration -> declaration.origin != null)
                 .map(declaration -> {

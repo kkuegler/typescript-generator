@@ -52,8 +52,10 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testGenericMappingToString() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$IdRepresentation<T>", "string");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(MyEntityRepresentation.class));
+        settings.customTypeMappings = Collections.singletonMap(
+                "cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$IdRepresentation<T>", "string");
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(MyEntityRepresentation.class));
         Assertions.assertTrue(output.contains("id: string;"));
         Assertions.assertTrue(!output.contains("IdRepresentation"));
     }
@@ -88,7 +90,8 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testGenerics() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2<T1, T2>", "Test<T2, T1>");
+        settings.customTypeMappings = Collections.singletonMap(
+                "cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2<T1, T2>", "Test<T2, T1>");
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Usage.class));
         Assertions.assertTrue(output.contains("generic: Test<number, string>"));
     }
@@ -96,7 +99,8 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testUnwrap() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2<T1, T2>", "T2");
+        settings.customTypeMappings = Collections
+                .singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2<T1, T2>", "T2");
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Usage.class));
         Assertions.assertTrue(output.contains("generic: number"));
     }
@@ -104,16 +108,22 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testMapStringString() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$NonGeneric", "Map<string, string>");
+        settings.customTypeMappings = Collections.singletonMap(
+                "cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$NonGeneric", "Map<string, string>");
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(NonGenericUsage.class));
         Assertions.assertTrue(output.contains("nonGeneric: Map<string, string>"));
     }
 
-    private static class NonGeneric {}
+    private static class NonGeneric {
+    }
+
     private static class NonGenericUsage {
         public NonGeneric nonGeneric;
     }
-    private static class Generic2<T1, T2> {}
+
+    private static class Generic2<T1, T2> {
+    }
+
     private static class Usage {
         public Generic2<String, Integer> generic;
     }
@@ -121,7 +131,8 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testAlternativeSyntax() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2[T1, T2]", "Test[T2, T1]");
+        settings.customTypeMappings = Collections.singletonMap(
+                "cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2[T1, T2]", "Test[T2, T1]");
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Usage.class));
         Assertions.assertTrue(output.contains("generic: Test<number, string>"));
     }
@@ -129,7 +140,8 @@ public class GenericCustomTypeMappingsTest {
     @Test
     public void testAlternativeSyntaxWithArray() {
         final Settings settings = TestUtils.settings();
-        settings.customTypeMappings = Collections.singletonMap("cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2[T1, T2]", "string[]");
+        settings.customTypeMappings = Collections.singletonMap(
+                "cz.habarta.typescript.generator.GenericCustomTypeMappingsTest$Generic2[T1, T2]", "string[]");
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Usage.class));
         Assertions.assertTrue(output.contains("generic: string[]"));
     }
@@ -173,8 +185,7 @@ public class GenericCustomTypeMappingsTest {
         public abstract T getAbstractValue();
     }
 
-    private static abstract class Class3 extends AbstractClass<Date> implements Interface<Date>{
+    private static abstract class Class3 extends AbstractClass<Date> implements Interface<Date> {
     }
-
 
 }

@@ -9,7 +9,6 @@ import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.PropertyModel;
 import java.util.Objects;
 
-
 @FunctionalInterface
 public interface TsModelTransformer {
 

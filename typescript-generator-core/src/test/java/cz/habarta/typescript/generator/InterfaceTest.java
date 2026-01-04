@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class InterfaceTest {
 
     @Test
@@ -28,6 +27,7 @@ public class InterfaceTest {
 
     static interface Book {
         Author getAuthor();
+
         String getTitle();
     }
 

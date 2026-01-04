@@ -14,7 +14,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class ModelCompilerTest {
 
@@ -22,7 +21,8 @@ public class ModelCompilerTest {
     public void testEnum() throws Exception {
         final Settings settings = getTestSettings();
         final Type javaType = A.class.getField("directions").getGenericType();
-        Assertions.assertEquals("{ [index: string]: Direction }[]", TestUtils.compileType(settings, javaType).toString());
+        Assertions.assertEquals("{ [index: string]: Direction }[]",
+                TestUtils.compileType(settings, javaType).toString());
     }
 
     @Test
@@ -59,8 +59,7 @@ public class ModelCompilerTest {
 
         Assertions.assertInstanceOf(
                 TsType.UnionType.class,
-                result.getBean(WithoutTypeParam.class).getProperties().get(0).tsType
-        );
+                result.getBean(WithoutTypeParam.class).getProperties().get(0).tsType);
     }
 
     @Test
@@ -75,17 +74,19 @@ public class ModelCompilerTest {
 
         Assertions.assertInstanceOf(
                 TsType.UnionType.class,
-                result.getBean(WithTypeParam.class).getProperties().get(0).tsType
-        );
+                result.getBean(WithTypeParam.class).getProperties().get(0).tsType);
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-    private static interface WithoutTypeParam {}
+    private static interface WithoutTypeParam {
+    }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-    private static interface WithTypeParam<T> {}
+    private static interface WithTypeParam<T> {
+    }
 
-    private static class Implementation implements WithTypeParam<Integer>, WithoutTypeParam {}
+    private static class Implementation implements WithTypeParam<Integer>, WithoutTypeParam {
+    }
 
     private static Settings getTestSettings(String... excludedClassNames) {
         final Settings settings = TestUtils.settings();

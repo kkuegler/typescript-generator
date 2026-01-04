@@ -7,7 +7,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class NullabilityTest {
 
@@ -66,12 +65,15 @@ public class NullabilityTest {
 
     @Test
     public void testVariants() {
-        testVariant(NullabilityDefinition.nullAndUndefinedUnion,       "list?: Nullable<Nullable<string>[]>", "type Nullable<T> = T | null | undefined");
-        testVariant(NullabilityDefinition.undefinedUnion,              "list?: Nullable<Nullable<string>[]>", "type Nullable<T> = T | undefined");
-        testVariant(NullabilityDefinition.nullUnion,                   "list: Nullable<Nullable<string>[]>", "type Nullable<T> = T | null");
+        testVariant(NullabilityDefinition.nullAndUndefinedUnion, "list?: Nullable<Nullable<string>[]>",
+                "type Nullable<T> = T | null | undefined");
+        testVariant(NullabilityDefinition.undefinedUnion, "list?: Nullable<Nullable<string>[]>",
+                "type Nullable<T> = T | undefined");
+        testVariant(NullabilityDefinition.nullUnion, "list: Nullable<Nullable<string>[]>",
+                "type Nullable<T> = T | null");
         testVariant(NullabilityDefinition.nullAndUndefinedInlineUnion, "list?: (string | null | undefined)[] | null");
-        testVariant(NullabilityDefinition.undefinedInlineUnion,        "list?: (string | undefined)[]");
-        testVariant(NullabilityDefinition.nullInlineUnion,             "list: (string | null)[] | null");
+        testVariant(NullabilityDefinition.undefinedInlineUnion, "list?: (string | undefined)[]");
+        testVariant(NullabilityDefinition.nullInlineUnion, "list: (string | null)[] | null");
     }
 
     private static void testVariant(NullabilityDefinition nullabilityDefinition, String... expected) {
@@ -111,8 +113,7 @@ public class NullabilityTest {
     private static void testCombinationOfOptionalAndNullable(
             OptionalPropertiesDeclaration optionalPropertiesDeclaration,
             NullabilityDefinition nullabilityDefinition,
-            String expected
-    ) {
+            String expected) {
         final Settings settings = TestUtils.settings();
         settings.optionalAnnotations.add(Nullable.class);
         settings.nullableAnnotations.add(Nullable.class);
@@ -126,7 +127,8 @@ public class NullabilityTest {
     public void testNullableAnnotationTarget() {
         final Settings settings = TestUtils.settings();
         settings.nullableAnnotations.add(javax.annotation.Nullable.class);
-        Assertions.assertThrows(RuntimeException.class, () -> new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.class)));
+        Assertions.assertThrows(RuntimeException.class,
+                () -> new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.class)));
     }
 
     @Test

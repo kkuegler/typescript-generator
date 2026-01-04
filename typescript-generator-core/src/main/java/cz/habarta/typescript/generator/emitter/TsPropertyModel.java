@@ -6,7 +6,6 @@ import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.util.Utils;
 import java.util.List;
 
-
 public class TsPropertyModel extends TsProperty implements Comparable<TsProperty> {
 
     public final List<TsDecorator> decorators;
@@ -15,11 +14,13 @@ public class TsPropertyModel extends TsProperty implements Comparable<TsProperty
     public final TsExpression defaultValue;
     public final List<String> comments;
 
-    public TsPropertyModel(String name, TsType tsType, TsModifierFlags modifiers, boolean ownProperty, List<String> comments) {
+    public TsPropertyModel(String name, TsType tsType, TsModifierFlags modifiers, boolean ownProperty,
+            List<String> comments) {
         this(name, tsType, /*decorators*/ null, modifiers, ownProperty, /*defaultValue*/ null, comments);
     }
 
-    public TsPropertyModel(String name, TsType tsType, List<TsDecorator> decorators, TsModifierFlags modifiers, boolean ownProperty, TsExpression defaultValue, List<String> comments) {
+    public TsPropertyModel(String name, TsType tsType, List<TsDecorator> decorators, TsModifierFlags modifiers,
+            boolean ownProperty, TsExpression defaultValue, List<String> comments) {
         super(name, tsType);
         this.decorators = Utils.listFromNullable(decorators);
         this.modifiers = modifiers != null ? modifiers : TsModifierFlags.None;

@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-
 public abstract class Extension extends EmitterExtension {
 
     public void setConfiguration(Map<String, String> configuration) throws RuntimeException {

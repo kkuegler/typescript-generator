@@ -2,13 +2,7 @@ package cz.habarta.typescript.generator.ext;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import cz.habarta.typescript.generator.ClassMapping;
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.JsonLibrary;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TypeScriptFileType;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
-import cz.habarta.typescript.generator.TypeScriptOutputKind;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.lang.reflect.Type;
 import java.util.ArrayList;

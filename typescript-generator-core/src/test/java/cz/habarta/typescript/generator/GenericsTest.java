@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GenericsTest {
 
@@ -25,8 +25,7 @@ public class GenericsTest {
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(A.class), Output.to(stringWriter));
         final String actual = stringWriter.toString().trim();
         final String nl = settings.newline;
-        final String expected =
-                "export interface IA<U, V> {" + nl +
+        final String expected = "export interface IA<U, V> {" + nl +
                 "    x: IA<string, string>;" + nl +
                 "    y: IA<IA<string, IB>, string[]>;" + nl +
                 "    z: IA<{ [index: string]: V }, number[]>;" + nl +
@@ -35,9 +34,12 @@ public class GenericsTest {
                 "export interface IB {" + nl +
                 "}";
         assertEquals(expected, actual);
-        assertEquals("IA<string, string>", TestUtils.compileType(settings, A.class.getField("x").getGenericType()).toString());
-        assertEquals("IA<IA<string, IB>, string[]>", TestUtils.compileType(settings, A.class.getField("y").getGenericType()).toString());
-        assertEquals("IA<{ [index: string]: V }, number[]>", TestUtils.compileType(settings, A.class.getField("z").getGenericType()).toString());
+        assertEquals("IA<string, string>",
+                TestUtils.compileType(settings, A.class.getField("x").getGenericType()).toString());
+        assertEquals("IA<IA<string, IB>, string[]>",
+                TestUtils.compileType(settings, A.class.getField("y").getGenericType()).toString());
+        assertEquals("IA<{ [index: string]: V }, number[]>",
+                TestUtils.compileType(settings, A.class.getField("z").getGenericType()).toString());
     }
 
     @Test
@@ -50,8 +52,7 @@ public class GenericsTest {
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(C.class), Output.to(stringWriter));
         final String actual = stringWriter.toString().trim();
         final String nl = settings.newline;
-        final String expected =
-                "export interface IC {" + nl +
+        final String expected = "export interface IC {" + nl +
                 "    x: string[];" + nl +
                 "}";
         assertEquals(expected, actual);
@@ -67,8 +68,7 @@ public class GenericsTest {
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(E.class), Output.to(stringWriter));
         final String actual = stringWriter.toString().trim();
         final String nl = settings.newline;
-        final String expected =
-                "export interface D<T> {" + nl +
+        final String expected = "export interface D<T> {" + nl +
                 "    x: T;" + nl +
                 "}" + nl +
                 "" + nl +
@@ -92,8 +92,7 @@ public class GenericsTest {
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(IA.class), Output.to(stringWriter));
         final String actual = stringWriter.toString().trim();
         final String nl = settings.newline;
-        final String expected =
-                "export interface IA extends IB<string> {" + nl +
+        final String expected = "export interface IA extends IB<string> {" + nl +
                 "    type: string;" + nl +
                 "    x: string;" + nl +
                 "}" + nl +
@@ -109,9 +108,9 @@ public class GenericsTest {
     @Test
     public void testGenericsWithoutTypeArgument() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Table.class, Page1.class, Page2.class));
-        final String expected =
-                "interface Table<T> {\n" +
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(Table.class, Page1.class, Page2.class));
+        final String expected = "interface Table<T> {\n" +
                 "    rows: T[];\n" +
                 "}\n" +
                 "\n" +
@@ -129,8 +128,7 @@ public class GenericsTest {
     public void testGenericArray() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(TableGA.class));
-        final String expected =
-                "interface TableGA<T> {\n" +
+        final String expected = "interface TableGA<T> {\n" +
                 "    rows: T[];\n" +
                 "}";
         assertEquals(expected, output.trim());
@@ -140,14 +138,13 @@ public class GenericsTest {
     public void testArbitraryGenericParameter() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ExecutionResult.class));
-        final String expected =
-                "interface ExecutionResult {\n" +
+        final String expected = "interface ExecutionResult {\n" +
                 "    data: number;\n" +
                 "}";
         assertEquals(expected, output.trim());
     }
 
-    class A<U,V> {
+    class A<U, V> {
         public A<String, String> x;
         public A<A<String, B>, List<String>> y;
         public A<Map<String, V>, Set<Integer>> z;

@@ -6,28 +6,10 @@ import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.type.JUnionType;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Utils;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
+import java.lang.reflect.*;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class DefaultTypeProcessor implements TypeProcessor {
 
@@ -130,7 +112,8 @@ public class DefaultTypeProcessor implements TypeProcessor {
                     tsTypeArguments.add(typeArgumentResult.getTsType());
                     discoveredClasses.addAll(typeArgumentResult.getDiscoveredClasses());
                 }
-                return new Result(new TsType.GenericReferenceType(context.getSymbol(javaClass), tsTypeArguments), discoveredClasses);
+                return new Result(new TsType.GenericReferenceType(context.getSymbol(javaClass), tsTypeArguments),
+                        discoveredClasses);
             }
         }
         if (javaType instanceof GenericArrayType) {
@@ -164,16 +147,14 @@ public class DefaultTypeProcessor implements TypeProcessor {
                             .collect(Collectors.toList())),
                     results.stream()
                             .flatMap(result -> result.getDiscoveredClasses().stream())
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         }
         if (javaType instanceof JTypeWithNullability) {
             final JTypeWithNullability typeWithNullability = (JTypeWithNullability) javaType;
             final Result result = context.processType(typeWithNullability.getType());
             return new Result(
                     typeWithNullability.isNullable() ? new TsType.NullableType(result.getTsType()) : result.getTsType(),
-                    result.getDiscoveredClasses()
-            );
+                    result.getDiscoveredClasses());
         }
         return null;
     }
@@ -182,40 +163,43 @@ public class DefaultTypeProcessor implements TypeProcessor {
 
         final Optional<Class<?>> listBaseClass = assignableFrom(known.listClasses, rawClass);
         if (listBaseClass.isPresent()) {
-            final List<Type> resolvedGenericVariables = GenericsResolver.resolveBaseGenericVariables(listBaseClass.get(), javaType);
+            final List<Type> resolvedGenericVariables = GenericsResolver
+                    .resolveBaseGenericVariables(listBaseClass.get(), javaType);
             final Result result = context.processTypeInsideCollection(resolvedGenericVariables.get(0));
             return new Result(new TsType.BasicArrayType(result.getTsType()), result.getDiscoveredClasses());
         }
 
         final Optional<Class<?>> mapBaseClass = assignableFrom(known.mapClasses, rawClass);
         if (mapBaseClass.isPresent()) {
-            final List<Type> resolvedGenericVariables = GenericsResolver.resolveBaseGenericVariables(mapBaseClass.get(), javaType);
+            final List<Type> resolvedGenericVariables = GenericsResolver.resolveBaseGenericVariables(mapBaseClass.get(),
+                    javaType);
             final Result keyResult = context.processType(resolvedGenericVariables.get(0));
             final Result valueResult = context.processTypeInsideCollection(resolvedGenericVariables.get(1));
             final TsType valueTsType = valueResult.getTsType();
             if (keyResult.getTsType() instanceof TsType.EnumReferenceType) {
                 return new Result(
-                        new TsType.MappedType(keyResult.getTsType(), TsType.MappedType.QuestionToken.Question, valueTsType),
-                        Utils.concat(keyResult.getDiscoveredClasses(), valueResult.getDiscoveredClasses())
-                );
+                        new TsType.MappedType(keyResult.getTsType(), TsType.MappedType.QuestionToken.Question,
+                                valueTsType),
+                        Utils.concat(keyResult.getDiscoveredClasses(), valueResult.getDiscoveredClasses()));
             } else {
                 return new Result(
                         new TsType.IndexedArrayType(TsType.String, valueTsType),
-                        valueResult.getDiscoveredClasses()
-                );
+                        valueResult.getDiscoveredClasses());
             }
         }
 
         final Optional<Class<?>> optionalBaseClass = assignableFrom(known.optionalClasses, rawClass);
         if (optionalBaseClass.isPresent()) {
-            final List<Type> resolvedGenericVariables = GenericsResolver.resolveBaseGenericVariables(optionalBaseClass.get(), javaType);
+            final List<Type> resolvedGenericVariables = GenericsResolver
+                    .resolveBaseGenericVariables(optionalBaseClass.get(), javaType);
             final Result result = context.processType(resolvedGenericVariables.get(0));
             return new Result(result.getTsType().optional(), result.getDiscoveredClasses());
         }
 
         final Optional<Class<?>> wrapperBaseClass = assignableFrom(known.wrapperClasses, rawClass);
         if (wrapperBaseClass.isPresent()) {
-            final List<Type> resolvedGenericVariables = GenericsResolver.resolveBaseGenericVariables(wrapperBaseClass.get(), javaType);
+            final List<Type> resolvedGenericVariables = GenericsResolver
+                    .resolveBaseGenericVariables(wrapperBaseClass.get(), javaType);
             final Result result = context.processType(resolvedGenericVariables.get(0));
             return new Result(result.getTsType(), result.getDiscoveredClasses());
         }
@@ -225,19 +209,18 @@ public class DefaultTypeProcessor implements TypeProcessor {
 
     private static LoadedDataLibraries getKnownClasses() {
         return new LoadedDataLibraries(
-            Arrays.asList(char.class, Character.class, String.class, UUID.class),
-            Arrays.asList(byte.class, short.class, int.class, long.class, float.class, double.class, Number.class),
-            Arrays.asList(boolean.class, Boolean.class),
-            Arrays.asList(Date.class, Calendar.class, Temporal.class),
-            Arrays.asList(),
-            Arrays.asList(void.class, Void.class),
-            Arrays.asList(Collection.class),
-            Arrays.asList(Map.class),
-            Arrays.asList(Optional.class),
-            Arrays.asList(jakarta.xml.bind.JAXBElement.class, javax.xml.bind.JAXBElement.class),
-            Arrays.asList(),
-            Arrays.asList()
-        );
+                Arrays.asList(char.class, Character.class, String.class, UUID.class),
+                Arrays.asList(byte.class, short.class, int.class, long.class, float.class, double.class, Number.class),
+                Arrays.asList(boolean.class, Boolean.class),
+                Arrays.asList(Date.class, Calendar.class, Temporal.class),
+                Arrays.asList(),
+                Arrays.asList(void.class, Void.class),
+                Arrays.asList(Collection.class),
+                Arrays.asList(Map.class),
+                Arrays.asList(Optional.class),
+                Arrays.asList(jakarta.xml.bind.JAXBElement.class, javax.xml.bind.JAXBElement.class),
+                Arrays.asList(),
+                Arrays.asList());
     }
 
 }

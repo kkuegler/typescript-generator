@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator.emitter;
 
 import cz.habarta.typescript.generator.Settings;
 
-
 public class TsPrefixUnaryExpression extends TsExpression {
 
     private final TsUnaryOperator operator;
@@ -26,5 +25,5 @@ public class TsPrefixUnaryExpression extends TsExpression {
     public String format(Settings settings) {
         return operator.format(settings) + operand.format(settings);
     }
-    
+
 }

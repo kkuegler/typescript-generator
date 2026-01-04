@@ -1,59 +1,9 @@
 
 package cz.habarta.typescript.generator.compiler;
 
-import cz.habarta.typescript.generator.DateMapping;
-import cz.habarta.typescript.generator.EnumMapping;
-import cz.habarta.typescript.generator.Extension;
-import cz.habarta.typescript.generator.IdentifierCasing;
-import cz.habarta.typescript.generator.MapMapping;
-import cz.habarta.typescript.generator.NullabilityDefinition;
-import cz.habarta.typescript.generator.OptionalPropertiesDeclaration;
-import cz.habarta.typescript.generator.RestNamespacing;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TsParameter;
-import cz.habarta.typescript.generator.TsProperty;
-import cz.habarta.typescript.generator.TsType;
-import cz.habarta.typescript.generator.TypeProcessor;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
-import cz.habarta.typescript.generator.emitter.EmitterExtension;
-import cz.habarta.typescript.generator.emitter.TsAccessibilityModifier;
-import cz.habarta.typescript.generator.emitter.TsAliasModel;
-import cz.habarta.typescript.generator.emitter.TsAssignmentExpression;
-import cz.habarta.typescript.generator.emitter.TsBeanCategory;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsCallExpression;
-import cz.habarta.typescript.generator.emitter.TsConstructorModel;
-import cz.habarta.typescript.generator.emitter.TsEnumModel;
-import cz.habarta.typescript.generator.emitter.TsExpression;
-import cz.habarta.typescript.generator.emitter.TsExpressionStatement;
-import cz.habarta.typescript.generator.emitter.TsHelper;
-import cz.habarta.typescript.generator.emitter.TsIdentifierReference;
-import cz.habarta.typescript.generator.emitter.TsMemberExpression;
-import cz.habarta.typescript.generator.emitter.TsMethodModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsModifierFlags;
-import cz.habarta.typescript.generator.emitter.TsObjectLiteral;
-import cz.habarta.typescript.generator.emitter.TsParameterModel;
-import cz.habarta.typescript.generator.emitter.TsPropertyDefinition;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import cz.habarta.typescript.generator.emitter.TsReturnStatement;
-import cz.habarta.typescript.generator.emitter.TsStatement;
-import cz.habarta.typescript.generator.emitter.TsStringLiteral;
-import cz.habarta.typescript.generator.emitter.TsSuperExpression;
-import cz.habarta.typescript.generator.emitter.TsTaggedTemplateLiteral;
-import cz.habarta.typescript.generator.emitter.TsTemplateLiteral;
-import cz.habarta.typescript.generator.emitter.TsThisExpression;
-import cz.habarta.typescript.generator.parser.BeanModel;
-import cz.habarta.typescript.generator.parser.EnumModel;
-import cz.habarta.typescript.generator.parser.MethodModel;
-import cz.habarta.typescript.generator.parser.MethodParameterModel;
-import cz.habarta.typescript.generator.parser.Model;
-import cz.habarta.typescript.generator.parser.PathTemplate;
-import cz.habarta.typescript.generator.parser.PropertyAccess;
-import cz.habarta.typescript.generator.parser.PropertyModel;
-import cz.habarta.typescript.generator.parser.RestApplicationModel;
-import cz.habarta.typescript.generator.parser.RestMethodModel;
-import cz.habarta.typescript.generator.parser.RestQueryParam;
+import cz.habarta.typescript.generator.*;
+import cz.habarta.typescript.generator.emitter.*;
+import cz.habarta.typescript.generator.parser.*;
 import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Pair;
@@ -61,22 +11,12 @@ import cz.habarta.typescript.generator.util.Utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 /**
  * Compiles Java model to TypeScript model.
@@ -144,10 +84,12 @@ public class ModelCompiler {
                     .filter(restApplication -> restApplication.getType().generateClient.apply(settings))
                     .collect(Collectors.toList());
             if (!restApplicationsWithInterface.isEmpty()) {
-                createRestInterfaces(tsModel, symbolTable, restApplicationsWithInterface, responseSymbol, optionsGenericVariable, optionsType);
+                createRestInterfaces(tsModel, symbolTable, restApplicationsWithInterface, responseSymbol,
+                        optionsGenericVariable, optionsType);
             }
             if (!restApplicationsWithClient.isEmpty()) {
-                createRestClients(tsModel, symbolTable, restApplicationsWithClient, responseSymbol, optionsGenericVariable, optionsType);
+                createRestClients(tsModel, symbolTable, restApplicationsWithClient, responseSymbol,
+                        optionsGenericVariable, optionsType);
             }
         }
 
@@ -158,13 +100,15 @@ public class ModelCompiler {
         tsModel = transformDates(symbolTable, tsModel);
 
         // enums
-        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.BeforeEnums, extensionTransformers);
+        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.BeforeEnums,
+                extensionTransformers);
         tsModel = addEnumValuesToJavadoc(tsModel);
         if (settings.enumMemberCasing != null && settings.enumMemberCasing != IdentifierCasing.keepOriginal) {
             tsModel = transformEnumMembersCase(tsModel);
         }
         if (!settings.areDefaultStringEnumsOverriddenByExtension()) {
-            if (settings.mapEnum == null || settings.mapEnum == EnumMapping.asUnion || settings.mapEnum == EnumMapping.asInlineUnion) {
+            if (settings.mapEnum == null || settings.mapEnum == EnumMapping.asUnion
+                    || settings.mapEnum == EnumMapping.asInlineUnion) {
                 tsModel = transformEnumsToUnions(tsModel);
             }
             if (settings.mapEnum == EnumMapping.asInlineUnion) {
@@ -187,10 +131,12 @@ public class ModelCompiler {
         tsModel = eliminateUndefinedFromOptionalPropertiesAndParameters(symbolTable, tsModel);
         tsModel = transformOptionalProperties(symbolTable, tsModel);
 
-        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.BeforeSymbolResolution, extensionTransformers);
+        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.BeforeSymbolResolution,
+                extensionTransformers);
         symbolTable.resolveSymbolNames();
         tsModel = sortTypeDeclarations(symbolTable, tsModel);
-        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.AfterDeclarationSorting, extensionTransformers);
+        tsModel = applyExtensionTransformers(symbolTable, model, tsModel, TransformationPhase.AfterDeclarationSorting,
+                extensionTransformers);
         return tsModel;
     }
 
@@ -206,8 +152,7 @@ public class ModelCompiler {
     }
 
     private static Model applyExtensionModelTransformers(SymbolTable symbolTable, Model model,
-            List<Extension.TransformerDefinition> transformerDefinitions
-    ) {
+            List<Extension.TransformerDefinition> transformerDefinitions) {
         for (Extension.TransformerDefinition definition : transformerDefinitions) {
             if (definition.phase == TransformationPhase.BeforeTsModel) {
                 model = definition.transformer.transformModel(symbolTable, model);
@@ -217,8 +162,7 @@ public class ModelCompiler {
     }
 
     private static TsModel applyExtensionTransformers(SymbolTable symbolTable, Model model, TsModel tsModel,
-            TransformationPhase phase, List<Extension.TransformerDefinition> transformerDefinitions
-    ) {
+            TransformationPhase phase, List<Extension.TransformerDefinition> transformerDefinitions) {
         final TsModelTransformer.Context context = new TsModelTransformer.Context(symbolTable, model);
         for (Extension.TransformerDefinition definition : transformerDefinitions) {
             if (definition.phase == phase) {
@@ -229,8 +173,10 @@ public class ModelCompiler {
     }
 
     public TsType javaToTypeScript(Type type) {
-        final BeanModel beanModel = new BeanModel(Object.class, Object.class, null, null, null, Collections.<Type>emptyList(),
-                Collections.singletonList(new PropertyModel("property", type, false, null, null, null, null, null)), null);
+        final BeanModel beanModel = new BeanModel(Object.class, Object.class, null, null, null,
+                Collections.<Type>emptyList(),
+                Collections.singletonList(new PropertyModel("property", type, false, null, null, null, null, null)),
+                null);
         final Model model = new Model(Collections.singletonList(beanModel), Collections.<EnumModel>emptyList(), null);
         final TsModel tsModel = javaToTypeScript(model);
         return tsModel.getBeans().get(0).getProperties().get(0).getTsType();
@@ -268,7 +214,8 @@ public class ModelCompiler {
         return children;
     }
 
-    private <T> TsBeanModel processBean(SymbolTable symbolTable, Model model, Map<Type, List<BeanModel>> children, BeanModel bean) {
+    private <T> TsBeanModel processBean(SymbolTable symbolTable, Model model, Map<Type, List<BeanModel>> children,
+            BeanModel bean) {
         final boolean isClass = mappedToClass(bean.getOrigin());
         final List<TsType> extendsList = new ArrayList<>();
         final List<TsType> implementsList = new ArrayList<>();
@@ -308,7 +255,8 @@ public class ModelCompiler {
             final List<BeanModel> selfAndDescendants = getSelfAndDescendants(bean, children);
             final List<TsType.StringLiteralType> literals = new ArrayList<>();
             for (BeanModel descendant : selfAndDescendants) {
-                if (descendant.getDiscriminantProperty() == null || descendant.getProperty(bean.getDiscriminantProperty()) != null) {
+                if (descendant.getDiscriminantProperty() == null
+                        || descendant.getProperty(bean.getDiscriminantProperty()) != null) {
                     // do not handle bean as tagged union if any descendant or it itself has duplicate discriminant property
                     isTaggedUnion = false;
                     isDisciminantProperty = false;
@@ -320,7 +268,8 @@ public class ModelCompiler {
             final List<BeanModel> descendants = selfAndDescendants.subList(1, selfAndDescendants.size());
             for (BeanModel descendant : descendants) {
                 // do not handle bean as tagged union if any descendant has "non-related" generic parameter
-                final List<String> mappedGenericVariables = GenericsResolver.mapGenericVariablesToBase(descendant.getOrigin(), bean.getOrigin());
+                final List<String> mappedGenericVariables = GenericsResolver
+                        .mapGenericVariablesToBase(descendant.getOrigin(), bean.getOrigin());
                 if (mappedGenericVariables.contains(null)) {
                     isTaggedUnion = false;
                 }
@@ -329,7 +278,8 @@ public class ModelCompiler {
                     ? new TsType.UnionType(literals)
                     : TsType.String;
             final TsModifierFlags modifiers = TsModifierFlags.None.setReadonly(settings.declarePropertiesAsReadOnly);
-            properties.add(0, new TsPropertyModel(bean.getDiscriminantProperty(), discriminantType, modifiers, /*ownProperty*/ true, null));
+            properties.add(0, new TsPropertyModel(bean.getDiscriminantProperty(), discriminantType, modifiers,
+                    /*ownProperty*/ true, null));
         }
 
         final TsBeanModel tsBean = new TsBeanModel(
@@ -346,7 +296,8 @@ public class ModelCompiler {
                 /*methods*/ null,
                 bean.getComments());
         return isTaggedUnion
-                ? tsBean.withTaggedUnion(bean.getTaggedUnionClasses(), bean.getDiscriminantProperty(), bean.getDiscriminantLiteral())
+                ? tsBean.withTaggedUnion(bean.getTaggedUnionClasses(), bean.getDiscriminantProperty(),
+                        bean.getDiscriminantLiteral())
                 : tsBean;
     }
 
@@ -366,7 +317,8 @@ public class ModelCompiler {
         return processProperties(symbolTable, model, bean, "", "");
     }
 
-    private List<TsPropertyModel> processProperties(SymbolTable symbolTable, Model model, BeanModel bean, String prefix, String suffix) {
+    private List<TsPropertyModel> processProperties(SymbolTable symbolTable, Model model, BeanModel bean, String prefix,
+            String suffix) {
         final List<TsPropertyModel> properties = new ArrayList<>();
         for (PropertyModel property : bean.getProperties()) {
             boolean pulled = false;
@@ -376,7 +328,8 @@ public class ModelCompiler {
                 if (type instanceof Class<?>) {
                     final BeanModel pullBean = model.getBean((Class<?>) type);
                     if (pullBean != null) {
-                        properties.addAll(processProperties(symbolTable, model, pullBean, prefix + pullProperties.prefix, pullProperties.suffix + suffix));
+                        properties.addAll(processProperties(symbolTable, model, pullBean,
+                                prefix + pullProperties.prefix, pullProperties.suffix + suffix));
                         pulled = true;
                     }
                 }
@@ -400,21 +353,22 @@ public class ModelCompiler {
         return descendants;
     }
 
-    private TsPropertyModel processProperty(SymbolTable symbolTable, BeanModel bean, PropertyModel property, String prefix, String suffix) {
-        final TsType type = typeFromJava(symbolTable, property.getType(), property.getContext(), property.getName(), bean.getOrigin());
+    private TsPropertyModel processProperty(SymbolTable symbolTable, BeanModel bean, PropertyModel property,
+            String prefix, String suffix) {
+        final TsType type = typeFromJava(symbolTable, property.getType(), property.getContext(), property.getName(),
+                bean.getOrigin());
         final TsType tsType = property.isOptional() ? type.optional() : type;
         final TsModifierFlags modifiers = TsModifierFlags.None.setReadonly(settings.declarePropertiesAsReadOnly);
         final List<String> comments = settings.generateReadonlyAndWriteonlyJSDocTags
                 ? Utils.concat(property.getComments(), getPropertyAccessComments(property.getAccess()))
                 : property.getComments();
-        return new TsPropertyModel(prefix + property.getName() + suffix, tsType, modifiers, /*ownProperty*/ false, comments);
+        return new TsPropertyModel(prefix + property.getName() + suffix, tsType, modifiers, /*ownProperty*/ false,
+                comments);
     }
 
     private static List<String> getPropertyAccessComments(PropertyAccess access) {
-        final String accessTag =
-                access == PropertyAccess.ReadOnly ? "@readonly" :
-                access == PropertyAccess.WriteOnly ? "@writeonly" :
-                null;
+        final String accessTag = access == PropertyAccess.ReadOnly ? "@readonly"
+                : access == PropertyAccess.WriteOnly ? "@writeonly" : null;
         return accessTag != null ? Collections.singletonList(accessTag) : null;
     }
 
@@ -445,7 +399,8 @@ public class ModelCompiler {
         return typeFromJava(symbolTable, javaType, null, usedInProperty, usedInClass);
     }
 
-    private TsType typeFromJava(SymbolTable symbolTable, Type javaType, Object typeContext, String usedInProperty, Class<?> usedInClass) {
+    private TsType typeFromJava(SymbolTable symbolTable, Type javaType, Object typeContext, String usedInProperty,
+            Class<?> usedInClass) {
         if (javaType == null) {
             return null;
         }
@@ -455,7 +410,8 @@ public class ModelCompiler {
             return result.getTsType();
         } else {
             if (usedInClass != null && usedInProperty != null) {
-                TypeScriptGenerator.getLogger().warning(String.format("Unsupported type '%s' used in '%s.%s'", javaType, usedInClass.getSimpleName(), usedInProperty));
+                TypeScriptGenerator.getLogger().warning(String.format("Unsupported type '%s' used in '%s.%s'", javaType,
+                        usedInClass.getSimpleName(), usedInProperty));
             } else {
                 TypeScriptGenerator.getLogger().warning(String.format("Unsupported type '%s'", javaType));
             }
@@ -481,10 +437,12 @@ public class ModelCompiler {
     private TsModel removeInheritedProperties(SymbolTable symbolTable, TsModel tsModel) {
         final List<TsBeanModel> beans = new ArrayList<>();
         for (TsBeanModel bean : tsModel.getBeans()) {
-            final Map<String, TsType> inheritedPropertyTypes = getInheritedProperties(symbolTable, tsModel, bean.getAllParents());
+            final Map<String, TsType> inheritedPropertyTypes = getInheritedProperties(symbolTable, tsModel,
+                    bean.getAllParents());
             final List<TsPropertyModel> properties = new ArrayList<>();
             for (TsPropertyModel property : bean.getProperties()) {
-                if (property.isOwnProperty() || !Objects.equals(property.getTsType(), inheritedPropertyTypes.get(property.getName()))) {
+                if (property.isOwnProperty()
+                        || !Objects.equals(property.getTsType(), inheritedPropertyTypes.get(property.getName()))) {
                     properties.add(property);
                 }
             }
@@ -505,7 +463,8 @@ public class ModelCompiler {
                 }
                 classPropertyNames.addAll(getInheritedProperties(symbolTable, tsModel, bean.getExtendsList()).keySet());
 
-                final List<TsPropertyModel> implementedProperties = getImplementedProperties(symbolTable, tsModel, bean.getImplementsList());
+                final List<TsPropertyModel> implementedProperties = getImplementedProperties(symbolTable, tsModel,
+                        bean.getImplementsList());
                 Collections.reverse(implementedProperties);
                 for (TsPropertyModel implementedProperty : implementedProperties) {
                     if (!classPropertyNames.contains(implementedProperty.getName())) {
@@ -535,17 +494,15 @@ public class ModelCompiler {
                 body.add(new TsExpressionStatement(
                         new TsCallExpression(
                                 new TsSuperExpression(),
-                                new TsIdentifierReference("data")
-                        )
-                ));
+                                new TsIdentifierReference("data"))));
             }
             for (TsPropertyModel property : bean.getProperties()) {
-                final Map<String, TsType> inheritedProperties = ModelCompiler.getInheritedProperties(symbolTable, tsModel, Utils.listFromNullable(bean.getParent()));
+                final Map<String, TsType> inheritedProperties = ModelCompiler.getInheritedProperties(symbolTable,
+                        tsModel, Utils.listFromNullable(bean.getParent()));
                 if (!inheritedProperties.containsKey(property.getName())) {
                     body.add(new TsExpressionStatement(new TsAssignmentExpression(
                             new TsMemberExpression(new TsThisExpression(), property.name),
-                            new TsMemberExpression(new TsIdentifierReference("data"), property.name)
-                    )));
+                            new TsMemberExpression(new TsIdentifierReference("data"), property.name))));
                 }
             }
             if (bean.isClass()) {
@@ -553,8 +510,7 @@ public class ModelCompiler {
                         TsModifierFlags.None,
                         Arrays.asList(new TsParameterModel("data", dataType)),
                         body,
-                        /*comments*/ null
-                );
+                        /*comments*/ null);
                 beans.add(bean.withConstructor(constructor));
             } else {
                 beans.add(bean);
@@ -563,7 +519,8 @@ public class ModelCompiler {
         return tsModel.withBeans(beans);
     }
 
-    public static Map<String, TsType> getInheritedProperties(SymbolTable symbolTable, TsModel tsModel, List<TsType> parents) {
+    public static Map<String, TsType> getInheritedProperties(SymbolTable symbolTable, TsModel tsModel,
+            List<TsType> parents) {
         final Map<String, TsType> properties = new LinkedHashMap<>();
         for (TsType parentType : parents) {
             final TsBeanModel parent = tsModel.getBean(getOriginClass(symbolTable, parentType));
@@ -577,7 +534,8 @@ public class ModelCompiler {
         return properties;
     }
 
-    private static List<TsPropertyModel> getImplementedProperties(SymbolTable symbolTable, TsModel tsModel, List<TsType> interfaces) {
+    private static List<TsPropertyModel> getImplementedProperties(SymbolTable symbolTable, TsModel tsModel,
+            List<TsType> interfaces) {
         final List<TsPropertyModel> properties = new ArrayList<>();
         for (TsType aInterface : interfaces) {
             final TsBeanModel bean = tsModel.getBean(getOriginClass(symbolTable, aInterface));
@@ -595,44 +553,59 @@ public class ModelCompiler {
         final TsType.GenericVariableType varR = new TsType.GenericVariableType("R");
         final TsAliasModel responseTypeAlias;
         if (settings.restResponseType != null) {
-            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR), new TsType.VerbatimType(settings.restResponseType), null);
+            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR),
+                    new TsType.VerbatimType(settings.restResponseType), null);
         } else {
-            final TsType.GenericReferenceType responseTypeDefinition = new TsType.GenericReferenceType(symbolTable.getSyntheticSymbol("Promise"), varR);
-            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR), responseTypeDefinition, null);
+            final TsType.GenericReferenceType responseTypeDefinition = new TsType.GenericReferenceType(
+                    symbolTable.getSyntheticSymbol("Promise"), varR);
+            responseTypeAlias = new TsAliasModel(null, responseSymbol, Arrays.asList(varR), responseTypeDefinition,
+                    null);
         }
         tsModel.getTypeAliases().add(responseTypeAlias);
         return responseSymbol;
     }
 
-    private void createRestInterfaces(TsModel tsModel, SymbolTable symbolTable, List<RestApplicationModel> restApplications,
+    private void createRestInterfaces(TsModel tsModel, SymbolTable symbolTable,
+            List<RestApplicationModel> restApplications,
             Symbol responseSymbol, TsType.GenericVariableType optionsGenericVariable, TsType optionsType) {
         final List<TsType.GenericVariableType> typeParameters = Utils.listFromNullable(optionsGenericVariable);
-        final Map<Symbol, List<TsMethodModel>> groupedMethods = processRestMethods(tsModel, restApplications, symbolTable, null, responseSymbol, optionsType, false);
+        final Map<Symbol, List<TsMethodModel>> groupedMethods = processRestMethods(tsModel, restApplications,
+                symbolTable, null, responseSymbol, optionsType, false);
         for (Map.Entry<Symbol, List<TsMethodModel>> entry : groupedMethods.entrySet()) {
-            final TsBeanModel interfaceModel = new TsBeanModel(null, TsBeanCategory.Service, false, entry.getKey(), typeParameters, null, null, null, null, null, entry.getValue(), null);
+            final TsBeanModel interfaceModel = new TsBeanModel(null, TsBeanCategory.Service, false, entry.getKey(),
+                    typeParameters, null, null, null, null, null, entry.getValue(), null);
             tsModel.getBeans().add(interfaceModel);
         }
     }
 
-    private void createRestClients(TsModel tsModel, SymbolTable symbolTable, List<RestApplicationModel> restApplications,
+    private void createRestClients(TsModel tsModel, SymbolTable symbolTable,
+            List<RestApplicationModel> restApplications,
             Symbol responseSymbol, TsType.GenericVariableType optionsGenericVariable, TsType optionsType) {
         final Symbol httpClientSymbol = symbolTable.getSyntheticSymbol("HttpClient");
         final List<TsType.GenericVariableType> typeParameters = Utils.listFromNullable(optionsGenericVariable);
 
         // HttpClient interface
         final TsType.GenericVariableType returnGenericVariable = new TsType.GenericVariableType("R");
-        tsModel.getBeans().add(new TsBeanModel(null, TsBeanCategory.ServicePrerequisite, false, httpClientSymbol, typeParameters, null, null, null, null, null, Arrays.asList(
-                new TsMethodModel("request", TsModifierFlags.None, Arrays.asList(returnGenericVariable), Arrays.asList(
-                        new TsParameterModel("requestConfig", new TsType.ObjectType(
-                                new TsProperty("method", TsType.String),
-                                new TsProperty("url", TsType.String),
-                                new TsProperty("queryParams", new TsType.OptionalType(TsType.Any)),
-                                new TsProperty("data", new TsType.OptionalType(TsType.Any)),
-                                new TsProperty("copyFn", new TsType.OptionalType(new TsType.FunctionType(Arrays.asList(new TsParameter("data", returnGenericVariable)), returnGenericVariable))),
-                                optionsType != null ? new TsProperty("options", new TsType.OptionalType(optionsType)) : null
-                        ))
-                ), new TsType.GenericReferenceType(responseSymbol, returnGenericVariable), null, null)
-        ), null));
+        tsModel.getBeans().add(new TsBeanModel(null, TsBeanCategory.ServicePrerequisite, false, httpClientSymbol,
+                typeParameters, null, null, null, null, null, Arrays.asList(
+                        new TsMethodModel(
+                                "request", TsModifierFlags.None, Arrays.asList(returnGenericVariable), Arrays.asList(
+                                        new TsParameterModel("requestConfig", new TsType.ObjectType(
+                                                new TsProperty("method", TsType.String),
+                                                new TsProperty("url", TsType.String),
+                                                new TsProperty("queryParams", new TsType.OptionalType(TsType.Any)),
+                                                new TsProperty("data", new TsType.OptionalType(TsType.Any)),
+                                                new TsProperty("copyFn",
+                                                        new TsType.OptionalType(new TsType.FunctionType(
+                                                                Arrays.asList(
+                                                                        new TsParameter("data", returnGenericVariable)),
+                                                                returnGenericVariable))),
+                                                optionsType != null
+                                                        ? new TsProperty("options",
+                                                                new TsType.OptionalType(optionsType))
+                                                        : null))),
+                                new TsType.GenericReferenceType(responseSymbol, returnGenericVariable), null, null)),
+                null));
 
         // application client classes
         final TsType.ReferenceType httpClientType = optionsGenericVariable != null
@@ -642,15 +615,18 @@ public class ModelCompiler {
                 TsModifierFlags.None,
                 Arrays.asList(new TsParameterModel(TsAccessibilityModifier.Protected, "httpClient", httpClientType)),
                 Collections.<TsStatement>emptyList(),
-                null
-        );
-        final boolean bothInterfacesAndClients = settings.generateJaxrsApplicationInterface || settings.generateSpringApplicationInterface;
+                null);
+        final boolean bothInterfacesAndClients = settings.generateJaxrsApplicationInterface
+                || settings.generateSpringApplicationInterface;
         final String groupingSuffix = bothInterfacesAndClients ? null : "Client";
-        final Map<Symbol, List<TsMethodModel>> groupedMethods = processRestMethods(tsModel, restApplications, symbolTable, groupingSuffix, responseSymbol, optionsType, true);
+        final Map<Symbol, List<TsMethodModel>> groupedMethods = processRestMethods(tsModel, restApplications,
+                symbolTable, groupingSuffix, responseSymbol, optionsType, true);
         for (Map.Entry<Symbol, List<TsMethodModel>> entry : groupedMethods.entrySet()) {
-            final Symbol symbol = bothInterfacesAndClients ? symbolTable.addSuffixToSymbol(entry.getKey(), "Client") : entry.getKey();
+            final Symbol symbol = bothInterfacesAndClients ? symbolTable.addSuffixToSymbol(entry.getKey(), "Client")
+                    : entry.getKey();
             final TsType interfaceType = bothInterfacesAndClients ? new TsType.ReferenceType(entry.getKey()) : null;
-            final TsBeanModel clientModel = new TsBeanModel(null, TsBeanCategory.Service, true, symbol, typeParameters, null, null,
+            final TsBeanModel clientModel = new TsBeanModel(null, TsBeanCategory.Service, true, symbol, typeParameters,
+                    null, null,
                     Utils.listFromNullable(interfaceType), null, constructor, entry.getValue(), null);
             tsModel.getBeans().add(clientModel);
         }
@@ -658,49 +634,62 @@ public class ModelCompiler {
         tsModel.getHelpers().add(TsHelper.loadFromResource("/helpers/uriEncoding.ts"));
     }
 
-    private Map<Symbol, List<TsMethodModel>> processRestMethods(TsModel tsModel, List<RestApplicationModel> restApplications, SymbolTable symbolTable, String nameSuffix, Symbol responseSymbol, TsType optionsType, boolean implement) {
+    private Map<Symbol, List<TsMethodModel>> processRestMethods(TsModel tsModel,
+            List<RestApplicationModel> restApplications, SymbolTable symbolTable, String nameSuffix,
+            Symbol responseSymbol, TsType optionsType, boolean implement) {
         final Map<Symbol, List<TsMethodModel>> result = new LinkedHashMap<>();
-        final Map<Symbol, List<Pair<RestApplicationModel, RestMethodModel>>> groupedMethods = groupingByMethodContainer(restApplications, symbolTable, nameSuffix);
+        final Map<Symbol, List<Pair<RestApplicationModel, RestMethodModel>>> groupedMethods = groupingByMethodContainer(
+                restApplications, symbolTable, nameSuffix);
         for (Map.Entry<Symbol, List<Pair<RestApplicationModel, RestMethodModel>>> entry : groupedMethods.entrySet()) {
-            result.put(entry.getKey(), processRestMethodGroup(tsModel, symbolTable, entry.getValue(), responseSymbol, optionsType, implement));
+            result.put(entry.getKey(), processRestMethodGroup(tsModel, symbolTable, entry.getValue(), responseSymbol,
+                    optionsType, implement));
         }
         return result;
     }
 
-    private List<TsMethodModel> processRestMethodGroup(TsModel tsModel, SymbolTable symbolTable, List<Pair<RestApplicationModel, RestMethodModel>> methods, Symbol responseSymbol, TsType optionsType, boolean implement) {
+    private List<TsMethodModel> processRestMethodGroup(TsModel tsModel, SymbolTable symbolTable,
+            List<Pair<RestApplicationModel, RestMethodModel>> methods, Symbol responseSymbol, TsType optionsType,
+            boolean implement) {
         final List<TsMethodModel> resultMethods = new ArrayList<>();
         final Map<String, Long> methodNamesCount = groupingByMethodName(methods);
         for (Pair<RestApplicationModel, RestMethodModel> pair : methods) {
             final RestApplicationModel restApplication = pair.getValue1();
             final RestMethodModel method = pair.getValue2();
             final boolean createLongName = methodNamesCount.get(method.getName()) > 1;
-            resultMethods.add(processRestMethod(tsModel, symbolTable, restApplication.getApplicationPath(), responseSymbol, method, createLongName, optionsType, implement));
+            resultMethods.add(processRestMethod(tsModel, symbolTable, restApplication.getApplicationPath(),
+                    responseSymbol, method, createLongName, optionsType, implement));
         }
         return resultMethods;
     }
 
-    private Map<Symbol, List<Pair<RestApplicationModel, RestMethodModel>>> groupingByMethodContainer(List<RestApplicationModel> restApplications, SymbolTable symbolTable, String nameSuffix) {
+    private Map<Symbol, List<Pair<RestApplicationModel, RestMethodModel>>> groupingByMethodContainer(
+            List<RestApplicationModel> restApplications, SymbolTable symbolTable, String nameSuffix) {
         return restApplications.stream()
-                .flatMap(restApplication -> restApplication.getMethods().stream().map(method -> Pair.of(restApplication, method)))
+                .flatMap(restApplication -> restApplication.getMethods().stream()
+                        .map(method -> Pair.of(restApplication, method)))
                 .collect(Collectors.groupingBy(
                         pair -> getContainerSymbol(pair.getValue1(), symbolTable, nameSuffix, pair.getValue2()),
-                        Utils.toSortedList(Comparator.comparing(pair -> pair.getValue2().getPath()))
-                ));
+                        Utils.toSortedList(Comparator.comparing(pair -> pair.getValue2().getPath()))));
     }
 
-    private Symbol getContainerSymbol(RestApplicationModel restApplication, SymbolTable symbolTable, String nameSuffix, RestMethodModel method) {
+    private Symbol getContainerSymbol(RestApplicationModel restApplication, SymbolTable symbolTable, String nameSuffix,
+            RestMethodModel method) {
         if (settings.restNamespacing == RestNamespacing.perResource) {
             return symbolTable.getSymbol(method.getRootResource(), nameSuffix);
         }
         if (settings.restNamespacing == RestNamespacing.byAnnotation) {
             final Annotation annotation = method.getRootResource().getAnnotation(settings.restNamespacingAnnotation);
-            final String element = settings.restNamespacingAnnotationElement != null ? settings.restNamespacingAnnotationElement : "value";
+            final String element = settings.restNamespacingAnnotationElement != null
+                    ? settings.restNamespacingAnnotationElement
+                    : "value";
             final String annotationValue = Utils.getAnnotationElementValue(annotation, element, String.class);
             if (annotationValue != null) {
                 if (isValidIdentifierName(annotationValue)) {
                     return symbolTable.getSyntheticSymbol(annotationValue, nameSuffix);
                 } else {
-                    TypeScriptGenerator.getLogger().warning(String.format("Ignoring annotation value '%s' since it is not a valid identifier, '%s' will be in default namespace", annotationValue, method.getOriginClass().getName() + "." + method.getName()));
+                    TypeScriptGenerator.getLogger().warning(String.format(
+                            "Ignoring annotation value '%s' since it is not a valid identifier, '%s' will be in default namespace",
+                            annotationValue, method.getOriginClass().getName() + "." + method.getName()));
                 }
             }
         }
@@ -718,13 +707,14 @@ public class ModelCompiler {
                 .collect(Collectors.groupingBy(RestMethodModel::getName, Collectors.counting()));
     }
 
-    private TsMethodModel processRestMethod(TsModel tsModel, SymbolTable symbolTable, String pathPrefix, Symbol responseSymbol, RestMethodModel method, boolean createLongName, TsType optionsType, boolean implement) {
+    private TsMethodModel processRestMethod(TsModel tsModel, SymbolTable symbolTable, String pathPrefix,
+            Symbol responseSymbol, RestMethodModel method, boolean createLongName, TsType optionsType,
+            boolean implement) {
         final String path = Utils.joinPath(pathPrefix, method.getPath());
         final PathTemplate pathTemplate = PathTemplate.parse(path);
         final List<String> comments = Utils.concat(method.getComments(), Arrays.asList(
-            "HTTP " + method.getHttpMethod() + " /" + path,
-            "Java method: " + method.getOriginClass().getName() + "." + method.getName()
-        ));
+                "HTTP " + method.getHttpMethod() + " /" + path,
+                "Java method: " + method.getOriginClass().getName() + "." + method.getName()));
         final List<TsParameterModel> parameters = new ArrayList<>();
         // path params
         for (MethodParameterModel parameter : method.getPathParams()) {
@@ -751,9 +741,12 @@ public class ModelCompiler {
                 };
                 for (RestQueryParam restQueryParam : queryParams) {
                     if (restQueryParam instanceof RestQueryParam.Single) {
-                        final MethodParameterModel queryParam = ((RestQueryParam.Single) restQueryParam).getQueryParam();
-                        final TsType type = typeFromJava(symbolTable, queryParam.getType(), method.getName(), method.getOriginClass());
-                        currentSingles.add(new TsProperty(queryParam.getName(), restQueryParam.required ? type : new TsType.OptionalType(type)));
+                        final MethodParameterModel queryParam = ((RestQueryParam.Single) restQueryParam)
+                                .getQueryParam();
+                        final TsType type = typeFromJava(symbolTable, queryParam.getType(), method.getName(),
+                                method.getOriginClass());
+                        currentSingles.add(new TsProperty(queryParam.getName(),
+                                restQueryParam.required ? type : new TsType.OptionalType(type)));
                     }
                     if (restQueryParam instanceof RestQueryParam.Bean) {
                         final BeanModel queryBean = ((RestQueryParam.Bean) restQueryParam).getBean();
@@ -772,8 +765,7 @@ public class ModelCompiler {
                                     processProperties(symbolTable, null, queryBean),
                                     /*constructor*/null,
                                     /*methods*/null,
-                                    /*comments*/null
-                            ));
+                                    /*comments*/null));
                         }
                         types.add(new TsType.ReferenceType(queryParamsSymbol));
                     }
@@ -782,17 +774,20 @@ public class ModelCompiler {
             }
             boolean allQueryParamsOptional = queryParams.stream().noneMatch(queryParam -> queryParam.required);
             TsType.IntersectionType queryParamType = new TsType.IntersectionType(types);
-            queryParameter = new TsParameterModel("queryParams", allQueryParamsOptional ? new TsType.OptionalType(queryParamType) : queryParamType);
+            queryParameter = new TsParameterModel("queryParams",
+                    allQueryParamsOptional ? new TsType.OptionalType(queryParamType) : queryParamType);
             parameters.add(queryParameter);
         } else {
             queryParameter = null;
         }
         if (optionsType != null) {
-            final TsParameterModel optionsParameter = new TsParameterModel("options", new TsType.OptionalType(optionsType));
+            final TsParameterModel optionsParameter = new TsParameterModel("options",
+                    new TsType.OptionalType(optionsType));
             parameters.add(optionsParameter);
         }
         // return type
-        final TsType returnType = typeFromJava(symbolTable, method.getReturnType(), method.getName(), method.getOriginClass());
+        final TsType returnType = typeFromJava(symbolTable, method.getReturnType(), method.getName(),
+                method.getOriginClass());
         final TsType wrappedReturnType = new TsType.GenericReferenceType(responseSymbol, returnType);
         // method name
         final String nameSuffix;
@@ -809,27 +804,36 @@ public class ModelCompiler {
             body = new ArrayList<>();
             body.add(new TsReturnStatement(
                     new TsCallExpression(
-                            new TsMemberExpression(new TsMemberExpression(new TsThisExpression(), "httpClient"), "request"),
+                            new TsMemberExpression(new TsMemberExpression(new TsThisExpression(), "httpClient"),
+                                    "request"),
                             new TsObjectLiteral(
                                     new TsPropertyDefinition("method", new TsStringLiteral(method.getHttpMethod())),
                                     new TsPropertyDefinition("url", processPathTemplate(pathTemplate)),
-                                    queryParameter != null ? new TsPropertyDefinition("queryParams", new TsIdentifierReference("queryParams")) : null,
-                                    method.getEntityParam() != null ? new TsPropertyDefinition("data", new TsIdentifierReference(method.getEntityParam().getName())) : null,
-                                    optionsType != null ? new TsPropertyDefinition("options", new TsIdentifierReference("options")) : null
-                            )
-                    )
-            ));
+                                    queryParameter != null
+                                            ? new TsPropertyDefinition("queryParams",
+                                                    new TsIdentifierReference("queryParams"))
+                                            : null,
+                                    method.getEntityParam() != null
+                                            ? new TsPropertyDefinition("data",
+                                                    new TsIdentifierReference(method.getEntityParam().getName()))
+                                            : null,
+                                    optionsType != null
+                                            ? new TsPropertyDefinition("options", new TsIdentifierReference("options"))
+                                            : null))));
         } else {
             body = null;
         }
         // method
-        final TsMethodModel tsMethodModel = new TsMethodModel(method.getName() + nameSuffix, TsModifierFlags.None, null, parameters, wrappedReturnType, body, comments);
+        final TsMethodModel tsMethodModel = new TsMethodModel(method.getName() + nameSuffix, TsModifierFlags.None, null,
+                parameters, wrappedReturnType, body, comments);
         return tsMethodModel;
     }
 
-    private TsParameterModel processParameter(SymbolTable symbolTable, MethodModel method, MethodParameterModel parameter) {
+    private TsParameterModel processParameter(SymbolTable symbolTable, MethodModel method,
+            MethodParameterModel parameter) {
         final String parameterName = parameter.getName();
-        final TsType parameterType = typeFromJava(symbolTable, parameter.getType(), method.getName(), method.getOriginClass());
+        final TsType parameterType = typeFromJava(symbolTable, parameter.getType(), method.getName(),
+                method.getOriginClass());
         return new TsParameterModel(parameterName, parameterType);
     }
 
@@ -857,7 +861,8 @@ public class ModelCompiler {
             public TsType transform(TsType.Context context, TsType type) {
                 if (type instanceof TsType.IndexedArrayType) {
                     final TsType.IndexedArrayType indexedArrayType = (TsType.IndexedArrayType) type;
-                    return new TsType.GenericBasicType("Record", indexedArrayType.indexType, indexedArrayType.elementType);
+                    return new TsType.GenericBasicType("Record", indexedArrayType.indexType,
+                            indexedArrayType.elementType);
                 }
                 return type;
             }
@@ -866,8 +871,10 @@ public class ModelCompiler {
     }
 
     private TsModel transformDates(SymbolTable symbolTable, TsModel tsModel) {
-        final TsAliasModel dateAsNumber = new TsAliasModel(null, symbolTable.getSyntheticSymbol("DateAsNumber"), null, TsType.Number, null);
-        final TsAliasModel dateAsString = new TsAliasModel(null, symbolTable.getSyntheticSymbol("DateAsString"), null, TsType.String, null);
+        final TsAliasModel dateAsNumber = new TsAliasModel(null, symbolTable.getSyntheticSymbol("DateAsNumber"), null,
+                TsType.Number, null);
+        final TsAliasModel dateAsString = new TsAliasModel(null, symbolTable.getSyntheticSymbol("DateAsString"), null,
+                TsType.String, null);
         final LinkedHashSet<TsAliasModel> typeAliases = new LinkedHashSet<>(tsModel.getTypeAliases());
         final TsModel model = transformBeanPropertyTypes(tsModel, new TsType.Transformer() {
             @Override
@@ -891,11 +898,11 @@ public class ModelCompiler {
 
     static List<String> splitIdentifierIntoWords(String identifier) {
         final String pattern = String.join("|",
-                "_",  // example: UPPER CASE
-                "(?<=\\p{javaUpperCase})" + "(?=\\p{javaUpperCase}\\p{javaLowerCase})",  // example: XML Http
-                "(?<=[^_\\p{javaUpperCase}])" + "(?=\\p{javaUpperCase})",  // example: camel Case
-                "(?<=[\\p{javaUpperCase}\\p{javaLowerCase}])" + "(?=[^\\p{javaUpperCase}\\p{javaLowerCase}])",  // example: string 2
-                "(?<=[^_\\p{javaUpperCase}\\p{javaLowerCase}])" + "(?=[\\p{javaUpperCase}\\p{javaLowerCase}])"  // example: 2 json
+                "_", // example: UPPER CASE
+                "(?<=\\p{javaUpperCase})" + "(?=\\p{javaUpperCase}\\p{javaLowerCase})", // example: XML Http
+                "(?<=[^_\\p{javaUpperCase}])" + "(?=\\p{javaUpperCase})", // example: camel Case
+                "(?<=[\\p{javaUpperCase}\\p{javaLowerCase}])" + "(?=[^\\p{javaUpperCase}\\p{javaLowerCase}])", // example: string 2
+                "(?<=[^_\\p{javaUpperCase}\\p{javaLowerCase}])" + "(?=[\\p{javaUpperCase}\\p{javaLowerCase}])" // example: 2 json
         );
         return Arrays.asList(identifier.split(pattern));
     }
@@ -935,11 +942,11 @@ public class ModelCompiler {
             for (EnumMemberModel member : enumModel.getMembers()) {
                 values.add(member.getEnumValue() instanceof Number
                         ? new TsType.NumberLiteralType((Number) member.getEnumValue())
-                        : new TsType.StringLiteralType(String.valueOf(member.getEnumValue()))
-                );
+                        : new TsType.StringLiteralType(String.valueOf(member.getEnumValue())));
             }
             final TsType union = new TsType.UnionType(values);
-            typeAliases.add(new TsAliasModel(enumModel.getOrigin(), enumModel.getName(), null, union, enumModel.getComments()));
+            typeAliases.add(
+                    new TsAliasModel(enumModel.getOrigin(), enumModel.getName(), null, union, enumModel.getComments()));
         }
         return tsModel.withRemovedEnums(stringEnums).withTypeAliases(new ArrayList<>(typeAliases));
     }
@@ -968,7 +975,8 @@ public class ModelCompiler {
         for (TsEnumModel enumModel : stringEnums) {
             final List<EnumMemberModel> members = new ArrayList<>();
             for (EnumMemberModel member : enumModel.getMembers()) {
-                members.add(new EnumMemberModel(member.getPropertyName(), (Number) null, member.getOriginalField(), member.getComments()));
+                members.add(new EnumMemberModel(member.getPropertyName(), (Number) null, member.getOriginalField(),
+                        member.getComments()));
             }
             enums.add(enumModel.withMembers(members));
         }
@@ -990,7 +998,8 @@ public class ModelCompiler {
                                 .orElse(null);
                         if (settings.mapEnum == EnumMapping.asNumberBasedEnum
                                 || enumModel != null && enumModel.getKind() == EnumKind.NumberBased
-                                || enumModel != null && enumModel.getMembers().stream().anyMatch(member -> !(member.getEnumValue() instanceof String))) {
+                                || enumModel != null && enumModel.getMembers().stream()
+                                        .anyMatch(member -> !(member.getEnumValue() instanceof String))) {
                             return new TsType.IndexedArrayType(TsType.String, mappedType.type);
                         }
                     }
@@ -1003,8 +1012,7 @@ public class ModelCompiler {
     private static TsModel addEnumValuesToJavadoc(TsModel tsModel) {
         return tsModel.withEnums(tsModel.getEnums().stream()
                 .map(enumModel -> addEnumValuesToJavadoc(enumModel))
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
     }
 
     private static TsEnumModel addEnumValuesToJavadoc(TsEnumModel enumModel) {
@@ -1020,12 +1028,10 @@ public class ModelCompiler {
                             enumModel.getMembers().stream()
                                     .map(enumMember -> "- `" + enumMember.getEnumValue() + "`"
                                             + (enumMember.getComments() != null
-                                            ? " - " + String.join(" ", enumMember.getComments())
-                                            : ""))
-                    )
+                                                    ? " - " + String.join(" ", enumMember.getComments())
+                                                    : "")))
                     .flatMap(s -> s)
-                    .collect(Collectors.toList())
-            );
+                    .collect(Collectors.toList()));
         } else {
             return enumModel;
         }
@@ -1046,7 +1052,8 @@ public class ModelCompiler {
                 for (Class<?> cls : bean.getTaggedUnionClasses()) {
                     final TsType type;
                     if (isGeneric && cls.getTypeParameters().length != 0) {
-                        final List<String> mappedGenericVariables = GenericsResolver.mapGenericVariablesToBase(cls, bean.getOrigin());
+                        final List<String> mappedGenericVariables = GenericsResolver.mapGenericVariablesToBase(cls,
+                                bean.getOrigin());
                         type = new TsType.GenericReferenceType(
                                 symbolTable.getSymbol(cls),
                                 mappedGenericVariables.stream()
@@ -1058,7 +1065,8 @@ public class ModelCompiler {
                     unionTypes.add(type);
                 }
                 final TsType.UnionType union = new TsType.UnionType(unionTypes);
-                final TsAliasModel tsAliasModel = new TsAliasModel(bean.getOrigin(), unionName, bean.getTypeParameters(), union, null);
+                final TsAliasModel tsAliasModel = new TsAliasModel(bean.getOrigin(), unionName,
+                        bean.getTypeParameters(), union, null);
                 beans.add(bean.withTaggedUnionAlias(tsAliasModel));
                 typeAliases.add(tsAliasModel);
             } else {
@@ -1067,24 +1075,26 @@ public class ModelCompiler {
         }
         final TsModel modelWithTaggedUnions = tsModel.withBeans(beans).withTypeAliases(new ArrayList<>(typeAliases));
         // use tagged unions
-        final TsModel modelWithUsedTaggedUnions = transformBeanPropertyTypes(modelWithTaggedUnions, new TsType.Transformer() {
-            @Override
-            public TsType transform(TsType.Context context, TsType tsType) {
-                final Class<?> cls = getOriginClass(symbolTable, tsType);
-                if (cls != null) {
-                    final Symbol unionSymbol = symbolTable.hasSymbol(cls, "Union");
-                    if (unionSymbol != null) {
-                        if (tsType instanceof TsType.GenericReferenceType) {
-                            final TsType.GenericReferenceType genericReferenceType = (TsType.GenericReferenceType) tsType;
-                            return new TsType.GenericReferenceType(unionSymbol, genericReferenceType.typeArguments);
-                        } else {
-                            return new TsType.ReferenceType(unionSymbol);
+        final TsModel modelWithUsedTaggedUnions = transformBeanPropertyTypes(modelWithTaggedUnions,
+                new TsType.Transformer() {
+                    @Override
+                    public TsType transform(TsType.Context context, TsType tsType) {
+                        final Class<?> cls = getOriginClass(symbolTable, tsType);
+                        if (cls != null) {
+                            final Symbol unionSymbol = symbolTable.hasSymbol(cls, "Union");
+                            if (unionSymbol != null) {
+                                if (tsType instanceof TsType.GenericReferenceType) {
+                                    final TsType.GenericReferenceType genericReferenceType = (TsType.GenericReferenceType) tsType;
+                                    return new TsType.GenericReferenceType(unionSymbol,
+                                            genericReferenceType.typeArguments);
+                                } else {
+                                    return new TsType.ReferenceType(unionSymbol);
+                                }
+                            }
                         }
+                        return tsType;
                     }
-                }
-                return tsType;
-            }
-        });
+                });
         return modelWithUsedTaggedUnions;
     }
 
@@ -1098,19 +1108,16 @@ public class ModelCompiler {
                 .map(bean -> {
                     bean = bean.withProperties(bean.getProperties().stream()
                             .map(property -> property.withTsType(makeNullableTypeOptional(property.getTsType())))
-                            .collect(Collectors.toList())
-                    );
+                            .collect(Collectors.toList()));
                     bean = bean.withMethods(bean.getMethods().stream()
                             .map(method -> method.withParameters(method.getParameters().stream()
-                                    .map(parameter -> parameter.withTsType(makeNullableTypeOptional(parameter.getTsType())))
-                                    .collect(Collectors.toList())
-                            ))
-                            .collect(Collectors.toList())
-                    );
+                                    .map(parameter -> parameter
+                                            .withTsType(makeNullableTypeOptional(parameter.getTsType())))
+                                    .collect(Collectors.toList())))
+                            .collect(Collectors.toList()));
                     return bean;
                 })
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
     }
 
     private static TsType makeNullableTypeOptional(TsType type) {
@@ -1144,31 +1151,29 @@ public class ModelCompiler {
                     symbolTable.getSyntheticSymbol(TsType.NullableType.AliasName),
                     Arrays.asList(tVar),
                     new TsType.UnionType(tVar).add(nullabilityDefinition.getTypes()),
-                    /*comments*/ null
-            )));
+                    /*comments*/ null)));
         }
         return transformedModel;
     }
 
     // example: transforms property `text?: string | null | undefined` to `text?: string | null`
-    private TsModel eliminateUndefinedFromOptionalPropertiesAndParameters(final SymbolTable symbolTable, TsModel tsModel) {
+    private TsModel eliminateUndefinedFromOptionalPropertiesAndParameters(final SymbolTable symbolTable,
+            TsModel tsModel) {
         return tsModel.withBeans(tsModel.getBeans().stream()
                 .map(bean -> {
                     bean = bean.withProperties(bean.getProperties().stream()
-                            .map(property -> property.withTsType(eliminateUndefinedFromOptionalType(property.getTsType())))
-                            .collect(Collectors.toList())
-                    );
+                            .map(property -> property
+                                    .withTsType(eliminateUndefinedFromOptionalType(property.getTsType())))
+                            .collect(Collectors.toList()));
                     bean = bean.withMethods(bean.getMethods().stream()
                             .map(method -> method.withParameters(method.getParameters().stream()
-                                    .map(parameter -> parameter.withTsType(eliminateUndefinedFromOptionalType(parameter.getTsType())))
-                                    .collect(Collectors.toList())
-                            ))
-                            .collect(Collectors.toList())
-                    );
+                                    .map(parameter -> parameter
+                                            .withTsType(eliminateUndefinedFromOptionalType(parameter.getTsType())))
+                                    .collect(Collectors.toList())))
+                            .collect(Collectors.toList()));
                     return bean;
                 })
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
     }
 
     private static TsType eliminateUndefinedFromOptionalType(TsType type) {
@@ -1196,29 +1201,31 @@ public class ModelCompiler {
                                     final TsType.OptionalType optionalType = (TsType.OptionalType) property.getTsType();
                                     if (settings.optionalPropertiesDeclaration == OptionalPropertiesDeclaration.nullableType) {
                                         return property.withTsType(
-                                                TsType.UnionType.combine(Arrays.asList(optionalType.type, TsType.Null)));
+                                                TsType.UnionType
+                                                        .combine(Arrays.asList(optionalType.type, TsType.Null)));
                                     }
                                     if (settings.optionalPropertiesDeclaration == OptionalPropertiesDeclaration.questionMarkAndNullableType) {
                                         return property.withTsType(
                                                 new TsType.OptionalType(
-                                                        TsType.UnionType.combine(Arrays.asList(optionalType.type, TsType.Null))));
+                                                        TsType.UnionType.combine(
+                                                                Arrays.asList(optionalType.type, TsType.Null))));
                                     }
                                     if (settings.optionalPropertiesDeclaration == OptionalPropertiesDeclaration.nullableAndUndefinableType) {
                                         return property.withTsType(
-                                                TsType.UnionType.combine(Arrays.asList(optionalType.type, TsType.Null, TsType.Undefined)));
+                                                TsType.UnionType.combine(Arrays.asList(optionalType.type, TsType.Null,
+                                                        TsType.Undefined)));
                                     }
                                     if (settings.optionalPropertiesDeclaration == OptionalPropertiesDeclaration.undefinableType) {
                                         return property.withTsType(
-                                                TsType.UnionType.combine(Arrays.asList(optionalType.type, TsType.Undefined)));
+                                                TsType.UnionType
+                                                        .combine(Arrays.asList(optionalType.type, TsType.Undefined)));
                                     }
                                 }
                                 return property;
                             })
-                            .collect(Collectors.toList())
-                    );
+                            .collect(Collectors.toList()));
                 })
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
     }
 
     private TsModel sortPropertiesDeclarations(SymbolTable symbolTable, TsModel tsModel) {
@@ -1244,12 +1251,13 @@ public class ModelCompiler {
             addOrderedClass(symbolTable, tsModel, bean, orderedBeans);
         }
         return tsModel
-                    .withBeans(new ArrayList<>(orderedBeans))
-                    .withTypeAliases(aliases)
-                    .withEnums(enums);
+                .withBeans(new ArrayList<>(orderedBeans))
+                .withTypeAliases(aliases)
+                .withEnums(enums);
     }
 
-    private static void addOrderedClass(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean, LinkedHashSet<TsBeanModel> orderedBeans) {
+    private static void addOrderedClass(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean,
+            LinkedHashSet<TsBeanModel> orderedBeans) {
         // for classes first add their parents to ordered list
         if (bean.isClass() && bean.getParent() != null) {
             final TsBeanModel parentBean = tsModel.getBean(getOriginClass(symbolTable, bean.getParent()));
@@ -1275,13 +1283,15 @@ public class ModelCompiler {
                 final List<TsParameterModel> newParameters = new ArrayList<>();
                 for (TsParameterModel parameter : method.getParameters()) {
                     final TsType newParameterType = TsType.transformTsType(context, parameter.getTsType(), transformer);
-                    newParameters.add(new TsParameterModel(parameter.getAccessibilityModifier(), parameter.getName(), newParameterType));
+                    newParameters.add(new TsParameterModel(parameter.getAccessibilityModifier(), parameter.getName(),
+                            newParameterType));
                 }
                 final TsType newReturnType = TsType.transformTsType(context, method.getReturnType(), transformer);
-                newMethods.add(new TsMethodModel(method.getName(), method.getModifiers(), method.getTypeParameters(), newParameters, newReturnType, method.getBody(), method.getComments()));
+                newMethods.add(new TsMethodModel(method.getName(), method.getModifiers(), method.getTypeParameters(),
+                        newParameters, newReturnType, method.getBody(), method.getComments()));
             }
             final List<TsType> newImplements = new ArrayList<>();
-            for (TsType type: bean.getImplementsList()) {
+            for (TsType type : bean.getImplementsList()) {
                 if (type instanceof TsType.GenericBasicType || type instanceof TsType.GenericReferenceType) {
                     newImplements.add(TsType.transformTsType(context, type, transformer));
                 } else {
@@ -1289,14 +1299,15 @@ public class ModelCompiler {
                 }
             }
             final List<TsType> newExtends = new ArrayList<>();
-            for (TsType type: bean.getExtendsList()) {
+            for (TsType type : bean.getExtendsList()) {
                 if (type instanceof TsType.GenericBasicType || type instanceof TsType.GenericReferenceType) {
                     newExtends.add(TsType.transformTsType(context, type, transformer));
                 } else {
                     newExtends.add(type);
                 }
             }
-            newBeans.add(bean.withProperties(newProperties).withMethods(newMethods).withImplements(newImplements).withExtends(newExtends));
+            newBeans.add(bean.withProperties(newProperties).withMethods(newMethods).withImplements(newImplements)
+                    .withExtends(newExtends));
         }
         return tsModel.withBeans(newBeans);
     }
@@ -1319,7 +1330,8 @@ public class ModelCompiler {
         final StringBuffer sb = new StringBuffer();
         final Matcher matcher = Pattern.compile("-[^-]").matcher(name);
         while (matcher.find()) {
-            matcher.appendReplacement(sb, Matcher.quoteReplacement("" + Character.toUpperCase(matcher.group().charAt(1))));
+            matcher.appendReplacement(sb,
+                    Matcher.quoteReplacement("" + Character.toUpperCase(matcher.group().charAt(1))));
         }
         matcher.appendTail(sb);
         return sb.toString();

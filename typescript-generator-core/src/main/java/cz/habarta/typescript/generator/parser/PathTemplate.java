@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 // see org.glassfish.jersey.uri.internal.UriTemplateParser
 public class PathTemplate {
 
@@ -30,7 +29,7 @@ public class PathTemplate {
                 + "\\s*"
                 + "(:"
                 + "\\s*"
-                + "(?<ParamRegex>[^{}\\s]+(\\{[^{}]*\\}[^{}]*)*)"  // this handles RegExp which may contain '{}' quantifiers
+                + "(?<ParamRegex>[^{}\\s]+(\\{[^{}]*\\}[^{}]*)*)" // this handles RegExp which may contain '{}' quantifiers
                 + "\\s*)?"
                 + "\\}";
         final Matcher matcher = Pattern.compile(pattern).matcher(path);

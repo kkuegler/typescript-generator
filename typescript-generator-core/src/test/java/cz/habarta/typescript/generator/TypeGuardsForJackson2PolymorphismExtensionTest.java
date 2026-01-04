@@ -15,7 +15,6 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class TypeGuardsForJackson2PolymorphismExtensionTest {
 
@@ -48,13 +47,14 @@ public class TypeGuardsForJackson2PolymorphismExtensionTest {
         settings.extensions.add(new TypeGuardsForJackson2PolymorphismExtension());
         final String actual = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Point.class));
         Assertions.assertTrue(actual.contains("type: \"cartesian\" | \"polar\";"));
-        Assertions.assertTrue(actual.contains("function isJsonCartesianPoint(jsonPoint: JsonPoint): jsonPoint is JsonCartesianPoint {"));
+        Assertions.assertTrue(actual
+                .contains("function isJsonCartesianPoint(jsonPoint: JsonPoint): jsonPoint is JsonCartesianPoint {"));
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes({
-        @JsonSubTypes.Type(CartesianPoint.class),
-        @JsonSubTypes.Type(PolarPoint.class)
+            @JsonSubTypes.Type(CartesianPoint.class),
+            @JsonSubTypes.Type(PolarPoint.class)
     })
     private static interface Point {
     }

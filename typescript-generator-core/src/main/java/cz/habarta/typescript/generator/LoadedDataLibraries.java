@@ -1,14 +1,9 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 
 public class LoadedDataLibraries {
 
@@ -26,7 +21,8 @@ public class LoadedDataLibraries {
     public final List<Settings.CustomTypeAlias> typeAliases;
 
     public LoadedDataLibraries() {
-        this(empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty());
+        this(empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(),
+                empty());
     }
 
     private static <T> List<T> empty() {
@@ -45,8 +41,7 @@ public class LoadedDataLibraries {
             List<Class<?>> optionalClasses,
             List<Class<?>> wrapperClasses,
             List<Settings.CustomTypeMapping> typeMappings,
-            List<Settings.CustomTypeAlias> typeAliases
-    ) {
+            List<Settings.CustomTypeAlias> typeAliases) {
         this.stringClasses = stringClasses;
         this.numberClasses = numberClasses;
         this.booleanClasses = booleanClasses;
@@ -71,7 +66,7 @@ public class LoadedDataLibraries {
         }
         return classes;
     }
-    
+
     public static LoadedDataLibraries join(LoadedDataLibraries... jsons) {
         return join(Arrays.asList(jsons));
     }
@@ -89,8 +84,7 @@ public class LoadedDataLibraries {
                 joinMappedLists(jsons, j -> j.optionalClasses),
                 joinMappedLists(jsons, j -> j.wrapperClasses),
                 joinMappedLists(jsons, j -> j.typeMappings),
-                joinMappedLists(jsons, j -> j.typeAliases)
-        );
+                joinMappedLists(jsons, j -> j.typeAliases));
     }
 
     private static <T, M> List<M> joinMappedLists(List<T> list, Function<T, List<M>> mapper) {

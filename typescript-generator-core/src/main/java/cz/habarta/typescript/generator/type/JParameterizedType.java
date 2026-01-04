@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 public class JParameterizedType implements ParameterizedType {
 
     private final Type rawType;
@@ -58,11 +57,11 @@ public class JParameterizedType implements ParameterizedType {
 
     @Override
     public String toString() {
-        return (rawType instanceof Class ? ((Class<?>)rawType).getName() : rawType.getTypeName())
+        return (rawType instanceof Class ? ((Class<?>) rawType).getName() : rawType.getTypeName())
                 + "<"
                 + Stream.of(actualTypeArguments)
-                .map(type -> type.getTypeName())
-                .collect(Collectors.joining(", "))
+                        .map(type -> type.getTypeName())
+                        .collect(Collectors.joining(", "))
                 + ">";
     }
 

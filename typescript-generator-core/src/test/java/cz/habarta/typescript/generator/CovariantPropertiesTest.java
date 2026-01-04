@@ -5,7 +5,6 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class CovariantPropertiesTest {
 
     @Test
@@ -13,8 +12,7 @@ public class CovariantPropertiesTest {
         final Settings settings = TestUtils.settings();
         settings.sortDeclarations = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Dog.class));
-        final String expected =
-                "interface Animal {\n" +
+        final String expected = "interface Animal {\n" +
                 "    allFood: Food[];\n" +
                 "    todaysFood: Food;\n" +
                 "}\n" +
@@ -34,12 +32,14 @@ public class CovariantPropertiesTest {
 
     private static abstract class Animal {
         public abstract Food getTodaysFood();
+
         public abstract List<? extends Food> getAllFood();
     }
 
     private static abstract class Dog extends Animal {
         @Override
         public abstract DogFood getTodaysFood();
+
         @Override
         public abstract List<? extends DogFood> getAllFood();
     }

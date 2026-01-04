@@ -5,13 +5,7 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
 import cz.habarta.typescript.generator.util.Pair;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -19,7 +13,6 @@ import javax.script.ScriptException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
-
 
 /**
  * Name table.
@@ -107,19 +100,22 @@ public class SymbolTable {
             final String name = entry.getKey();
             final List<Class<?>> classes = entry.getValue();
             if (classes.size() > 1) {
-                TypeScriptGenerator.getLogger().warning(String.format("Multiple classes are mapped to '%s' name. Conflicting classes: %s", name, classes));
+                TypeScriptGenerator.getLogger().warning(String
+                        .format("Multiple classes are mapped to '%s' name. Conflicting classes: %s", name, classes));
                 conflict = true;
             }
         }
         if (conflict) {
-            throw new NameConflictException("Multiple classes are mapped to the same name. You can use 'customTypeNaming' or 'customTypeNamingFunction' settings to resolve conflicts or exclude conflicting class if it was added accidentally.");
+            throw new NameConflictException(
+                    "Multiple classes are mapped to the same name. You can use 'customTypeNaming' or 'customTypeNamingFunction' settings to resolve conflicts or exclude conflicting class if it was added accidentally.");
         }
     }
 
     private void setSymbolQualifiedName(Symbol symbol, Class<?> cls, String suffix) {
         final String module;
         final String namespacedName;
-        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies().getFullName(cls);
+        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies()
+                .getFullName(cls);
         if (fullNameFromDependency != null) {
             module = fullNameFromDependency.getValue1();
             namespacedName = fullNameFromDependency.getValue2();
@@ -186,20 +182,19 @@ public class SymbolTable {
 
     // https://github.com/Microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md#221-reserved-words
     private static final Set<String> Keywords = new LinkedHashSet<>(Arrays.asList(
-        "break",             "case",              "catch",             "class",
-        "const",             "continue",          "debugger",          "default",
-        "delete",            "do",                "else",              "enum",
-        "export",            "extends",           "false",             "finally",
-        "for",               "function",          "if",                "import",
-        "in",                "instanceof",        "new",               "null",
-        "return",            "super",             "switch",            "this",
-        "throw",             "true",              "try",               "typeof",
-        "var",               "void",              "while",             "with",
+            "break", "case", "catch", "class",
+            "const", "continue", "debugger", "default",
+            "delete", "do", "else", "enum",
+            "export", "extends", "false", "finally",
+            "for", "function", "if", "import",
+            "in", "instanceof", "new", "null",
+            "return", "super", "switch", "this",
+            "throw", "true", "try", "typeof",
+            "var", "void", "while", "with",
 
-        "implements",        "interface",         "let",               "package",
-        "private",           "protected",         "public",            "static",
-        "yield"
-    ));
+            "implements", "interface", "let", "package",
+            "private", "protected", "public", "static",
+            "yield"));
 
     public static boolean isReservedWord(String word) {
         return Keywords.contains(word);
@@ -209,8 +204,7 @@ public class SymbolTable {
         if (customTypeNamingFunction == null) {
             final ScriptEngine engine = GraalJSScriptEngine.create(
                     Engine.newBuilder().option("engine.WarnInterpreterOnly", "false").build(),
-                    Context.newBuilder("js").allowHostAccess(HostAccess.ALL)
-            );
+                    Context.newBuilder("js").allowHostAccess(HostAccess.ALL));
             engine.eval("var getName = " + settings.customTypeNamingFunction);
             final Invocable invocable = (Invocable) engine;
             customTypeNamingFunction = invocable.getInterface(CustomTypeNamingFunction.class);
@@ -228,7 +222,8 @@ public class SymbolTable {
     }
 
     public Symbol getSymbolIfImported(Class<?> cls) {
-        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies().getFullName(cls);
+        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies()
+                .getFullName(cls);
         if (fullNameFromDependency != null) {
             final Symbol symbol = new Symbol(null);
             symbol.setFullName(fullNameFromDependency.getValue1(), fullNameFromDependency.getValue2());
@@ -239,7 +234,7 @@ public class SymbolTable {
     }
 
     public static class NameConflictException extends RuntimeException {
-        
+
         private static final long serialVersionUID = 1L;
 
         public NameConflictException() {

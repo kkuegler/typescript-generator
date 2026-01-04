@@ -10,19 +10,19 @@ import java.util.OptionalInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class OptionalTest {
 
     @Test
     public void test() {
-        final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(Person.class));
+        final String output = new TypeScriptGenerator(TestUtils.settings())
+                .generateTypeScript(Input.from(Person.class));
         Assertions.assertEquals(
                 "interface Person {\n" +
-                "    name: string;\n" +
-                "    email?: string;\n" +
-                "    age?: number;\n" +
-                "}",
+                        "    name: string;\n" +
+                        "    email?: string;\n" +
+                        "    age?: number;\n" +
+                        "}",
                 output.trim());
     }
 
@@ -53,33 +53,30 @@ public class OptionalTest {
     public void testDeclarationQuestionMark() {
         testDeclaration(OptionalPropertiesDeclaration.questionMark,
                 "interface Person {\n" +
-                "    name: string;\n" +
-                "    email?: string;\n" +
-                "    age?: number;\n" +
-                "}"
-        );
+                        "    name: string;\n" +
+                        "    email?: string;\n" +
+                        "    age?: number;\n" +
+                        "}");
     }
 
     @Test
     public void testDeclarationNullableType() {
         testDeclaration(OptionalPropertiesDeclaration.nullableType,
                 "interface Person {\n" +
-                "    name: string;\n" +
-                "    email: string | null;\n" +
-                "    age: number | null;\n" +
-                "}"
-        );
+                        "    name: string;\n" +
+                        "    email: string | null;\n" +
+                        "    age: number | null;\n" +
+                        "}");
     }
 
     @Test
     public void testDeclarationQuestionMarkAndNullableType() {
         testDeclaration(OptionalPropertiesDeclaration.questionMarkAndNullableType,
                 "interface Person {\n" +
-                "    name: string;\n" +
-                "    email?: string | null;\n" +
-                "    age?: number | null;\n" +
-                "}"
-        );
+                        "    name: string;\n" +
+                        "    email?: string | null;\n" +
+                        "    age?: number | null;\n" +
+                        "}");
     }
 
     @Test
@@ -89,8 +86,7 @@ public class OptionalTest {
                         "    name: string;\n" +
                         "    email: string | null | undefined;\n" +
                         "    age: number | null | undefined;\n" +
-                        "}"
-        );
+                        "}");
     }
 
     @Test
@@ -100,8 +96,7 @@ public class OptionalTest {
                         "    name: string;\n" +
                         "    email: string | undefined;\n" +
                         "    age: number | undefined;\n" +
-                        "}"
-        );
+                        "}");
     }
 
     private static void testDeclaration(OptionalPropertiesDeclaration declaration, String expected) {

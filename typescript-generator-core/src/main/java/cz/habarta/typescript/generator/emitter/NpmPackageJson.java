@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator.emitter;
 
 import java.util.Map;
 
-
 public class NpmPackageJson {
 
     public String name;

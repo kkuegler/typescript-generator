@@ -5,12 +5,7 @@ import cz.habarta.typescript.generator.Extension;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsNumberLiteral;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import cz.habarta.typescript.generator.emitter.TsStringLiteral;
+import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.parser.BeanModel;
 import cz.habarta.typescript.generator.parser.PropertyModel;
 import java.lang.reflect.Constructor;
@@ -20,7 +15,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 /**
  * This is an example extension that generates default values of properties in a class,
@@ -38,7 +32,8 @@ public class DefaultsFromInstanceExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, this::transformModel));
+        return Arrays
+                .asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, this::transformModel));
     }
 
     protected TsModel transformModel(TsModelTransformer.Context context, TsModel model) {

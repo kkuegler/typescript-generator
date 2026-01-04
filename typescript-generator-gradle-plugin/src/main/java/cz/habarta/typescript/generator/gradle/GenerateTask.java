@@ -1,41 +1,15 @@
 
 package cz.habarta.typescript.generator.gradle;
 
-import cz.habarta.typescript.generator.ClassMapping;
-import cz.habarta.typescript.generator.DateMapping;
-import cz.habarta.typescript.generator.EnumMapping;
-import cz.habarta.typescript.generator.GsonConfiguration;
-import cz.habarta.typescript.generator.IdentifierCasing;
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.Jackson2Configuration;
-import cz.habarta.typescript.generator.JsonLibrary;
-import cz.habarta.typescript.generator.JsonbConfiguration;
-import cz.habarta.typescript.generator.Logger;
-import cz.habarta.typescript.generator.MapMapping;
-import cz.habarta.typescript.generator.ModuleDependency;
-import cz.habarta.typescript.generator.NullabilityDefinition;
-import cz.habarta.typescript.generator.OptionalProperties;
-import cz.habarta.typescript.generator.OptionalPropertiesDeclaration;
-import cz.habarta.typescript.generator.Output;
-import cz.habarta.typescript.generator.RestNamespacing;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.StringQuotes;
-import cz.habarta.typescript.generator.TypeScriptFileType;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
-import cz.habarta.typescript.generator.TypeScriptOutputKind;
+import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction;
-
 
 public class GenerateTask extends DefaultTask {
 
@@ -201,7 +175,8 @@ public class GenerateTask extends DefaultTask {
         settings.generateInfoJson = generateInfoJson;
         settings.generateNpmPackageJson = generateNpmPackageJson;
         settings.npmName = npmName == null && generateNpmPackageJson ? getProject().getName() : npmName;
-        settings.npmVersion = npmVersion == null && generateNpmPackageJson ? settings.getDefaultNpmVersion() : npmVersion;
+        settings.npmVersion = npmVersion == null && generateNpmPackageJson ? settings.getDefaultNpmVersion()
+                : npmVersion;
         settings.npmTypescriptVersion = npmTypescriptVersion;
         settings.npmBuildScript = npmBuildScript;
         settings.npmPackageDependencies = Settings.convertToMap(npmDependencies, "npmDependencies");
@@ -238,7 +213,8 @@ public class GenerateTask extends DefaultTask {
         }
         urls.addAll(getFilesFromConfiguration("compileClasspath"));
 
-        try (URLClassLoader classLoader = Settings.createClassLoader(getProject().getName(), urls.toArray(new URL[0]), Thread.currentThread().getContextClassLoader())) {
+        try (URLClassLoader classLoader = Settings.createClassLoader(getProject().getName(), urls.toArray(new URL[0]),
+                Thread.currentThread().getContextClassLoader())) {
 
             final Settings settings = createSettings(classLoader);
 
@@ -257,7 +233,8 @@ public class GenerateTask extends DefaultTask {
 
             final File output = outputFile != null
                     ? getProject().file(outputFile)
-                    : new File(new File(getProject().getBuildDir(), "typescript-generator"), getProject().getName() + settings.getExtension());
+                    : new File(new File(getProject().getBuildDir(), "typescript-generator"),
+                            getProject().getName() + settings.getExtension());
             settings.validateFileName(output);
 
             new TypeScriptGenerator(settings).generateTypeScript(Input.from(parameters), Output.to(output));
@@ -272,7 +249,8 @@ public class GenerateTask extends DefaultTask {
             }
             return urls;
         } catch (Exception e) {
-            TypeScriptGenerator.getLogger().warning(String.format("Cannot get file names from configuration '%s': %s", configuration, e.getMessage()));
+            TypeScriptGenerator.getLogger().warning(
+                    String.format("Cannot get file names from configuration '%s': %s", configuration, e.getMessage()));
             return Collections.emptyList();
         }
     }

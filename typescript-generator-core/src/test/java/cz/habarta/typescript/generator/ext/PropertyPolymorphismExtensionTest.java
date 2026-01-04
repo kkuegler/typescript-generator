@@ -1,17 +1,14 @@
 package cz.habarta.typescript.generator.ext;
 
-import cz.habarta.typescript.generator.Input;
-import cz.habarta.typescript.generator.JsonLibrary;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.TestUtils;
-import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PropertyPolymorphismExtensionTest {
 
@@ -36,7 +33,7 @@ public class PropertyPolymorphismExtensionTest {
     private static class TestBSub1 extends TestB {
     }
 
-    @PropertyName(name="foo")
+    @PropertyName(name = "foo")
     private static class TestBSub2 extends TestB {
     }
 
@@ -44,7 +41,7 @@ public class PropertyPolymorphismExtensionTest {
     public void test() {
         final Settings settings = TestUtils.settings();
         settings.jsonLibrary = JsonLibrary.gson;
-        settings.extensions.add(new PropertyPolymorphismExtension(cls -> cls==TestB.class, subType -> {
+        settings.extensions.add(new PropertyPolymorphismExtension(cls -> cls == TestB.class, subType -> {
             String name = subType.getSimpleName();
             return name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
 

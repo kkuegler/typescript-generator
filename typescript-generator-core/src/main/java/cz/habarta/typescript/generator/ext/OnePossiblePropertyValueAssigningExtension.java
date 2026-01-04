@@ -6,27 +6,8 @@ import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer.Context;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsAssignmentExpression;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsCallExpression;
-import cz.habarta.typescript.generator.emitter.TsConstructorModel;
-import cz.habarta.typescript.generator.emitter.TsEnumModel;
-import cz.habarta.typescript.generator.emitter.TsExpression;
-import cz.habarta.typescript.generator.emitter.TsExpressionStatement;
-import cz.habarta.typescript.generator.emitter.TsMemberExpression;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsModifierFlags;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import cz.habarta.typescript.generator.emitter.TsStatement;
-import cz.habarta.typescript.generator.emitter.TsStringLiteral;
-import cz.habarta.typescript.generator.emitter.TsSuperExpression;
-import cz.habarta.typescript.generator.emitter.TsThisExpression;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import cz.habarta.typescript.generator.emitter.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,8 +32,7 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
     public List<TransformerDefinition> getTransformers() {
         return Collections.singletonList(
                 new TransformerDefinition(ModelCompiler.TransformationPhase.AfterDeclarationSorting,
-                        OnePossiblePropertyValueAssigningExtension::transformModel)
-        );
+                        OnePossiblePropertyValueAssigningExtension::transformModel));
     }
 
     private static TsModel transformModel(Context context, TsModel model) {
@@ -78,7 +58,8 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
                 newProperty = new TsPropertyModel(property.name, property.tsType,
                         TsModifierFlags.None.setReadonly(), property.ownProperty, property.comments);
 
-                TsExpressionStatement assignmentStatement = createValueAssignmentStatement(newProperty, onlyValue.get());
+                TsExpressionStatement assignmentStatement = createValueAssignmentStatement(newProperty,
+                        onlyValue.get());
                 valueAssignmentStatements.add(assignmentStatement);
             }
 
@@ -94,7 +75,7 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
     }
 
     private static TsConstructorModel createConstructor(TsBeanModel bean,
-                                                        Collection<TsExpressionStatement> valueAssignmentStatements) {
+            Collection<TsExpressionStatement> valueAssignmentStatements) {
         List<TsStatement> body = new ArrayList<>();
         if (bean.getParent() != null) {
             body.add(new TsExpressionStatement(new TsCallExpression(new TsSuperExpression())));
@@ -137,7 +118,7 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
     }
 
     private static Optional<TsExpression> findOnlyValueForEnumReferenceType(TsModel model,
-                                                                            TsType.EnumReferenceType propertyType) {
+            TsType.EnumReferenceType propertyType) {
         Symbol symbol = propertyType.symbol;
         Optional<TsEnumModel> enumModelOption = model.getOriginalStringEnums().stream()
                 .filter(candidate -> candidate.getName().getFullName().equals(symbol.getFullName()))

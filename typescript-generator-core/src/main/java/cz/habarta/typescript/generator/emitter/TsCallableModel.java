@@ -5,9 +5,8 @@ import cz.habarta.typescript.generator.TsType;
 import java.util.Collections;
 import java.util.List;
 
-
 public class TsCallableModel {
-    
+
     protected final String name;
     protected final TsModifierFlags modifiers;
     protected final List<TsType.GenericVariableType> typeParameters;
@@ -20,7 +19,8 @@ public class TsCallableModel {
             List<TsParameterModel> parameters, TsType returnType, List<TsStatement> body, List<String> comments) {
         this.name = name;
         this.modifiers = modifiers != null ? modifiers : TsModifierFlags.None;
-        this.typeParameters = typeParameters != null ? typeParameters : Collections.<TsType.GenericVariableType>emptyList();
+        this.typeParameters = typeParameters != null ? typeParameters
+                : Collections.<TsType.GenericVariableType>emptyList();
         this.parameters = parameters;
         this.returnType = returnType;
         this.body = body;

@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class InputTest {
 
@@ -18,7 +17,8 @@ public class InputTest {
     public void testScanner() {
         final ScanResult scanResult = new ClassGraph().enableAllInfo().acceptPackages("cz.habarta").scan();
         final List<String> allClassNames = scanResult.getAllClasses().getNames();
-        final List<String> testClassNames = Input.filterClassNames(allClassNames, Arrays.asList("cz.habarta.typescript.generator.**Test"));
+        final List<String> testClassNames = Input.filterClassNames(allClassNames,
+                Arrays.asList("cz.habarta.typescript.generator.**Test"));
         Assertions.assertTrue(testClassNames.size() > 20, "Typescript-generator must have at least 20 tests :-)");
     }
 
@@ -29,10 +29,8 @@ public class InputTest {
                         "com.example.Json",
                         "com.example.AAAJson",
                         "com.example.AAA",
-                        "com.example.aaa$Json"
-                ),
-                Arrays.asList("**Json")
-        );
+                        "com.example.aaa$Json"),
+                Arrays.asList("**Json"));
         Assertions.assertTrue(result1.contains("com.example.Json"));
         Assertions.assertTrue(result1.contains("com.example.AAAJson"));
         Assertions.assertTrue(!result1.contains("com.example.AAA"));
@@ -44,10 +42,8 @@ public class InputTest {
                         "cz.habarta.test.Json",
                         "cz.habarta.test.BBBJson",
                         "cz.habarta.test.aaa.BBBJson",
-                        "cz.habarta.test.CCC$Json"
-                ),
-                Arrays.asList("cz.habarta.test.*")
-        );
+                        "cz.habarta.test.CCC$Json"),
+                Arrays.asList("cz.habarta.test.*"));
         Assertions.assertTrue(!result2.contains("com.example.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.Json"));
         Assertions.assertTrue(result2.contains("cz.habarta.test.BBBJson"));
@@ -58,10 +54,8 @@ public class InputTest {
                 Arrays.asList(
                         "cz.habarta.test.BBBJson",
                         "cz.habarta.ddd.CCC$Json",
-                        "cz.habarta.CCC$Json"
-                ),
-                Arrays.asList("cz.habarta.*.*$*")
-        );
+                        "cz.habarta.CCC$Json"),
+                Arrays.asList("cz.habarta.*.*$*"));
         Assertions.assertTrue(!result3.contains("cz.habarta.test.BBBJson"));
         Assertions.assertTrue(result3.contains("cz.habarta.ddd.CCC$Json"));
         Assertions.assertTrue(!result3.contains("cz.habarta.CCC$Json"));

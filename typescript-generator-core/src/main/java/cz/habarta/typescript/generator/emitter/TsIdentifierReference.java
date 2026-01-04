@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator.emitter;
 
 import cz.habarta.typescript.generator.Settings;
 
-
 public class TsIdentifierReference extends TsExpression {
 
     public static final TsIdentifierReference Undefined = new TsIdentifierReference("undefined");

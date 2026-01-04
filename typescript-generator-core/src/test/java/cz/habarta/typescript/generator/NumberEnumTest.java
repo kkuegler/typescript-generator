@@ -16,7 +16,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class NumberEnumTest {
 
     @Test
@@ -28,8 +27,8 @@ public class NumberEnumTest {
         final EnumModel enumModel = model.getEnums().get(0);
         Assertions.assertEquals(EnumKind.NumberBased, enumModel.getKind());
         Assertions.assertEquals(2, enumModel.getMembers().size());
-        Assertions.assertEquals(10, ((Number)enumModel.getMembers().get(0).getEnumValue()).intValue());
-        Assertions.assertEquals(11, ((Number)enumModel.getMembers().get(1).getEnumValue()).intValue());
+        Assertions.assertEquals(10, ((Number) enumModel.getMembers().get(0).getEnumValue()).intValue());
+        Assertions.assertEquals(11, ((Number) enumModel.getMembers().get(1).getEnumValue()).intValue());
     }
 
     @Test
@@ -38,9 +37,9 @@ public class NumberEnumTest {
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
                 "declare const enum SomeCode {\n" +
-                "    VALUE0 = 10,\n" +
-                "    VALUE1 = 11,\n" +
-                "}",
+                        "    VALUE0 = 10,\n" +
+                        "    VALUE1 = 11,\n" +
+                        "}",
                 output.trim());
     }
 
@@ -52,9 +51,9 @@ public class NumberEnumTest {
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
                 "enum SomeCode {\n" +
-                "    VALUE0 = 10,\n" +
-                "    VALUE1 = 11,\n" +
-                "}",
+                        "    VALUE0 = 10,\n" +
+                        "    VALUE1 = 11,\n" +
+                        "}",
                 output.trim());
     }
 
@@ -66,9 +65,9 @@ public class NumberEnumTest {
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
                 "enum SomeCode {\n" +
-                "    VALUE0 = 10,\n" +
-                "    VALUE1 = 11,\n" +
-                "}",
+                        "    VALUE0 = 10,\n" +
+                        "    VALUE1 = 11,\n" +
+                        "}",
                 output.trim());
     }
 
@@ -111,7 +110,7 @@ public class NumberEnumTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
+    @Target({ ElementType.TYPE })
     public @interface SomeNonConstAnnotation {
     }
 

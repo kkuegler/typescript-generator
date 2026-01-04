@@ -6,7 +6,6 @@ import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.util.Utils;
 import java.util.List;
 
-
 public class TsParameterModel extends TsParameter {
 
     protected final List<TsDecorator> decorators;
@@ -20,7 +19,8 @@ public class TsParameterModel extends TsParameter {
         this(null, accessibilityModifier, name, tsType);
     }
 
-    private TsParameterModel(List<TsDecorator> decorators, TsAccessibilityModifier accessibilityModifier, String name, TsType tsType) {
+    private TsParameterModel(List<TsDecorator> decorators, TsAccessibilityModifier accessibilityModifier, String name,
+            TsType tsType) {
         super(name, tsType);
         this.decorators = Utils.listFromNullable(decorators);
         this.accessibilityModifier = accessibilityModifier;

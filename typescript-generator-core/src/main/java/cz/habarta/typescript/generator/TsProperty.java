@@ -3,7 +3,6 @@ package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.emitter.Emitter;
 
-
 public class TsProperty {
 
     public final String name;

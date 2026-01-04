@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.parser;
 import java.util.List;
 import java.util.Objects;
 
-
 public class Model {
 
     private final List<BeanModel> beans;

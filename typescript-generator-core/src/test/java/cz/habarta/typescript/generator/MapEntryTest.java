@@ -5,11 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.habarta.typescript.generator.util.Utils;
 import java.io.Serializable;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +21,7 @@ public class MapEntryTest {
     @JsonFormat(shape = JsonFormat.Shape.NATURAL)
     public static class Entry1<K, V> extends AbstractMap.SimpleEntry<K, V> {
         private static final long serialVersionUID = 1L;
+
         public Entry1(K key, V value) {
             super(key, value);
         }
@@ -33,6 +30,7 @@ public class MapEntryTest {
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     public static class Entry2<K, V> extends AbstractMap.SimpleEntry<K, V> {
         private static final long serialVersionUID = 1L;
+
         public Entry2(K key, V value) {
             super(key, value);
         }
@@ -177,7 +175,8 @@ public class MapEntryTest {
         Assertions.assertEquals(expectedJson, json);
 
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(ClassWithListOfEntries.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(ClassWithListOfEntries.class));
         Assertions.assertTrue(output.contains("entries1: { [index: string]: string }[]"));
         Assertions.assertTrue(output.contains("entries2: Entry2<string, string>[]"));
     }

@@ -8,38 +8,7 @@ import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.compiler.SymbolTable;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsArrowFunction;
-import cz.habarta.typescript.generator.emitter.TsAssignmentExpression;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsBinaryExpression;
-import cz.habarta.typescript.generator.emitter.TsBinaryOperator;
-import cz.habarta.typescript.generator.emitter.TsCallExpression;
-import cz.habarta.typescript.generator.emitter.TsConstructorModel;
-import cz.habarta.typescript.generator.emitter.TsExpression;
-import cz.habarta.typescript.generator.emitter.TsExpressionStatement;
-import cz.habarta.typescript.generator.emitter.TsHelper;
-import cz.habarta.typescript.generator.emitter.TsIdentifierReference;
-import cz.habarta.typescript.generator.emitter.TsIfStatement;
-import cz.habarta.typescript.generator.emitter.TsMemberExpression;
-import cz.habarta.typescript.generator.emitter.TsMethodModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsModifierFlags;
-import cz.habarta.typescript.generator.emitter.TsNewExpression;
-import cz.habarta.typescript.generator.emitter.TsObjectLiteral;
-import cz.habarta.typescript.generator.emitter.TsParameterModel;
-import cz.habarta.typescript.generator.emitter.TsPrefixUnaryExpression;
-import cz.habarta.typescript.generator.emitter.TsPropertyDefinition;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import cz.habarta.typescript.generator.emitter.TsReturnStatement;
-import cz.habarta.typescript.generator.emitter.TsStatement;
-import cz.habarta.typescript.generator.emitter.TsStringLiteral;
-import cz.habarta.typescript.generator.emitter.TsSuperExpression;
-import cz.habarta.typescript.generator.emitter.TsSwitchCaseClause;
-import cz.habarta.typescript.generator.emitter.TsSwitchStatement;
-import cz.habarta.typescript.generator.emitter.TsTypeReferenceExpression;
-import cz.habarta.typescript.generator.emitter.TsUnaryOperator;
-import cz.habarta.typescript.generator.emitter.TsVariableDeclarationStatement;
+import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.util.Utils;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -47,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 
 public class JsonDeserializationExtension extends Extension {
 
@@ -73,22 +41,24 @@ public class JsonDeserializationExtension extends Extension {
     @Override
     public void setConfiguration(Map<String, String> configuration) throws RuntimeException {
         if (configuration.containsKey(CFG_USE_JSON_DESERIALIZATION_IN_JAXRS_APPLICATION_CLIENT)) {
-            useJsonDeserializationInJaxrsApplicationClient = Boolean.parseBoolean(configuration.get(CFG_USE_JSON_DESERIALIZATION_IN_JAXRS_APPLICATION_CLIENT));
+            useJsonDeserializationInJaxrsApplicationClient = Boolean
+                    .parseBoolean(configuration.get(CFG_USE_JSON_DESERIALIZATION_IN_JAXRS_APPLICATION_CLIENT));
         }
     }
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeSymbolResolution, new TsModelTransformer() {
-            @Override
-            public TsModel transformModel(Context context, TsModel model) {
-                model = createDeserializationMethods(context.getSymbolTable(), model);
-                if (useJsonDeserializationInJaxrsApplicationClient) {
-                    model = useDeserializationMethodsInJaxrs(context.getSymbolTable(), model);
-                }
-                return model;
-            }
-        }));
+        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeSymbolResolution,
+                new TsModelTransformer() {
+                    @Override
+                    public TsModel transformModel(Context context, TsModel model) {
+                        model = createDeserializationMethods(context.getSymbolTable(), model);
+                        if (useJsonDeserializationInJaxrsApplicationClient) {
+                            model = useDeserializationMethodsInJaxrs(context.getSymbolTable(), model);
+                        }
+                        return model;
+                    }
+                }));
     }
 
     private static TsModel createDeserializationMethods(SymbolTable symbolTable, TsModel tsModel) {
@@ -100,11 +70,13 @@ public class JsonDeserializationExtension extends Extension {
                 final TsMethodModel deserializationMethod = createDeserializationMethod(symbolTable, tsModel, bean);
                 methods.add(0, deserializationMethod);
                 if (!bean.getTypeParameters().isEmpty()) {
-                    final TsMethodModel genericFunctionConstructor = createDeserializationGenericFunctionConstructor(symbolTable, tsModel, bean);
+                    final TsMethodModel genericFunctionConstructor = createDeserializationGenericFunctionConstructor(
+                            symbolTable, tsModel, bean);
                     methods.add(0, genericFunctionConstructor);
                 }
                 if (bean.getTaggedUnionAlias() != null) {
-                    final TsMethodModel unionDeserializationMethod = createDeserializationMethodForTaggedUnion(symbolTable, tsModel, bean);
+                    final TsMethodModel unionDeserializationMethod = createDeserializationMethodForTaggedUnion(
+                            symbolTable, tsModel, bean);
                     methods.add(1, unionDeserializationMethod);
                 }
                 beans.add(bean.withMethods(methods));
@@ -115,7 +87,8 @@ public class JsonDeserializationExtension extends Extension {
         return tsModel.withBeans(beans);
     }
 
-    private static TsMethodModel createDeserializationMethod(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean) {
+    private static TsMethodModel createDeserializationMethod(SymbolTable symbolTable, TsModel tsModel,
+            TsBeanModel bean) {
         final Symbol beanIdentifier = symbolTable.getSymbol(bean.getOrigin());
         List<TsType.GenericVariableType> typeParameters = getTypeParameters(bean.getOrigin());
 
@@ -136,25 +109,22 @@ public class JsonDeserializationExtension extends Extension {
                 new TsBinaryExpression(
                         new TsIdentifierReference("target"),
                         TsBinaryOperator.BarBar,
-                        new TsNewExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(beanIdentifier)), typeParameters, getConstructorParameters(bean))
-                )
-        ));
+                        new TsNewExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(beanIdentifier)),
+                                typeParameters, getConstructorParameters(bean)))));
         if (bean.getParent() != null) {
             body.add(new TsExpressionStatement(
                     new TsCallExpression(
                             new TsMemberExpression(new TsSuperExpression(), "fromData"),
                             new TsIdentifierReference("data"),
-                            new TsIdentifierReference("instance")
-                    )
-            ));
+                            new TsIdentifierReference("instance"))));
         }
         for (TsPropertyModel property : bean.getProperties()) {
-            final Map<String, TsType> inheritedProperties = ModelCompiler.getInheritedProperties(symbolTable, tsModel, Utils.listFromNullable(bean.getParent()));
+            final Map<String, TsType> inheritedProperties = ModelCompiler.getInheritedProperties(symbolTable, tsModel,
+                    Utils.listFromNullable(bean.getParent()));
             if (!inheritedProperties.containsKey(property.getName())) {
                 body.add(new TsExpressionStatement(new TsAssignmentExpression(
                         new TsMemberExpression(new TsIdentifierReference("instance"), property.name),
-                        getPropertyCopy(symbolTable, tsModel, bean, property)
-                )));
+                        getPropertyCopy(symbolTable, tsModel, bean, property))));
             }
         }
         body.add(new TsReturnStatement(new TsIdentifierReference("instance")));
@@ -166,8 +136,7 @@ public class JsonDeserializationExtension extends Extension {
                 parameters,
                 dataType,
                 body,
-                null
-        );
+                null);
     }
 
     private static List<TsIdentifierReference> getConstructorParameters(TsBeanModel bean) {
@@ -182,7 +151,8 @@ public class JsonDeserializationExtension extends Extension {
         return parameters;
     }
 
-    private static TsMethodModel createDeserializationGenericFunctionConstructor(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean) {
+    private static TsMethodModel createDeserializationGenericFunctionConstructor(SymbolTable symbolTable,
+            TsModel tsModel, TsBeanModel bean) {
         final Symbol beanIdentifier = symbolTable.getSymbol(bean.getOrigin());
         List<TsType.GenericVariableType> typeParameters = getTypeParameters(bean.getOrigin());
         final TsType.ReferenceType dataType = new TsType.GenericReferenceType(beanIdentifier, typeParameters);
@@ -198,12 +168,11 @@ public class JsonDeserializationExtension extends Extension {
                 new TsArrowFunction(
                         Arrays.asList(new TsParameter("data", null)),
                         new TsCallExpression(
-                                new TsMemberExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(beanIdentifier)), "fromData"),
+                                new TsMemberExpression(
+                                        new TsTypeReferenceExpression(new TsType.ReferenceType(beanIdentifier)),
+                                        "fromData"),
                                 null,
-                                arguments
-                        )
-                )
-        ));
+                                arguments))));
 
         return new TsMethodModel(
                 "fromDataFn",
@@ -212,8 +181,7 @@ public class JsonDeserializationExtension extends Extension {
                 constructorFnOfParameters,
                 new TsType.FunctionType(Arrays.asList(new TsParameter("data", dataType)), dataType),
                 body,
-                null
-        );
+                null);
     }
 
     private static List<TsType.GenericVariableType> getTypeParameters(Class<?> cls) {
@@ -224,13 +192,13 @@ public class JsonDeserializationExtension extends Extension {
         return typeParameters;
     }
 
-    private static List<TsParameterModel> getConstructorFnOfParameters(List<TsType.GenericVariableType> typeParameters) {
+    private static List<TsParameterModel> getConstructorFnOfParameters(
+            List<TsType.GenericVariableType> typeParameters) {
         final List<TsParameterModel> parameters = new ArrayList<>();
         for (TsType.GenericVariableType typeParameter : typeParameters) {
             parameters.add(new TsParameterModel(
                     "constructorFnOf" + typeParameter.name,
-                    new TsType.FunctionType(Arrays.asList(new TsParameter("data", typeParameter)), typeParameter)
-            ));
+                    new TsType.FunctionType(Arrays.asList(new TsParameter("data", typeParameter)), typeParameter)));
         }
         return parameters;
     }
@@ -238,11 +206,11 @@ public class JsonDeserializationExtension extends Extension {
     private static TsIfStatement ifUndefinedThenReturnItStatement(String identifier) {
         return new TsIfStatement(
                 new TsPrefixUnaryExpression(TsUnaryOperator.Exclamation, new TsIdentifierReference(identifier)),
-                Arrays.<TsStatement>asList(new TsReturnStatement(new TsIdentifierReference(identifier)))
-        );
+                Arrays.<TsStatement>asList(new TsReturnStatement(new TsIdentifierReference(identifier))));
     }
 
-    private static TsExpression getPropertyCopy(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean, TsPropertyModel property) {
+    private static TsExpression getPropertyCopy(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean,
+            TsPropertyModel property) {
         final TsExpression copyFunction = getCopyFunctionForTsType(symbolTable, tsModel, property.getTsType());
         if (copyFunction instanceof TsCallExpression) {
             final TsCallExpression callExpression = (TsCallExpression) copyFunction;
@@ -256,8 +224,7 @@ public class JsonDeserializationExtension extends Extension {
         }
         return new TsCallExpression(
                 copyFunction,
-                new TsMemberExpression(new TsIdentifierReference("data"), property.name)
-        );
+                new TsMemberExpression(new TsIdentifierReference("data"), property.name));
     }
 
     private static TsExpression getCopyFunctionForTsType(SymbolTable symbolTable, TsModel tsModel, TsType tsType) {
@@ -269,10 +236,11 @@ public class JsonDeserializationExtension extends Extension {
                 arguments.add(getCopyFunctionForTsType(symbolTable, tsModel, typeArgument));
             }
             return new TsCallExpression(
-                    new TsMemberExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(genericReferenceType.symbol)), "fromDataFn"),
+                    new TsMemberExpression(
+                            new TsTypeReferenceExpression(new TsType.ReferenceType(genericReferenceType.symbol)),
+                            "fromDataFn"),
                     genericReferenceType.typeArguments,
-                    arguments
-            );
+                    arguments);
         }
         if (tsType instanceof TsType.ReferenceType) {
             final TsType.ReferenceType referenceType = (TsType.ReferenceType) tsType;
@@ -280,7 +248,9 @@ public class JsonDeserializationExtension extends Extension {
             if (referencedBean != null && referencedBean.isClass()) {
                 if (referencedBean.getTaggedUnionAlias() != null) {
                     // Class.fromDataUnion (tagged union)
-                    return new TsMemberExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(referencedBean.getName())), "fromDataUnion");
+                    return new TsMemberExpression(
+                            new TsTypeReferenceExpression(new TsType.ReferenceType(referencedBean.getName())),
+                            "fromDataUnion");
                 } else {
                     // Class.fromData
                     return new TsMemberExpression(new TsTypeReferenceExpression(referenceType), "fromData");
@@ -292,16 +262,14 @@ public class JsonDeserializationExtension extends Extension {
             final TsType.BasicArrayType arrayType = (TsType.BasicArrayType) tsType;
             return new TsCallExpression(
                     new TsIdentifierReference("__getCopyArrayFn"),
-                    getCopyFunctionForTsType(symbolTable, tsModel, arrayType.elementType)
-            );
+                    getCopyFunctionForTsType(symbolTable, tsModel, arrayType.elementType));
         }
         if (tsType instanceof TsType.IndexedArrayType) {
             // __getCopyObjectFn
             final TsType.IndexedArrayType objectType = (TsType.IndexedArrayType) tsType;
             return new TsCallExpression(
                     new TsIdentifierReference("__getCopyObjectFn"),
-                    getCopyFunctionForTsType(symbolTable, tsModel, objectType.elementType)
-            );
+                    getCopyFunctionForTsType(symbolTable, tsModel, objectType.elementType));
         }
         if (tsType instanceof TsType.GenericVariableType) {
             // constructorFnOfT
@@ -312,11 +280,11 @@ public class JsonDeserializationExtension extends Extension {
         return new TsCallExpression(
                 new TsIdentifierReference("__identity"),
                 Arrays.asList(tsType),
-                Collections.<TsExpression>emptyList()
-        );
+                Collections.<TsExpression>emptyList());
     }
 
-    private static TsMethodModel createDeserializationMethodForTaggedUnion(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean) {
+    private static TsMethodModel createDeserializationMethodForTaggedUnion(SymbolTable symbolTable, TsModel tsModel,
+            TsBeanModel bean) {
         final List<TsSwitchCaseClause> caseClauses = new ArrayList<>();
         for (Class<?> cls : bean.getTaggedUnionClasses()) {
             final TsBeanModel tuBean = tsModel.getBean(cls);
@@ -324,11 +292,9 @@ public class JsonDeserializationExtension extends Extension {
                     new TsStringLiteral(tuBean.getDiscriminantLiteral()),
                     Arrays.<TsStatement>asList(new TsReturnStatement(
                             new TsCallExpression(
-                                    new TsMemberExpression(new TsTypeReferenceExpression(new TsType.ReferenceType(symbolTable.getSymbol(cls))), "fromData"),
-                                    new TsIdentifierReference("data")
-                            )
-                    ))
-            ));
+                                    new TsMemberExpression(new TsTypeReferenceExpression(
+                                            new TsType.ReferenceType(symbolTable.getSymbol(cls))), "fromData"),
+                                    new TsIdentifierReference("data"))))));
         }
 
         final List<TsStatement> body = new ArrayList<>();
@@ -336,8 +302,7 @@ public class JsonDeserializationExtension extends Extension {
         body.add(new TsSwitchStatement(
                 new TsMemberExpression(new TsIdentifierReference("data"), bean.getDiscriminantProperty()),
                 caseClauses,
-                null
-        ));
+                null));
         final TsType.ReferenceType unionType = new TsType.ReferenceType(bean.getTaggedUnionAlias().getName());
         return new TsMethodModel(
                 "fromDataUnion",
@@ -346,8 +311,7 @@ public class JsonDeserializationExtension extends Extension {
                 Arrays.asList(new TsParameterModel("data", unionType)),
                 unionType,
                 body,
-                null
-        );
+                null);
     }
 
     private TsModel useDeserializationMethodsInJaxrs(SymbolTable symbolTable, TsModel tsModel) {
@@ -367,27 +331,37 @@ public class JsonDeserializationExtension extends Extension {
         return tsModel.withBeans(beans);
     }
 
-    private static TsMethodModel addCopyFnToJaxrsMethod(SymbolTable symbolTable, TsModel tsModel, TsMethodModel method) {
+    private static TsMethodModel addCopyFnToJaxrsMethod(SymbolTable symbolTable, TsModel tsModel,
+            TsMethodModel method) {
         final TsType returnType = method.getReturnType();
-        if (!(returnType instanceof TsType.GenericReferenceType)) return null;
+        if (!(returnType instanceof TsType.GenericReferenceType))
+            return null;
         final TsType.GenericReferenceType genericReferenceReturnType = (TsType.GenericReferenceType) returnType;
-        if (genericReferenceReturnType.symbol != symbolTable.getSyntheticSymbol("RestResponse")) return null;
+        if (genericReferenceReturnType.symbol != symbolTable.getSyntheticSymbol("RestResponse"))
+            return null;
         final List<TsType> typeArguments = genericReferenceReturnType.typeArguments;
-        if (typeArguments == null || typeArguments.size() != 1) return null;
+        if (typeArguments == null || typeArguments.size() != 1)
+            return null;
         final TsType returnDataType = typeArguments.get(0);
         final List<TsStatement> body = method.getBody();
-        if (body == null || body.size() != 1) return null;
+        if (body == null || body.size() != 1)
+            return null;
         final TsStatement statement = body.get(0);
-        if (!(statement instanceof TsReturnStatement)) return null;
+        if (!(statement instanceof TsReturnStatement))
+            return null;
         final TsReturnStatement returnStatement = (TsReturnStatement) statement;
         final TsExpression returnExpression = returnStatement.getExpression();
-        if (returnExpression == null) return null;
-        if (!(returnExpression instanceof TsCallExpression)) return null;
+        if (returnExpression == null)
+            return null;
+        if (!(returnExpression instanceof TsCallExpression))
+            return null;
         final TsCallExpression callExpression = (TsCallExpression) returnExpression;
         final List<TsExpression> arguments = callExpression.getArguments();
-        if (arguments == null || arguments.isEmpty()) return null;
+        if (arguments == null || arguments.isEmpty())
+            return null;
         final TsExpression firstArgument = arguments.get(0);
-        if (!(firstArgument instanceof TsObjectLiteral)) return null;
+        if (!(firstArgument instanceof TsObjectLiteral))
+            return null;
         final TsObjectLiteral objectLiteral = (TsObjectLiteral) firstArgument;
 
         // todo create changed method instead of modifying existing

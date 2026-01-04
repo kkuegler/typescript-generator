@@ -5,23 +5,11 @@ import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.TypeProcessor;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
-import cz.habarta.typescript.generator.parser.JaxrsApplicationParser;
-import cz.habarta.typescript.generator.parser.MethodParameterModel;
-import cz.habarta.typescript.generator.parser.PathTemplate;
-import cz.habarta.typescript.generator.parser.RestApplicationModel;
-import cz.habarta.typescript.generator.parser.RestApplicationParser;
-import cz.habarta.typescript.generator.parser.RestApplicationType;
-import cz.habarta.typescript.generator.parser.RestMethodModel;
-import cz.habarta.typescript.generator.parser.RestQueryParam;
-import cz.habarta.typescript.generator.parser.SourceType;
-import cz.habarta.typescript.generator.parser.Swagger;
-import cz.habarta.typescript.generator.parser.SwaggerOperation;
-import cz.habarta.typescript.generator.parser.SwaggerResponse;
+import cz.habarta.typescript.generator.parser.*;
 import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.Utils;
-import static cz.habarta.typescript.generator.util.Utils.getInheritanceChain;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -30,12 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.boot.SpringApplication;
@@ -48,13 +31,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ValueConstants;
+import org.springframework.web.bind.annotation.*;
+
+import static cz.habarta.typescript.generator.util.Utils.getInheritanceChain;
 
 public class SpringApplicationParser extends RestApplicationParser {
 
@@ -107,12 +86,12 @@ public class SpringApplicationParser extends RestApplicationParser {
                 final ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
                 try {
                     Thread.currentThread().setContextClassLoader(settings.classLoader);
-                    final SpringApplicationHelper springApplicationHelper = new SpringApplicationHelper(settings.classLoader, cls);
+                    final SpringApplicationHelper springApplicationHelper = new SpringApplicationHelper(
+                            settings.classLoader, cls);
                     final List<Class<?>> restControllers = springApplicationHelper.findRestControllers();
                     return new JaxrsApplicationParser.Result(restControllers.stream()
-                        .map(controller -> new SourceType<Type>(controller, cls, "<scanned>"))
-                        .collect(Collectors.toList())
-                    );
+                            .map(controller -> new SourceType<Type>(controller, cls, "<scanned>"))
+                            .collect(Collectors.toList()));
                 } finally {
                     Thread.currentThread().setContextClassLoader(originalContextClassLoader);
                 }
@@ -127,8 +106,10 @@ public class SpringApplicationParser extends RestApplicationParser {
             TypeScriptGenerator.getLogger().verbose("Parsing Spring component: " + cls.getName());
             final JaxrsApplicationParser.Result result = new JaxrsApplicationParser.Result();
             final RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(cls, RequestMapping.class);
-            final String path = requestMapping != null && requestMapping.path() != null && requestMapping.path().length != 0 ? requestMapping.path()[0] : null;
-            final JaxrsApplicationParser.ResourceContext context = new JaxrsApplicationParser.ResourceContext(cls, path);
+            final String path = requestMapping != null && requestMapping.path() != null
+                    && requestMapping.path().length != 0 ? requestMapping.path()[0] : null;
+            final JaxrsApplicationParser.ResourceContext context = new JaxrsApplicationParser.ResourceContext(cls,
+                    path);
             parseController(result, context, cls);
             return result;
         }
@@ -152,18 +133,18 @@ public class SpringApplicationParser extends RestApplicationParser {
                     context.refresh();
                 });
                 final List<Class<?>> classes = Stream.of(context.getBeanDefinitionNames())
-                    .map(beanName -> context.getBeanFactory().getBeanDefinition(beanName).getBeanClassName())
-                    .filter(Objects::nonNull)
-                    .filter(className -> isClassNameExcluded == null || !isClassNameExcluded.test(className))
-                    .map(className -> {
-                        try {
-                            return classLoader.loadClass(className);
-                        } catch (ClassNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .filter(instance -> AnnotationUtils.findAnnotation(instance, Component.class) != null)
-                    .collect(Collectors.toList());
+                        .map(beanName -> context.getBeanFactory().getBeanDefinition(beanName).getBeanClassName())
+                        .filter(Objects::nonNull)
+                        .filter(className -> isClassNameExcluded == null || !isClassNameExcluded.test(className))
+                        .map(className -> {
+                            try {
+                                return classLoader.loadClass(className);
+                            } catch (ClassNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .filter(instance -> AnnotationUtils.findAnnotation(instance, Component.class) != null)
+                        .collect(Collectors.toList());
                 return classes;
             }
         }
@@ -184,7 +165,8 @@ public class SpringApplicationParser extends RestApplicationParser {
         }
     }
 
-    private void parseController(JaxrsApplicationParser.Result result, JaxrsApplicationParser.ResourceContext context, Class<?> controllerClass) {
+    private void parseController(JaxrsApplicationParser.Result result, JaxrsApplicationParser.ResourceContext context,
+            Class<?> controllerClass) {
         // parse controller methods
         final List<Method> methods = getAllRequestMethods(controllerClass);
         methods.sort(Utils.methodComparator());
@@ -198,16 +180,17 @@ public class SpringApplicationParser extends RestApplicationParser {
         List<Method> currentlyResolvedMethods = new ArrayList<>();
 
         getInheritanceChain(cls)
-            .forEach(clazz -> {
+                .forEach(clazz -> {
 
-                for (Method method : clazz.getDeclaredMethods()) {
-                    final RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(method, RequestMapping.class);
-                    if (requestMapping != null) {
-                        addOrReplaceMethod(currentlyResolvedMethods, method);
+                    for (Method method : clazz.getDeclaredMethods()) {
+                        final RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(method,
+                                RequestMapping.class);
+                        if (requestMapping != null) {
+                            addOrReplaceMethod(currentlyResolvedMethods, method);
+                        }
                     }
-                }
 
-            });
+                });
 
         return currentlyResolvedMethods;
     }
@@ -235,8 +218,10 @@ public class SpringApplicationParser extends RestApplicationParser {
         for (int i = 0; i < resolvedMethods.size(); i++) {
             Method currMethod = resolvedMethods.get(i);
 
-            if (!currMethod.getName().equals(newMethod.getName())) continue;
-            if (!Arrays.equals(currMethod.getParameterTypes(), newMethod.getParameterTypes())) continue;
+            if (!currMethod.getName().equals(newMethod.getName()))
+                continue;
+            if (!Arrays.equals(currMethod.getParameterTypes(), newMethod.getParameterTypes()))
+                continue;
 
             return i;
         }
@@ -245,7 +230,8 @@ public class SpringApplicationParser extends RestApplicationParser {
     }
 
     // https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-methods
-    private void parseControllerMethod(JaxrsApplicationParser.Result result, JaxrsApplicationParser.ResourceContext context, Class<?> controllerClass, Method method) {
+    private void parseControllerMethod(JaxrsApplicationParser.Result result,
+            JaxrsApplicationParser.ResourceContext context, Class<?> controllerClass, Method method) {
         final RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(method, RequestMapping.class);
         if (requestMapping != null) {
 
@@ -268,7 +254,8 @@ public class SpringApplicationParser extends RestApplicationParser {
             context = context.subPath(requestMapping.path().length == 0 ? "" : requestMapping.path()[0]);
             final Map<String, Type> pathParamTypes = new LinkedHashMap<>();
             for (Parameter parameter : method.getParameters()) {
-                final PathVariable pathVariableAnnotation = AnnotationUtils.findAnnotation(parameter, PathVariable.class);
+                final PathVariable pathVariableAnnotation = AnnotationUtils.findAnnotation(parameter,
+                        PathVariable.class);
                 if (pathVariableAnnotation != null) {
                     String pathVariableName = pathVariableAnnotation.value();
                     // https://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates
@@ -280,21 +267,22 @@ public class SpringApplicationParser extends RestApplicationParser {
                 }
             }
             context = context.subPathParamTypes(pathParamTypes);
-            final RequestMethod httpMethod = requestMapping.method().length == 0 ? RequestMethod.GET : requestMapping.method()[0];
+            final RequestMethod httpMethod = requestMapping.method().length == 0 ? RequestMethod.GET
+                    : requestMapping.method()[0];
 
             // path parameters
             final PathTemplate pathTemplate = PathTemplate.parse(context.path);
             final Map<String, Type> contextPathParamTypes = context.pathParamTypes;
             final List<MethodParameterModel> pathParams = pathTemplate.getParts().stream()
-                .filter(PathTemplate.Parameter.class::isInstance)
-                .map(PathTemplate.Parameter.class::cast)
-                .map(parameter -> {
-                    final Type type = contextPathParamTypes.get(parameter.getOriginalName());
-                    final Type paramType = type != null ? type : String.class;
-                    foundType(result, paramType, controllerClass, method.getName());
-                    return new MethodParameterModel(parameter.getValidName(), paramType);
-                })
-                .collect(Collectors.toList());
+                    .filter(PathTemplate.Parameter.class::isInstance)
+                    .map(PathTemplate.Parameter.class::cast)
+                    .map(parameter -> {
+                        final Type type = contextPathParamTypes.get(parameter.getOriginalName());
+                        final Type paramType = type != null ? type : String.class;
+                        foundType(result, paramType, controllerClass, method.getName());
+                        return new MethodParameterModel(parameter.getValidName(), paramType);
+                    })
+                    .collect(Collectors.toList());
 
             // query parameters
             final List<RestQueryParam> queryParams = new ArrayList<>();
@@ -304,21 +292,23 @@ public class SpringApplicationParser extends RestApplicationParser {
                     queryParams.add(new RestQueryParam.Single(new MethodParameterModel("size", Long.class), false));
                     queryParams.add(new RestQueryParam.Single(new MethodParameterModel("sort", String.class), false));
                 } else {
-                    final RequestParam requestParamAnnotation = AnnotationUtils.findAnnotation(parameter, RequestParam.class);
+                    final RequestParam requestParamAnnotation = AnnotationUtils.findAnnotation(parameter,
+                            RequestParam.class);
                     if (requestParamAnnotation != null) {
                         if (parameter.getType() == MultiValueMap.class) {
                             queryParams.add(new RestQueryParam.Map(false));
                         } else {
-                            final boolean isRequired = requestParamAnnotation.required() && requestParamAnnotation.defaultValue().equals(ValueConstants.DEFAULT_NONE);
+                            final boolean isRequired = requestParamAnnotation.required()
+                                    && requestParamAnnotation.defaultValue().equals(ValueConstants.DEFAULT_NONE);
                             queryParams.add(new RestQueryParam.Single(new MethodParameterModel(firstOf(
-                                requestParamAnnotation.value(),
-                                parameter.getName()
-                            ), parameter.getParameterizedType()), isRequired));
+                                    requestParamAnnotation.value(),
+                                    parameter.getName()), parameter.getParameterizedType()), isRequired));
                             foundType(result, parameter.getParameterizedType(), controllerClass, method.getName());
                         }
                     }
 
-                    final ModelAttribute modelAttributeAnnotation = AnnotationUtils.findAnnotation(parameter, ModelAttribute.class);
+                    final ModelAttribute modelAttributeAnnotation = AnnotationUtils.findAnnotation(parameter,
+                            ModelAttribute.class);
                     if (modelAttributeAnnotation != null) {
                         try {
                             final BeanInfo beanInfo = Introspector.getBeanInfo(parameter.getType());
@@ -327,13 +317,14 @@ public class SpringApplicationParser extends RestApplicationParser {
                                 if (writeMethod != null) {
                                     queryParams.add(new RestQueryParam.Single(new MethodParameterModel(
                                             propertyDescriptor.getName(),
-                                            propertyDescriptor.getPropertyType()
-                                    ), false));
-                                    foundType(result, propertyDescriptor.getPropertyType(), controllerClass, method.getName());
+                                            propertyDescriptor.getPropertyType()), false));
+                                    foundType(result, propertyDescriptor.getPropertyType(), controllerClass,
+                                            method.getName());
                                 }
                             }
                         } catch (IntrospectionException e) {
-                            TypeScriptGenerator.getLogger().warning(String.format("Cannot introspect '%s' class: " + e.getMessage(), parameter.getAnnotatedType()));
+                            TypeScriptGenerator.getLogger().warning(String.format(
+                                    "Cannot introspect '%s' class: " + e.getMessage(), parameter.getAnnotatedType()));
                         }
                     }
                 }
@@ -349,7 +340,7 @@ public class SpringApplicationParser extends RestApplicationParser {
             foundType(result, modelReturnType, controllerClass, method.getName());
 
             model.getMethods().add(new RestMethodModel(controllerClass, method.getName(), modelReturnType, method,
-                controllerClass, httpMethod.name(), context.path, pathParams, queryParams, entityParameter, null));
+                    controllerClass, httpMethod.name(), context.path, pathParams, queryParams, entityParameter, null));
         }
     }
 
@@ -373,9 +364,11 @@ public class SpringApplicationParser extends RestApplicationParser {
         final List<Type> parameterTypes = settings.getTypeParser().getMethodParameterTypes(method);
         final List<Pair<Parameter, Type>> parameters = Utils.zip(Arrays.asList(method.getParameters()), parameterTypes);
         for (Pair<Parameter, Type> pair : parameters) {
-            final RequestBody requestBodyAnnotation = AnnotationUtils.findAnnotation(pair.getValue1(), RequestBody.class);
+            final RequestBody requestBodyAnnotation = AnnotationUtils.findAnnotation(pair.getValue1(),
+                    RequestBody.class);
             if (requestBodyAnnotation != null) {
-                final Type resolvedType = GenericsResolver.resolveType(controller, pair.getValue2(), method.getDeclaringClass());
+                final Type resolvedType = GenericsResolver.resolveType(controller, pair.getValue2(),
+                        method.getDeclaringClass());
                 return new MethodParameterModel(pair.getValue1().getName(), resolvedType);
             }
         }
@@ -393,8 +386,7 @@ public class SpringApplicationParser extends RestApplicationParser {
     private static Map<Class<?>, TsType> standardEntityClassesMapping;
 
     private static List<String> getDefaultExcludedClassNames() {
-        return Arrays.asList(
-        );
+        return Arrays.asList();
     }
 
     private static String firstOf(String... values) {

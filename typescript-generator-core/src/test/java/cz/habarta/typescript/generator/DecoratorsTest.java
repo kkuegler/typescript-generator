@@ -3,16 +3,7 @@ package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer;
-import cz.habarta.typescript.generator.emitter.Emitter;
-import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
-import cz.habarta.typescript.generator.emitter.TsBeanModel;
-import cz.habarta.typescript.generator.emitter.TsBooleanLiteral;
-import cz.habarta.typescript.generator.emitter.TsDecorator;
-import cz.habarta.typescript.generator.emitter.TsIdentifierReference;
-import cz.habarta.typescript.generator.emitter.TsMethodModel;
-import cz.habarta.typescript.generator.emitter.TsModel;
-import cz.habarta.typescript.generator.emitter.TsPropertyModel;
-import cz.habarta.typescript.generator.emitter.TsStringLiteral;
+import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.parser.Model;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -21,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class DecoratorsTest {
 
@@ -56,11 +46,9 @@ public class DecoratorsTest {
                         public TsModel transformModel(Context context, TsModel model) {
                             return model.withBeans(model.getBeans().stream()
                                     .map(ClassNameDecoratorExtension.this::decorateClass)
-                                    .collect(Collectors.toList())
-                            );
+                                    .collect(Collectors.toList()));
                         }
-                    })
-            );
+                    }));
         }
 
         private TsBeanModel decorateClass(TsBeanModel bean) {
@@ -70,12 +58,10 @@ public class DecoratorsTest {
             return bean
                     .withDecorators(Arrays.asList(new TsDecorator(
                             new TsIdentifierReference("JsonObject"),
-                            Arrays.asList(new TsStringLiteral(bean.getOrigin().getSimpleName()))
-                    )))
+                            Arrays.asList(new TsStringLiteral(bean.getOrigin().getSimpleName())))))
                     .withProperties(bean.getProperties().stream()
                             .map(ClassNameDecoratorExtension.this::decorateProperty)
-                            .collect(Collectors.toList())
-                    );
+                            .collect(Collectors.toList()));
         }
 
         private TsPropertyModel decorateProperty(TsPropertyModel property) {
@@ -84,9 +70,7 @@ public class DecoratorsTest {
                             new TsIdentifierReference("JsonProperty"),
                             Arrays.asList(
                                     new TsStringLiteral(property.getName()),
-                                    new TsIdentifierReference("String")
-                            )
-                    )));
+                                    new TsIdentifierReference("String")))));
         }
 
     }
@@ -111,16 +95,12 @@ public class DecoratorsTest {
                         .withParameters(Arrays.asList(bean.getConstructor().getParameters().get(0)
                                 .withDecorators(Arrays.asList(new TsDecorator(
                                         new TsIdentifierReference("Inject"),
-                                        Arrays.asList(new TsStringLiteral("token"))
-                                )))
-                        ))
-                )
-                .withMethods(Arrays.asList(new TsMethodModel("greet", null, null, Collections.emptyList(), TsType.Void, Collections.emptyList(), null)
+                                        Arrays.asList(new TsStringLiteral("token"))))))))
+                .withMethods(Arrays.asList(new TsMethodModel("greet", null, null, Collections.emptyList(), TsType.Void,
+                        Collections.emptyList(), null)
                         .withDecorators(Arrays.asList(new TsDecorator(
                                 new TsIdentifierReference("enumerable"),
-                                Arrays.asList(new TsBooleanLiteral(false))
-                        )))
-                ));
+                                Arrays.asList(new TsBooleanLiteral(false)))))));
         final TsModel tsModel2 = tsModel.withBeans(Arrays.asList(bean2));
         final String output = emit(typeScriptGenerator.getEmitter(), tsModel2);
         Assertions.assertTrue(output.contains("@Inject(\"token\")"));

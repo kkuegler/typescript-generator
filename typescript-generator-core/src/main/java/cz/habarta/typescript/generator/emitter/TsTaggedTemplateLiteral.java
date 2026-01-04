@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.Settings;
 import java.util.List;
 
-
 public class TsTaggedTemplateLiteral extends TsTemplateLiteral {
 
     private final TsExpression tagFunction;

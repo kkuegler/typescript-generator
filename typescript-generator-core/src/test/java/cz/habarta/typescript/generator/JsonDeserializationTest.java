@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-
 @SuppressWarnings("unused")
 public class JsonDeserializationTest {
 
@@ -33,7 +32,8 @@ public class JsonDeserializationTest {
         final File actualFile = new File("target/JsonDeserializationTest-actual.ts");
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(User.class), Output.to(actualFile));
         final List<String> actualLines = Files.readAllLines(actualFile.toPath(), StandardCharsets.UTF_8);
-        final List<String> expectedLines = Utils.readLines(getClass().getResourceAsStream("JsonDeserializationTest-expected.ts"));
+        final List<String> expectedLines = Utils
+                .readLines(getClass().getResourceAsStream("JsonDeserializationTest-expected.ts"));
 
         int contentLines = 0;
         int foundLines = 0;
@@ -48,7 +48,8 @@ public class JsonDeserializationTest {
                 }
             }
         }
-        System.out.println(String.format("Number of correctly generated content lines: %d/%d (%d%%).", foundLines, contentLines, 100 * foundLines / contentLines));
+        System.out.println(String.format("Number of correctly generated content lines: %d/%d (%d%%).", foundLines,
+                contentLines, 100 * foundLines / contentLines));
         System.out.println("Following lines were not generated:");
         for (String notFoundLine : notFoundLines) {
             System.out.println(notFoundLine);
@@ -67,7 +68,8 @@ public class JsonDeserializationTest {
         final File actualFile = new File("target/JsonDeserializationTestWithConstructors-actual.ts");
         new TypeScriptGenerator(settings).generateTypeScript(Input.from(User.class), Output.to(actualFile));
         final List<String> actualLines = Files.readAllLines(actualFile.toPath(), StandardCharsets.UTF_8);
-        final List<String> expectedLines = Utils.readLines(getClass().getResourceAsStream("JsonDeserializationTestWithConstructors-expected.ts"));
+        final List<String> expectedLines = Utils
+                .readLines(getClass().getResourceAsStream("JsonDeserializationTestWithConstructors-expected.ts"));
 
         int contentLines = 0;
         int foundLines = 0;
@@ -82,7 +84,8 @@ public class JsonDeserializationTest {
                 }
             }
         }
-        System.out.println(String.format("Number of correctly generated content lines: %d/%d (%d%%).", foundLines, contentLines, 100 * foundLines / contentLines));
+        System.out.println(String.format("Number of correctly generated content lines: %d/%d (%d%%).", foundLines,
+                contentLines, 100 * foundLines / contentLines));
         System.out.println("Following lines were not generated:");
         for (String notFoundLine : notFoundLines) {
             System.out.println(notFoundLine);
@@ -96,11 +99,13 @@ public class JsonDeserializationTest {
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.outputKind = TypeScriptOutputKind.module;
         settings.mapClasses = ClassMapping.asClasses;
-        settings.extensions.add(new JsonDeserializationExtension(/*useJsonDeserializationInJaxrsApplicationClient*/true));
+        settings.extensions
+                .add(new JsonDeserializationExtension(/*useJsonDeserializationInJaxrsApplicationClient*/true));
         settings.extensions.add(new AxiosClientExtension());
-//        final File actualFile = new File("target/JaxrsWithJsonDeserialization-actual.ts");
-//        new TypeScriptGenerator(settings).generateTypeScript(Input.from(JaxrsApplicationTest.OrganizationApplication.class), Output.to(actualFile));
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(JaxrsApplicationTest.OrganizationApplication.class));
+        //        final File actualFile = new File("target/JaxrsWithJsonDeserialization-actual.ts");
+        //        new TypeScriptGenerator(settings).generateTypeScript(Input.from(JaxrsApplicationTest.OrganizationApplication.class), Output.to(actualFile));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(JaxrsApplicationTest.OrganizationApplication.class));
         Assertions.assertTrue(output.contains("copyFn: Organization.fromData"));
         Assertions.assertTrue(output.contains("copyFn: undefined"));
         Assertions.assertTrue(output.contains("copyFn: __getCopyArrayFn(Organization.fromData)"));
@@ -118,7 +123,8 @@ public class JsonDeserializationTest {
     @Test
     @Tag("typescript2java")
     public void deserializationTypescriptToJava() throws IOException {
-        User data = new ObjectMapper().readValue(new File("target/JsonDeserializationTest-actual-test-data-2.json"), User.class);
+        User data = new ObjectMapper().readValue(new File("target/JsonDeserializationTest-actual-test-data-2.json"),
+                User.class);
         Assertions.assertEquals("name2", data.name);
         Assertions.assertEquals(Authentication.Password, data.authentication);
     }
@@ -163,9 +169,9 @@ public class JsonDeserializationTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({
-        @JsonSubTypes.Type(Square.class),
-        @JsonSubTypes.Type(Rectangle.class),
-        @JsonSubTypes.Type(Circle.class),
+            @JsonSubTypes.Type(Square.class),
+            @JsonSubTypes.Type(Rectangle.class),
+            @JsonSubTypes.Type(Circle.class),
     })
     private abstract static class Shape {
         public ShapeMetadata metadata;

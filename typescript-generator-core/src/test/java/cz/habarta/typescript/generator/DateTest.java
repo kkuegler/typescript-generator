@@ -5,25 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 public class DateTest {
 
@@ -81,7 +66,8 @@ public class DateTest {
     public void testJava8DateWithJackson2CustomSerialization() {
         final Settings settings = TestUtils.settings();
         settings.customTypeMappings = Collections.singletonMap("java.time.LocalDate", "[number, number, number]");
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Java8Jackson2Dates.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(Java8Jackson2Dates.class));
         Assertions.assertTrue(output.contains("date: [number, number, number];"));
     }
 

@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.Settings;
 import java.util.List;
 
-
 public class TsTemplateLiteral extends TsExpression {
 
     private final List<TsExpression/*|TsStringLiteral*/> spans;

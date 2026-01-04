@@ -1,7 +1,6 @@
 
 package cz.habarta.typescript.generator.type;
 
-
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 public class DuplicatePropertyTest {
 
     public static class DuplicateKindUsage {
@@ -17,11 +16,11 @@ public class DuplicatePropertyTest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind", include = JsonTypeInfo.As.PROPERTY)
     @JsonSubTypes({
-        @JsonSubTypes.Type(value = DuplicateKind1.class, name = "kind_1"),
-        @JsonSubTypes.Type(value = DuplicateKind2.class, name = "kind_2"),
+            @JsonSubTypes.Type(value = DuplicateKind1.class, name = "kind_1"),
+            @JsonSubTypes.Type(value = DuplicateKind2.class, name = "kind_2"),
     })
     public static abstract class DuplicateKind {
-//        public String kind;
+        //        public String kind;
     }
 
     public static class DuplicateKind1 extends DuplicateKind {
@@ -47,7 +46,8 @@ public class DuplicatePropertyTest {
         settings.outputKind = TypeScriptOutputKind.module;
         settings.outputFileType = TypeScriptFileType.implementationFile;
         settings.mapClasses = ClassMapping.asClasses;
-        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DuplicateKindUsage.class));
+        final String output = new TypeScriptGenerator(settings)
+                .generateTypeScript(Input.from(DuplicateKindUsage.class));
         Assertions.assertTrue(!output.contains("DuplicateKindUnion"));
     }
 

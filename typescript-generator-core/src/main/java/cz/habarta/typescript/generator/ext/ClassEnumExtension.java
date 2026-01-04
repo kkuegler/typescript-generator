@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
 public class ClassEnumExtension extends Extension {
 
     public static final String CFG_CLASS_ENUM_PATTERN = "classEnumPattern";
@@ -37,39 +36,40 @@ public class ClassEnumExtension extends Extension {
 
     @Override
     public List<TransformerDefinition> getTransformers() {
-        return Arrays.asList(new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, new TsModelTransformer() {
-            @Override
-            public TsModel transformModel(Context context, TsModel model) {
-                List<TsBeanModel> beans = model.getBeans();
-                List<TsBeanModel> classEnums = new ArrayList<>();
-                for (TsBeanModel bean : beans) {
-                    if (bean.getName().getSimpleName().contains(classEnumPattern)) {
-                        classEnums.add(bean);
-                    }
-                }
-
-                List<TsEnumModel> stringEnums = new ArrayList<>();
-                for (TsBeanModel tsBeanModel : classEnums) {
-                    List<EnumMemberModel> members = new ArrayList<>();
-                    for (Field declaredField : tsBeanModel.getOrigin().getDeclaredFields()) {
-                        if (declaredField.getType().getName().equals(tsBeanModel.getOrigin().getName())) {
-                            members.add(new EnumMemberModel(declaredField.getName(), declaredField.getName(), declaredField, null));
+        return Arrays.asList(
+                new TransformerDefinition(ModelCompiler.TransformationPhase.BeforeEnums, new TsModelTransformer() {
+                    @Override
+                    public TsModel transformModel(Context context, TsModel model) {
+                        List<TsBeanModel> beans = model.getBeans();
+                        List<TsBeanModel> classEnums = new ArrayList<>();
+                        for (TsBeanModel bean : beans) {
+                            if (bean.getName().getSimpleName().contains(classEnumPattern)) {
+                                classEnums.add(bean);
+                            }
                         }
-                    }
-                    TsEnumModel temp = new TsEnumModel(
-                            tsBeanModel.getOrigin(),
-                            tsBeanModel.getName(),
-                            EnumKind.StringBased,
-                            members,
-                            null,
-                            false
-                    );
-                    stringEnums.add(temp);
-                }
 
-                stringEnums.addAll(model.getEnums());
-                return model.withEnums(stringEnums).withoutBeans(classEnums);
-            }
-        }));
+                        List<TsEnumModel> stringEnums = new ArrayList<>();
+                        for (TsBeanModel tsBeanModel : classEnums) {
+                            List<EnumMemberModel> members = new ArrayList<>();
+                            for (Field declaredField : tsBeanModel.getOrigin().getDeclaredFields()) {
+                                if (declaredField.getType().getName().equals(tsBeanModel.getOrigin().getName())) {
+                                    members.add(new EnumMemberModel(declaredField.getName(), declaredField.getName(),
+                                            declaredField, null));
+                                }
+                            }
+                            TsEnumModel temp = new TsEnumModel(
+                                    tsBeanModel.getOrigin(),
+                                    tsBeanModel.getName(),
+                                    EnumKind.StringBased,
+                                    members,
+                                    null,
+                                    false);
+                            stringEnums.add(temp);
+                        }
+
+                        stringEnums.addAll(model.getEnums());
+                        return model.withEnums(stringEnums).withoutBeans(classEnums);
+                    }
+                }));
     }
 }
