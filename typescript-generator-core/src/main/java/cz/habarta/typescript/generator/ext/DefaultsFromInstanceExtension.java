@@ -89,14 +89,12 @@ public class DefaultsFromInstanceExtension extends Extension {
             return null;
         }
         try {
-            if (member instanceof Field) {
-                final Field field = (Field) member;
+            if (member instanceof Field field) {
                 field.setAccessible(true);
                 final Object value = field.get(instance);
                 return value;
             }
-            if (member instanceof Method) {
-                final Method method = (Method) member;
+            if (member instanceof Method method) {
                 method.setAccessible(true);
                 final Object value = method.invoke(instance);
                 return value;

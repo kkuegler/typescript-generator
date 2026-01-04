@@ -21,8 +21,7 @@ public class TsTemplateLiteral extends TsExpression {
         final StringBuilder sb = new StringBuilder();
         sb.append("`");
         for (TsExpression span : spans) {
-            if (span instanceof TsStringLiteral) {
-                final TsStringLiteral literal = (TsStringLiteral) span;
+            if (span instanceof TsStringLiteral literal) {
                 sb.append(literal.getLiteral());
             } else {
                 sb.append("${");

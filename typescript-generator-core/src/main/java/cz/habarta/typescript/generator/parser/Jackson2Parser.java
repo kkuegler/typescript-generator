@@ -147,9 +147,7 @@ public class Jackson2Parser extends ModelParser {
                 new TypeProcessor() {
                     @Override
                     public TypeProcessor.Result processType(Type javaType, TypeProcessor.Context context) {
-                        if (context.getTypeContext() instanceof Jackson2TypeContext) {
-                            final Jackson2TypeContext jackson2TypeContext = (Jackson2TypeContext) context
-                                    .getTypeContext();
+                        if (context.getTypeContext() instanceof Jackson2TypeContext jackson2TypeContext) {
                             final Jackson2ConfigurationResolved config = jackson2TypeContext.parser.settings.jackson2Configuration;
                             // JsonSerialize
                             final JsonSerialize jsonSerialize = jackson2TypeContext.beanProperty
@@ -343,8 +341,7 @@ public class Jackson2Parser extends ModelParser {
     }
 
     private static Integer getCreatorIndex(BeanProperty beanProperty) {
-        if (beanProperty instanceof CreatorProperty) {
-            final CreatorProperty creatorProperty = (CreatorProperty) beanProperty;
+        if (beanProperty instanceof CreatorProperty creatorProperty) {
             return creatorProperty.getCreatorIndex();
         } else {
             return null;

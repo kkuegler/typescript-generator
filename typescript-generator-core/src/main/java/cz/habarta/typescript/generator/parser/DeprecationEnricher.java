@@ -30,11 +30,9 @@ public class DeprecationEnricher {
     }
 
     private PropertyModel enrichProperty(PropertyModel property) {
-        if (property.getOriginalMember() instanceof Method) {
-            final Method method = (Method) property.getOriginalMember();
+        if (property.getOriginalMember() instanceof Method method) {
             return enrichMethodProperty(property, method);
-        } else if (property.getOriginalMember() instanceof Field) {
-            final Field field = (Field) property.getOriginalMember();
+        } else if (property.getOriginalMember() instanceof Field field) {
             return enrichFieldProperty(property, field);
         } else {
             return property;

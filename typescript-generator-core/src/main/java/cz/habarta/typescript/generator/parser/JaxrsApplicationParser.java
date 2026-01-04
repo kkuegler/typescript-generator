@@ -56,10 +56,9 @@ public class JaxrsApplicationParser extends RestApplicationParser {
 
     @Override
     public Result tryParse(SourceType<?> sourceType) {
-        if (!(sourceType.type instanceof Class<?>)) {
+        if (!(sourceType.type instanceof Class<?> cls)) {
             return null;
         }
-        final Class<?> cls = (Class<?>) sourceType.type;
 
         // application
         if (Application.class.isAssignableFrom(cls) || javax(Application.class).isAssignableFrom(cls)) {
@@ -136,8 +135,7 @@ public class JaxrsApplicationParser extends RestApplicationParser {
             final List<MethodParameterModel> pathParams = new ArrayList<>();
             final PathTemplate pathTemplate = PathTemplate.parse(context.path);
             for (PathTemplate.Part part : pathTemplate.getParts()) {
-                if (part instanceof PathTemplate.Parameter) {
-                    final PathTemplate.Parameter parameter = (PathTemplate.Parameter) part;
+                if (part instanceof PathTemplate.Parameter parameter) {
                     final Type type = context.pathParamTypes.get(parameter.getOriginalName());
                     final Type paramType = type != null ? type : String.class;
                     final Type resolvedParamType = GenericsResolver.resolveType(resourceClass, paramType,
@@ -198,9 +196,8 @@ public class JaxrsApplicationParser extends RestApplicationParser {
                 } else {
                     modelReturnType = Object.class;
                 }
-            } else if (plainReturnType instanceof ParameterizedType
+            } else if (plainReturnType instanceof ParameterizedType parameterizedReturnType
                     && (returnType == GenericEntity.class || returnType == javax(GenericEntity.class))) {
-                final ParameterizedType parameterizedReturnType = (ParameterizedType) plainReturnType;
                 modelReturnType = parameterizedReturnType.getActualTypeArguments()[0];
             } else {
                 modelReturnType = parsedReturnType;

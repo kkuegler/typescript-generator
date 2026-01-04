@@ -99,8 +99,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
      * else is original
      */
     private static boolean isOriginalTsType(TsType type) {
-        if (type instanceof TsType.BasicType) {
-            TsType.BasicType basicType = (TsType.BasicType) type;
+        if (type instanceof TsType.BasicType basicType) {
             return !(basicType.name.equals("null") || basicType.name.equals("undefined"));
         }
         return true;
@@ -117,8 +116,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
         if (type instanceof TsType.OptionalType) {
             return extractOriginalTsType(((TsType.OptionalType) type).type);
         }
-        if (type instanceof TsType.UnionType) {
-            TsType.UnionType union = (TsType.UnionType) type;
+        if (type instanceof TsType.UnionType union) {
             List<TsType> originalTypes = new ArrayList<>();
             for (TsType curType : union.types) {
                 if (isOriginalTsType(curType)) {
@@ -137,10 +135,9 @@ public class BeanPropertyPathExtension extends EmitterExtension {
 
     private static TsBeanModel getBeanModelByType(TsModel model, TsType type) {
         TsType originalType = extractOriginalTsType(type);
-        if (!(originalType instanceof TsType.ReferenceType)) {
+        if (!(originalType instanceof TsType.ReferenceType originalTypeBean)) {
             return null;
         }
-        TsType.ReferenceType originalTypeBean = (TsType.ReferenceType) originalType;
 
         for (TsBeanModel curBean : model.getBeans()) {
             if (curBean.getName().equals(originalTypeBean.symbol)) {

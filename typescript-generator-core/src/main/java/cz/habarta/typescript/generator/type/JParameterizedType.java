@@ -45,8 +45,7 @@ public class JParameterizedType implements ParameterizedType {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ParameterizedType) {
-            final ParameterizedType that = (ParameterizedType) obj;
+        if (obj instanceof ParameterizedType that) {
             return Objects.equals(ownerType, that.getOwnerType()) &&
                     Objects.equals(rawType, that.getRawType()) &&
                     Arrays.equals(actualTypeArguments, that.getActualTypeArguments());

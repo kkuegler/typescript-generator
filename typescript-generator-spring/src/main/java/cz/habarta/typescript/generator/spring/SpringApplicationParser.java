@@ -73,10 +73,9 @@ public class SpringApplicationParser extends RestApplicationParser {
 
     @Override
     public JaxrsApplicationParser.Result tryParse(SourceType<?> sourceType) {
-        if (!(sourceType.type instanceof Class<?>)) {
+        if (!(sourceType.type instanceof Class<?> cls)) {
             return null;
         }
-        final Class<?> cls = (Class<?>) sourceType.type;
 
         // application
         final SpringBootApplication app = AnnotationUtils.findAnnotation(cls, SpringBootApplication.class);
@@ -353,8 +352,8 @@ public class SpringApplicationParser extends RestApplicationParser {
         final Type modelReturnType;
         if (returnType == void.class) {
             modelReturnType = returnType;
-        } else if (plainReturnType instanceof ParameterizedType && returnType == ResponseEntity.class) {
-            final ParameterizedType parameterizedReturnType = (ParameterizedType) plainReturnType;
+        } else if (plainReturnType instanceof ParameterizedType parameterizedReturnType
+                && returnType == ResponseEntity.class) {
             modelReturnType = parameterizedReturnType.getActualTypeArguments()[0];
         } else {
             modelReturnType = parsedReturnType;

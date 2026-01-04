@@ -50,12 +50,10 @@ public class PathTemplate {
     public String format(String parameterLeftDelimiter, String parameterRightDelimiter, boolean includeParameterRegex) {
         final StringBuilder sb = new StringBuilder();
         for (Part part : parts) {
-            if (part instanceof Literal) {
-                final Literal literal = (Literal) part;
+            if (part instanceof Literal literal) {
                 sb.append(literal.getLiteral());
             }
-            if (part instanceof Parameter) {
-                final Parameter parameter = (Parameter) part;
+            if (part instanceof Parameter parameter) {
                 sb.append(parameterLeftDelimiter);
                 sb.append(parameter.getValidName());
                 if (includeParameterRegex && parameter.getRegex() != null) {

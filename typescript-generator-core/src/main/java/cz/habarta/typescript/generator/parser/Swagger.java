@@ -158,8 +158,7 @@ public class Swagger {
     }
 
     private static PropertyModel enrichProperty(PropertyModel property) {
-        if (property.getOriginalMember() instanceof AnnotatedElement) {
-            final AnnotatedElement annotatedElement = (AnnotatedElement) property.getOriginalMember();
+        if (property.getOriginalMember() instanceof AnnotatedElement annotatedElement) {
             return firstResult(
                     () -> enrichProperty3(property, annotatedElement),
                     () -> enrichProperty1(property, annotatedElement),

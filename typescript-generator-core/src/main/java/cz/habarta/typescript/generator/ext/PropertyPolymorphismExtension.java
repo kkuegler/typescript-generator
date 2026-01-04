@@ -171,8 +171,7 @@ public class PropertyPolymorphismExtension extends Extension {
                     // replace references
                     List<TsPropertyModel> newProperties = new ArrayList<>();
                     for (TsPropertyModel property : bean.getProperties()) {
-                        if (property.tsType instanceof ReferenceType) {
-                            ReferenceType type = (ReferenceType) property.tsType;
+                        if (property.tsType instanceof ReferenceType type) {
                             TsBeanModel referencedBean = model.getBean(type.symbol);
                             if (isPolymorphicBase.test(referencedBean.getOrigin())) {
                                 Symbol refSymbol = context.getSymbolTable().addSuffixToSymbol(type.symbol,

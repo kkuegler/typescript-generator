@@ -86,8 +86,7 @@ public class JTypeVariable<D extends GenericDeclaration> implements TypeVariable
         if (this == obj) {
             return true;
         }
-        if (obj instanceof TypeVariable) {
-            final TypeVariable<?> that = (TypeVariable<?>) obj;
+        if (obj instanceof TypeVariable<?> that) {
             return Objects.equals(genericDeclaration, that.getGenericDeclaration()) &&
                     Objects.equals(name, that.getName());
         } else {

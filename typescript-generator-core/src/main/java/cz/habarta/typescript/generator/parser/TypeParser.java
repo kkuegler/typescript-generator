@@ -108,16 +108,14 @@ public class TypeParser {
             if (isArrayOfPrimitiveType(type)) {
                 return type;
             }
-            if (annotatedType instanceof AnnotatedParameterizedType) {
-                final AnnotatedParameterizedType annotatedParameterizedType = (AnnotatedParameterizedType) annotatedType;
+            if (annotatedType instanceof AnnotatedParameterizedType annotatedParameterizedType) {
                 final ParameterizedType parameterizedType = (ParameterizedType) type;
                 return new JParameterizedType(
                         parameterizedType.getRawType(),
                         getTypes(annotatedParameterizedType.getAnnotatedActualTypeArguments()),
                         parameterizedType.getOwnerType());
             }
-            if (annotatedType instanceof AnnotatedArrayType) {
-                final AnnotatedArrayType annotatedArrayType = (AnnotatedArrayType) annotatedType;
+            if (annotatedType instanceof AnnotatedArrayType annotatedArrayType) {
                 return new JGenericArrayType(getType(annotatedArrayType.getAnnotatedGenericComponentType()));
             }
             return type;
@@ -211,8 +209,7 @@ public class TypeParser {
 
         private Type getBareType(KType kType, Map<String, JTypeVariable<?>> typeParameters) {
             final KClassifier kClassifier = kType.getClassifier();
-            if (kClassifier instanceof KClass) {
-                final KClass<?> kClass = (KClass<?>) kClassifier;
+            if (kClassifier instanceof KClass<?> kClass) {
                 final Class<?> javaClass = JvmClassMappingKt.getJavaClass(kClass);
                 if (isArrayOfPrimitiveType(javaClass)) {
                     return javaClass;
@@ -229,8 +226,7 @@ public class TypeParser {
                     return Utils.createParameterizedType(javaClass, javaArguments);
                 }
             }
-            if (kClassifier instanceof KTypeParameter) {
-                final KTypeParameter kTypeParameter = (KTypeParameter) kClassifier;
+            if (kClassifier instanceof KTypeParameter kTypeParameter) {
                 final JTypeVariable<?> typeVariableFromMap = typeParameters.get(kTypeParameter.getName());
                 if (typeVariableFromMap != null) {
                     return typeVariableFromMap;
@@ -296,8 +292,7 @@ public class TypeParser {
     //
 
     private static boolean isArrayOfPrimitiveType(Type type) {
-        if (type instanceof Class<?>) {
-            final Class<?> cls = (Class<?>) type;
+        if (type instanceof Class<?> cls) {
             if (cls.isArray()
                     && (cls.getComponentType().isPrimitive() || isArrayOfPrimitiveType(cls.getComponentType()))) {
                 return true;

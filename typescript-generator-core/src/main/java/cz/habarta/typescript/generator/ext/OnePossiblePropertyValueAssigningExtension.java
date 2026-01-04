@@ -109,10 +109,9 @@ public class OnePossiblePropertyValueAssigningExtension extends Extension {
             return Optional.empty();
         }
         TsType onlyElement = unionTypeElements.iterator().next();
-        if (!(onlyElement instanceof TsType.StringLiteralType)) {
+        if (!(onlyElement instanceof TsType.StringLiteralType onlyValue)) {
             return Optional.empty();
         }
-        TsType.StringLiteralType onlyValue = (TsType.StringLiteralType) onlyElement;
         TsStringLiteral expression = new TsStringLiteral(onlyValue.literal);
         return Optional.of(expression);
     }

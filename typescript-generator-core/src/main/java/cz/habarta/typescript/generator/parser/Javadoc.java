@@ -90,13 +90,11 @@ public class Javadoc {
     private PropertyModel enrichProperty(PropertyModel property, List<Field> dFields, List<Method> dMethods) {
         String propertyComment = null;
         List<TagInfo> tags = null;
-        if (property.getOriginalMember() instanceof java.lang.reflect.Method) {
-            final java.lang.reflect.Method method = (java.lang.reflect.Method) property.getOriginalMember();
+        if (property.getOriginalMember() instanceof java.lang.reflect.Method method) {
             final Method dMethod = findJavadocMethod(method.getName(), dMethods);
             propertyComment = dMethod != null ? dMethod.getComment() : null;
             tags = dMethod != null ? dMethod.getTag() : null;
-        } else if (property.getOriginalMember() instanceof java.lang.reflect.Field) {
-            final java.lang.reflect.Field field = (java.lang.reflect.Field) property.getOriginalMember();
+        } else if (property.getOriginalMember() instanceof java.lang.reflect.Field field) {
             final Field dField = findJavadocField(field.getName(), dFields);
             propertyComment = dField != null ? dField.getComment() : null;
             tags = dField != null ? dField.getTag() : null;

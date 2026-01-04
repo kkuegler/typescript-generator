@@ -221,8 +221,7 @@ public class Settings {
             for (ConfiguredExtension configuredExtension : extensionsWithConfiguration) {
                 final EmitterExtension emitterExtension = loadInstance(classLoader, configuredExtension.className,
                         EmitterExtension.class);
-                if (emitterExtension instanceof Extension) {
-                    final Extension extension = (Extension) emitterExtension;
+                if (emitterExtension instanceof Extension extension) {
                     extension.setConfiguration(Utils.mapFromNullable(configuredExtension.configuration));
                 }
                 this.extensions.add(emitterExtension);
