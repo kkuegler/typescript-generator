@@ -205,7 +205,7 @@ public class JsonDeserializationExtension extends Extension {
     private static TsIfStatement ifUndefinedThenReturnItStatement(String identifier) {
         return new TsIfStatement(
                 new TsPrefixUnaryExpression(TsUnaryOperator.Exclamation, new TsIdentifierReference(identifier)),
-                List.<TsStatement>of(new TsReturnStatement(new TsIdentifierReference(identifier))));
+                List.of(new TsReturnStatement(new TsIdentifierReference(identifier))));
     }
 
     private static TsExpression getPropertyCopy(SymbolTable symbolTable, TsModel tsModel, TsBeanModel bean,
@@ -272,7 +272,7 @@ public class JsonDeserializationExtension extends Extension {
         return new TsCallExpression(
                 new TsIdentifierReference("__identity"),
                 Collections.singletonList(tsType),
-                Collections.<TsExpression>emptyList());
+                Collections.emptyList());
     }
 
     private static TsMethodModel createDeserializationMethodForTaggedUnion(SymbolTable symbolTable, TsModel tsModel,
@@ -282,7 +282,7 @@ public class JsonDeserializationExtension extends Extension {
             final TsBeanModel tuBean = tsModel.getBean(cls);
             caseClauses.add(new TsSwitchCaseClause(
                     new TsStringLiteral(tuBean.getDiscriminantLiteral()),
-                    List.<TsStatement>of(new TsReturnStatement(
+                    List.of(new TsReturnStatement(
                             new TsCallExpression(
                                     new TsMemberExpression(new TsTypeReferenceExpression(
                                             new TsType.ReferenceType(symbolTable.getSymbol(cls))), "fromData"),

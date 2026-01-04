@@ -19,7 +19,7 @@ public class TsCallExpression extends TsExpression {
 
     public TsCallExpression(TsExpression expression, List<TsType> typeArguments, List<TsExpression> arguments) {
         this.expression = expression;
-        this.typeArguments = typeArguments != null ? typeArguments : Collections.<TsType>emptyList();
+        this.typeArguments = typeArguments != null ? typeArguments : Collections.emptyList();
         this.arguments = arguments;
     }
 

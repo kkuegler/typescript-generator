@@ -20,7 +20,7 @@ public class TsCallableModel {
         this.name = name;
         this.modifiers = modifiers != null ? modifiers : TsModifierFlags.None;
         this.typeParameters = typeParameters != null ? typeParameters
-                : Collections.<TsType.GenericVariableType>emptyList();
+                : Collections.emptyList();
         this.parameters = parameters;
         this.returnType = returnType;
         this.body = body;

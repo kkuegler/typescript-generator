@@ -173,10 +173,10 @@ public class ModelCompiler {
 
     public TsType javaToTypeScript(Type type) {
         final BeanModel beanModel = new BeanModel(Object.class, Object.class, null, null, null,
-                Collections.<Type>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(new PropertyModel("property", type, false, null, null, null, null, null)),
                 null);
-        final Model model = new Model(Collections.singletonList(beanModel), Collections.<EnumModel>emptyList(), null);
+        final Model model = new Model(Collections.singletonList(beanModel), Collections.emptyList(), null);
         final TsModel tsModel = javaToTypeScript(model);
         return tsModel.getBeans().get(0).getProperties().get(0).getTsType();
     }
@@ -613,7 +613,7 @@ public class ModelCompiler {
         final TsConstructorModel constructor = new TsConstructorModel(
                 TsModifierFlags.None,
                 List.of(new TsParameterModel(TsAccessibilityModifier.Protected, "httpClient", httpClientType)),
-                Collections.<TsStatement>emptyList(),
+                Collections.emptyList(),
                 null);
         final boolean bothInterfacesAndClients = settings.generateJaxrsApplicationInterface
                 || settings.generateSpringApplicationInterface;

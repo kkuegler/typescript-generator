@@ -34,7 +34,7 @@ public class SymbolTable {
 
     public Symbol getSymbol(Class<?> cls, String suffix) {
         final String suffixString = suffix != null ? suffix : "";
-        final Pair<Class<?>, String> key = Pair.<Class<?>, String>of(cls, suffixString);
+        final Pair<Class<?>, String> key = Pair.of(cls, suffixString);
         if (!symbols.containsKey(key)) {
             symbols.put(key, new Symbol("$" + cls.getName().replace('.', '$') + suffixString + "$"));
         }

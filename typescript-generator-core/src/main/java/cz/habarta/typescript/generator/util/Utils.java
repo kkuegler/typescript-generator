@@ -296,15 +296,15 @@ public final class Utils {
     }
 
     public static <T> List<T> listFromNullable(T item) {
-        return item != null ? List.of(item) : Collections.<T>emptyList();
+        return item != null ? List.of(item) : Collections.emptyList();
     }
 
     public static <T> List<T> listFromNullable(List<T> list) {
-        return list != null ? list : Collections.<T>emptyList();
+        return list != null ? list : Collections.emptyList();
     }
 
     public static <K, V> Map<K, V> mapFromNullable(Map<K, V> map) {
-        return map != null ? map : Collections.<K, V>emptyMap();
+        return map != null ? map : Collections.emptyMap();
     }
 
     public static <T> List<T> removeNulls(List<T> list) {
