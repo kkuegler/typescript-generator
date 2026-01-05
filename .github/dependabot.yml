@@ -5,3 +5,13 @@ updates:
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    groups:
+      # one big PR for small stuff
+      # security updates and major updates are separate PRs still
+      smol-dependencies:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
