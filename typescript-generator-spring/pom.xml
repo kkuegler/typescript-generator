@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cz.habarta.typescript-generator</groupId>
+        <groupId>com.github.kkuegler</groupId>
         <artifactId>typescript-generator</artifactId>
         <version>3.2-SNAPSHOT</version>
     </parent>
@@ -18,7 +18,7 @@
     <dependencies>
         <!--compile dependencies-->
         <dependency>
-            <groupId>cz.habarta.typescript-generator</groupId>
+            <groupId>com.github.kkuegler</groupId>
             <artifactId>typescript-generator-core</artifactId>
             <version>3.2-SNAPSHOT</version>
         </dependency>
@@ -45,7 +45,7 @@
 
         <!--test dependencies-->
         <dependency>
-            <groupId>cz.habarta.typescript-generator</groupId>
+            <groupId>com.github.kkuegler</groupId>
             <artifactId>typescript-generator-core</artifactId>
             <version>3.2-SNAPSHOT</version>
             <type>test-jar</type>

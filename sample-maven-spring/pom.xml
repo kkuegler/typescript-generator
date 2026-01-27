@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cz.habarta.typescript-generator</groupId>
+    <groupId>com.github.kkuegler</groupId>
     <artifactId>sample-maven-spring</artifactId>
     <version>3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>sample-maven-spring</name>
 
     <properties>
-        <typescript-generator.version>FILL_VERSION</typescript-generator.version>
+        <typescript-generator.version>3.2-SNAPSHOT</typescript-generator.version>
     </properties>
 
     <dependencies>
@@ -34,7 +34,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>cz.habarta.typescript-generator</groupId>
+                <groupId>com.github.kkuegler</groupId>
                 <artifactId>typescript-generator-maven-plugin</artifactId>
                 <version>${typescript-generator.version}</version>
                 <executions>
@@ -61,7 +61,7 @@
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>cz.habarta.typescript-generator</groupId>
+                        <groupId>com.github.kkuegler</groupId>
                         <artifactId>typescript-generator-spring</artifactId>
                         <version>${typescript-generator.version}</version>
                     </dependency>
