@@ -12,7 +12,7 @@ init:
     }
 install:
 - ps: |-
-    git remote set-url origin https://github.com/vojtechhabarta/typescript-generator.git
+    git remote set-url origin https://github.com/kkuegler/typescript-generator.git
     git config --global credential.helper store
     Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
 build_script:

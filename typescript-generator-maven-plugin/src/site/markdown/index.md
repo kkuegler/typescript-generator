@@ -4,4 +4,4 @@ The _typescript-generator-maven-plugin_ let you generate TypeScript declaration 
 
 The plugin has a [generate](generate-mojo.html) goal.
 
-You can find detailed description how it works on GitHub [typescript-generator](https://github.com/vojtechhabarta/typescript-generator) project.
+You can find detailed description how it works on GitHub [typescript-generator](https://github.com/kkuegler/typescript-generator) project.

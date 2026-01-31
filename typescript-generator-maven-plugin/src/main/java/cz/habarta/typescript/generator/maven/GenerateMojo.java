@@ -111,7 +111,7 @@ public class GenerateMojo extends AbstractMojo {
      * <li>Single <code>*</code> wildcard matches any character except for <code>.</code> and <code>$</code>.</li>
      * <li>Double <code>**</code> wildcard matches any character.</li>
      * </ul>
-     * For more information and examples see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
+     * For more information and examples see <a href="https://github.com/kkuegler/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
      */
     @Parameter
     private List<String> classPatterns;
@@ -172,7 +172,7 @@ public class GenerateMojo extends AbstractMojo {
 
     /**
      * Excluded classes specified using glob patterns.
-     * For more information and examples see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
+     * For more information and examples see <a href="https://github.com/kkuegler/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
      */
     @Parameter
     private List<String> excludeClassPatterns;
@@ -206,7 +206,7 @@ public class GenerateMojo extends AbstractMojo {
     /**
      * Specifies Jackson 2 global configuration.
      * Description of individual parameters is in
-     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/Jackson2Configuration.java">Jackson2Configuration</a>
+     * <a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/Jackson2Configuration.java">Jackson2Configuration</a>
      * class on GitHub (latest version).
      */
     @Parameter
@@ -215,7 +215,7 @@ public class GenerateMojo extends AbstractMojo {
     /**
      * Specifies Gson global configuration.
      * Description of individual parameters is in
-     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/GsonConfiguration.java">GsonConfiguration</a>
+     * <a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/GsonConfiguration.java">GsonConfiguration</a>
      * class on GitHub (latest version).
      */
     @Parameter
@@ -224,7 +224,7 @@ public class GenerateMojo extends AbstractMojo {
     /**
      * Specifies JSON-B global configuration.
      * Description of individual parameters is in
-     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/JsonbConfiguration.java">Jackson2Configuration</a>
+     * <a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/JsonbConfiguration.java">Jackson2Configuration</a>
      * class on GitHub (latest version).
      */
     @Parameter
@@ -236,9 +236,9 @@ public class GenerateMojo extends AbstractMojo {
      * Note: specified library must be present in project dependencies (typescript-generator itself doesn't depend on those libraries).
      * Supported libraries are:
      * <ul>
-     * <li><code>guava</code> (<a href="https://github.com/google/guava">source</a>) (<a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/guava.json">definition</a>)</li>
-     * <li><code>joda</code> (<a href="https://github.com/JodaOrg/joda-time">source</a>) (<a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/joda.json">definition</a>)</li>
-     * <li><code>vavr</code> (<a href="https://github.com/vavr-io/vavr">source</a>) (<a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/vavr.json">definition</a>)</li>
+     * <li><code>guava</code> (<a href="https://github.com/google/guava">source</a>) (<a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/guava.json">definition</a>)</li>
+     * <li><code>joda</code> (<a href="https://github.com/JodaOrg/joda-time">source</a>) (<a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/joda.json">definition</a>)</li>
+     * <li><code>vavr</code> (<a href="https://github.com/vavr-io/vavr">source</a>) (<a href="https://github.com/kkuegler/typescript-generator/blob/main/typescript-generator-core/src/main/resources/datalibrary/vavr.json">definition</a>)</li>
      * </ul>
      */
     @Parameter
@@ -331,7 +331,7 @@ public class GenerateMojo extends AbstractMojo {
      * Specifies custom TypeScript names for Java classes.
      * Multiple mappings can be specified, each using this format: <code>javaClassName:typescriptName</code>.
      * This takes precedence over other naming settings.
-     * For more information and example see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Type-Mapping">Type Mapping</a> Wiki page.
+     * For more information and example see <a href="https://github.com/kkuegler/typescript-generator/wiki/Type-Mapping">Type Mapping</a> Wiki page.
      */
     @Parameter
     private List<String> customTypeNaming;
@@ -641,7 +641,7 @@ public class GenerateMojo extends AbstractMojo {
      * List of Javadoc XML files to search for documentation comments.
      * These files should be created using <code>com.github.markusbernhardt.xmldoclet.XmlDoclet</code> from <code>com.github.markusbernhardt:xml-doclet</code> artifact.
      * Javadoc comments are added to output declarations as JSDoc comments.
-     * For more information see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Javadoc">Javadoc</a> Wiki page.
+     * For more information see <a href="https://github.com/kkuegler/typescript-generator/wiki/Javadoc">Javadoc</a> Wiki page.
      */
     @Parameter
     private List<File> javadocXmlFiles;
@@ -651,7 +651,7 @@ public class GenerateMojo extends AbstractMojo {
      * Known extensions:
      * <ul>
      * <li><code>cz.habarta.typescript.generator.ext.AxiosClientExtension}</code>
-     *   - generates client for JAX-RS service using Axios library, see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/JAX-RS-Application">JAX RS Application</a>Wiki page</li>
+     *   - generates client for JAX-RS service using Axios library, see <a href="https://github.com/kkuegler/typescript-generator/wiki/JAX-RS-Application">JAX RS Application</a>Wiki page</li>
      * <li><code>cz.habarta.typescript.generator.ext.BeanPropertyPathExtension}</code>
      *   - generates type-safe property path getters</li>
      * <li><code>cz.habarta.typescript.generator.ext.TypeGuardsForJackson2PolymorphismExtension}</code></li>

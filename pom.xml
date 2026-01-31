@@ -8,7 +8,7 @@
     <version>3.2-SNAPSHOT</version>
     <name>typescript-generator</name>
     <description>Generates TypeScript declaration file from specified java classes.</description>
-    <url>https://github.com/vojtechhabarta/typescript-generator</url>
+    <url>https://github.com/kkuegler/typescript-generator</url>
 
     <modules>
         <module>typescript-generator-core</module>
@@ -32,9 +32,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:vojtechhabarta/typescript-generator.git</connection>
-        <developerConnection>scm:git:git@github.com:vojtechhabarta/typescript-generator.git</developerConnection>
-        <url>https://github.com/vojtechhabarta/typescript-generator</url>
+        <connection>scm:git:git@github.com:kkuegler/typescript-generator.git</connection>
+        <developerConnection>scm:git:git@github.com:kkuegler/typescript-generator.git</developerConnection>
+        <url>https://github.com/kkuegler/typescript-generator</url>
     </scm>
 
     <distributionManagement>

@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 
 /**
  * See cz.habarta.typescript.generator.maven.GenerateMojo
- * @see <a href="https://github.com/vojtechhabarta/typescript-generator">README.md</a> on GitHub or in project root directory
- * @see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki">Wiki</a> on GitHub
+ * @see <a href="https://github.com/kkuegler/typescript-generator">README.md</a> on GitHub or in project root directory
+ * @see <a href="https://github.com/kkuegler/typescript-generator/wiki">Wiki</a> on GitHub
  */
 public class Settings {
     public String newline = String.format("%n");
@@ -762,7 +762,7 @@ public class Settings {
                     throw new RuntimeException(
                             "'generateStringApplicationInterface' or 'generateStringApplicationClient' parameter "
                                     + "was specified but '" + springClassName + "' was not found. "
-                                    + "Please add 'cz.habarta.typescript-generator:typescript-generator-spring' artifact "
+                                    + "Please add 'com.github.kkuegler:typescript-generator-spring' artifact "
                                     + "to typescript-generator plugin dependencies (not module dependencies).");
                 }
                 try {

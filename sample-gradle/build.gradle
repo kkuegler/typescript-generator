@@ -5,7 +5,7 @@ buildscript {
     // /*dev*/ }
     dependencies {
         classpath 'com.fasterxml.jackson.module:jackson-module-scala_2.13:2.14.2'
-        // /*dev*/ classpath 'cz.habarta.typescript-generator:typescript-generator-gradle-plugin:FILL_VERSION-SNAPSHOT'
+        // /*dev*/ classpath 'com.github.kkuegler:typescript-generator-gradle-plugin:FILL_VERSION-SNAPSHOT'
     }
 }
 
@@ -14,10 +14,10 @@ plugins {
     id 'groovy'
     id "org.jetbrains.kotlin.jvm" version "2.1.21"
     id 'scala'
-    /*prod*/ id 'cz.habarta.typescript-generator' version 'FILL_VERSION'
+    /*prod*/ id 'com.github.kkuegler.typescript-generator' version '3.2-SNAPSHOT'
 }
 
-// /*dev*/ apply plugin: 'cz.habarta.typescript-generator'
+// /*dev*/ apply plugin: 'com.github.kkuegler.typescript-generator'
 
 version = '3.0'
 sourceCompatibility = 17

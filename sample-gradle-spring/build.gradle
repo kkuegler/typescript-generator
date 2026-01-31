@@ -1,7 +1,7 @@
 
 plugins {
     id 'java'
-    id 'cz.habarta.typescript-generator' version 'FILL_VERSION'
+    id 'com.github.kkuegler.typescript-generator' version '3.2-SNAPSHOT'
 }
 
 version = '3.0'
