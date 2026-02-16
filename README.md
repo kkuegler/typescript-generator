@@ -7,7 +7,7 @@ This branch backs the GitHub pages for this repository.
 version=4.0.0
 git checkout main
 mvn versions:set -DnewVersion=$version
-mvn clean compile && mvn site
+mvn clean install -DskipTests && mvn site
 mvn versions:revert
 git checkout gh-pages
 cp -r target/site/* --target-dir=maven
