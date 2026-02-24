@@ -4,13 +4,13 @@ package cz.habarta.typescript.generator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.habarta.typescript.generator.util.Utils;
-import java.io.Serializable;
-import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MapEntryTest {
+import java.io.Serializable;
+import java.util.*;
 
+public class MapEntryTest {
     public static class ClassWithEntries {
         public String name = "ClassWithEntries";
         public Entry1<MyBean, String> entry1 = new Entry1<>(new MyBean("nnn"), "NNN");

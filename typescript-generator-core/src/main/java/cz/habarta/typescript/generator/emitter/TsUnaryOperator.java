@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.Settings;
 
 public enum TsUnaryOperator implements Emittable {
-
     Exclamation("!");
 
     private final String formatted;

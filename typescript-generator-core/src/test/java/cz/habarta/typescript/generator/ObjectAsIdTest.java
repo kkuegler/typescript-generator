@@ -9,20 +9,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import cz.habarta.typescript.generator.util.Utils;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @SuppressWarnings("unused")
 public class ObjectAsIdTest {
-
     @Test
     public void testJackson() throws JsonProcessingException {
         final TestObjectA testObjectA = new TestObjectA();
@@ -114,10 +110,9 @@ public class ObjectAsIdTest {
         return Stream.of(values).collect(Collectors.toMap(
                 v -> "k" + index.incrementAndGet(),
                 v -> v,
-                (v1, v2) -> {
-                    throw new RuntimeException();
-                },
-                LinkedHashMap::new));
+                (v1, v2) -> { throw new RuntimeException(); },
+                LinkedHashMap::new
+        ));
     }
 
     @Test

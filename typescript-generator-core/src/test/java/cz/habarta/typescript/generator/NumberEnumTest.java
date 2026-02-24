@@ -7,17 +7,17 @@ import cz.habarta.typescript.generator.compiler.EnumKind;
 import cz.habarta.typescript.generator.parser.EnumModel;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class NumberEnumTest {
-
     @Test
     public void testParser() {
         final Settings settings = TestUtils.settings();
@@ -36,10 +36,11 @@ public class NumberEnumTest {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
-                "declare const enum SomeCode {\n" +
-                        "    VALUE0 = 10,\n" +
-                        "    VALUE1 = 11,\n" +
-                        "}",
+                """
+                        declare const enum SomeCode {
+                            VALUE0 = 10,
+                            VALUE1 = 11,
+                        }""",
                 output.trim());
     }
 
@@ -50,10 +51,11 @@ public class NumberEnumTest {
         settings.nonConstEnums = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
-                "enum SomeCode {\n" +
-                        "    VALUE0 = 10,\n" +
-                        "    VALUE1 = 11,\n" +
-                        "}",
+                """
+                        enum SomeCode {
+                            VALUE0 = 10,
+                            VALUE1 = 11,
+                        }""",
                 output.trim());
     }
 
@@ -64,10 +66,11 @@ public class NumberEnumTest {
         settings.nonConstEnumAnnotations.add(SomeNonConstAnnotation.class);
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SomeCode.class));
         Assertions.assertEquals(
-                "enum SomeCode {\n" +
-                        "    VALUE0 = 10,\n" +
-                        "    VALUE1 = 11,\n" +
-                        "}",
+                """
+                        enum SomeCode {
+                            VALUE0 = 10,
+                            VALUE1 = 11,
+                        }""",
                 output.trim());
     }
 

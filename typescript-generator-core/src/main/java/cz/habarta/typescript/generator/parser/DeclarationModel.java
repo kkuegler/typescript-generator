@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.parser;
 import java.util.List;
 
 public abstract class DeclarationModel {
-
     protected final Class<?> origin;
     protected final List<String> comments;
 

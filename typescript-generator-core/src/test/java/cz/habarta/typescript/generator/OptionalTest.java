@@ -4,15 +4,15 @@ package cz.habarta.typescript.generator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 @SuppressWarnings("unused")
 public class OptionalTest {
-
     @Test
     public void test() {
         final String output = new TypeScriptGenerator(TestUtils.settings())
@@ -53,56 +53,61 @@ public class OptionalTest {
     @Test
     public void testDeclarationQuestionMark() {
         testDeclaration(OptionalPropertiesDeclaration.questionMark,
-                """
-                        interface Person {
-                            name: string;
-                            email?: string;
-                            age?: number;
-                        }""");
+                        """
+                                interface Person {
+                                    name: string;
+                                    email?: string;
+                                    age?: number;
+                                }"""
+        );
     }
 
     @Test
     public void testDeclarationNullableType() {
         testDeclaration(OptionalPropertiesDeclaration.nullableType,
-                """
-                        interface Person {
-                            name: string;
-                            email: string | null;
-                            age: number | null;
-                        }""");
+                        """
+                                interface Person {
+                                    name: string;
+                                    email: string | null;
+                                    age: number | null;
+                                }"""
+        );
     }
 
     @Test
     public void testDeclarationQuestionMarkAndNullableType() {
         testDeclaration(OptionalPropertiesDeclaration.questionMarkAndNullableType,
-                """
-                        interface Person {
-                            name: string;
-                            email?: string | null;
-                            age?: number | null;
-                        }""");
+                        """
+                                interface Person {
+                                    name: string;
+                                    email?: string | null;
+                                    age?: number | null;
+                                }"""
+        );
     }
 
     @Test
     public void testDeclarationNullableAndUndefinableType() {
         testDeclaration(OptionalPropertiesDeclaration.nullableAndUndefinableType,
-                """
-                        interface Person {
-                            name: string;
-                            email: string | null | undefined;
-                            age: number | null | undefined;
-                        }""");
+                        """
+                                interface Person {
+                                    name: string;
+                                    email: string | null | undefined;
+                                    age: number | null | undefined;
+                                }"""
+        );
     }
 
     @Test
     public void testDeclarationUndefinableType() {
         testDeclaration(OptionalPropertiesDeclaration.undefinableType,
-                """
-                        interface Person {
-                            name: string;
-                            email: string | undefined;
-                            age: number | undefined;
-                        }""");
+                        """
+                                interface Person {
+                                    name: string;
+                                    email: string | undefined;
+                                    age: number | undefined;
+                                }"""
+        );
     }
 
     private static void testDeclaration(OptionalPropertiesDeclaration declaration, String expected) {

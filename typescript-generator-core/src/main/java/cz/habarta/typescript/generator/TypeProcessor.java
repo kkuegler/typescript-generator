@@ -3,6 +3,7 @@ package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.compiler.SymbolTable;
+
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 public interface TypeProcessor {
-
     /**
      * @return <code>null</code> if this processor didn't process passed java type
      */
@@ -31,7 +31,6 @@ public interface TypeProcessor {
     }
 
     class Context {
-
         private final SymbolTable symbolTable;
         private final TypeProcessor typeProcessor;
         private final Object typeContext;
@@ -41,8 +40,7 @@ public interface TypeProcessor {
             this(symbolTable, typeProcessor, typeContext, false);
         }
 
-        public Context(SymbolTable symbolTable, TypeProcessor typeProcessor, Object typeContext,
-                boolean insideCollection) {
+        public Context(SymbolTable symbolTable, TypeProcessor typeProcessor, Object typeContext, boolean insideCollection) {
             this.symbolTable = Objects.requireNonNull(symbolTable, "symbolTable");
             this.typeProcessor = Objects.requireNonNull(typeProcessor, "typeProcessor");
             this.typeContext = typeContext;
@@ -84,7 +82,6 @@ public interface TypeProcessor {
     }
 
     class Result {
-
         private final TsType tsType;
         private final List<Class<?>> discoveredClasses;
 
@@ -109,7 +106,6 @@ public interface TypeProcessor {
     }
 
     class Chain implements TypeProcessor {
-
         private final List<TypeProcessor> processors;
 
         public Chain(List<TypeProcessor> processors) {
@@ -128,9 +124,8 @@ public interface TypeProcessor {
                     return result;
                 }
             }
+
             return null;
         }
-
     }
-
 }

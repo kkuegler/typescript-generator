@@ -3,11 +3,6 @@ package cz.habarta.typescript.generator.parser;
 
 import cz.habarta.typescript.generator.type.*;
 import cz.habarta.typescript.generator.util.Utils;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import kotlin.Metadata;
 import kotlin.NotImplementedError;
 import kotlin.jvm.JvmClassMappingKt;
@@ -15,8 +10,13 @@ import kotlin.reflect.*;
 import kotlin.reflect.full.KClasses;
 import kotlin.reflect.jvm.ReflectJvmMapping;
 
-public class TypeParser {
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+public class TypeParser {
     private final JavaTypeParser javaTypeParser;
     private final KotlinTypeParser kotlinTypeParser;
 
@@ -27,11 +27,8 @@ public class TypeParser {
 
     private interface LanguageTypeParser {
         Type getFieldType(Field field);
-
         Type getMethodReturnType(Method method);
-
         List<Type> getMethodParameterTypes(Method method);
-
         List<Type> getConstructorParameterTypes(Constructor<?> constructor);
     }
 

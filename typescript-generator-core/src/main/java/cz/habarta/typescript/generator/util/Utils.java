@@ -10,6 +10,7 @@ import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.type.JUnionType;
+
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Utils {
-
     private Utils() {
     }
 
@@ -97,11 +97,8 @@ public final class Utils {
     public static <T> Collector<T, ?, Collection<T>> toReversedCollection() {
         return Collector.<T, ArrayDeque<T>, Collection<T>>of(
                 ArrayDeque::new,
-                ArrayDeque::addFirst,
-                (deque1, deque2) -> {
-                    deque2.addAll(deque1);
-                    return deque2;
-                },
+                (deque, item) -> deque.addFirst(item),
+                (deque1, deque2) -> { deque2.addAll(deque1); return deque2; },
                 deque -> deque);
     }
 
@@ -200,8 +197,7 @@ public final class Utils {
                 new Class<?>[] { clazz },
                 (proxy, method, args) -> {
                     try {
-                        final Method fallbackMethod = object.getClass().getMethod(method.getName(),
-                                method.getParameterTypes());
+                        final Method fallbackMethod = object.getClass().getMethod(method.getName(), method.getParameterTypes());
                         return fallbackMethod.invoke(object, args);
                     } catch (ReflectiveOperationException e) {
                         return null;
@@ -267,8 +263,7 @@ public final class Utils {
     }
 
     private static final Map<String, Class<?>> primitiveTypes = Stream
-            .of(byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class,
-                    void.class)
+            .of(byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class, void.class)
             .collect(Utils.toMap(Class::getName, cls -> cls));
 
     public static Class<?> getPrimitiveType(String typeName) {

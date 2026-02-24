@@ -2,16 +2,16 @@ package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.habarta.typescript.generator.parser.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class OptionalAnnotationTest {
-
     @Test
     public void testJackson2OptionalAnnotation() {
         Settings settings = new Settings();

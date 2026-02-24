@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
-import java.util.List;
-import java.util.Map;
 import org.joda.time.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class JodaTest {
+import java.util.List;
+import java.util.Map;
 
+public class JodaTest {
     @Test
     public void testDate_forJodaDateTime() {
         final Settings settings = TestUtils.settings();

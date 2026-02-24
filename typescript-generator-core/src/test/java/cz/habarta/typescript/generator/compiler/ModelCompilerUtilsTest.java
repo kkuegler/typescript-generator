@@ -1,12 +1,12 @@
 
 package cz.habarta.typescript.generator.compiler;
 
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ModelCompilerUtilsTest {
+import java.util.stream.Collectors;
 
+public class ModelCompilerUtilsTest {
     @Test
     public void testSplitIdentifierIntoWords() {
         Assertions.assertEquals("Red", splitIdentifierIntoWords("Red"));

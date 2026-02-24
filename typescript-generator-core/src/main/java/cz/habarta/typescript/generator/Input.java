@@ -5,6 +5,7 @@ import cz.habarta.typescript.generator.parser.SourceType;
 import cz.habarta.typescript.generator.util.Utils;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+
 import java.lang.reflect.Type;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -13,7 +14,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Input {
-
     private final List<SourceType<Type>> sourceTypes;
 
     private Input(List<SourceType<Type>> sourceTypes) {

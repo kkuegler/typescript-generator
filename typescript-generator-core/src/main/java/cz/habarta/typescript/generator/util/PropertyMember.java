@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 public class PropertyMember {
-
     private final AnnotatedElement annotatedElement;
     private final Type type;
     private final AnnotatedType annotatedType;

@@ -3,13 +3,13 @@ package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.habarta.typescript.generator.parser.*;
-import java.io.File;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class JavadocTest {
+import java.io.File;
+import java.util.List;
 
+public class JavadocTest {
     @Test
     public void testJavadoc() {
         final Settings settings = TestUtils.settings();
@@ -58,35 +58,35 @@ public class JavadocTest {
             Assertions.assertTrue(generated.contains("0000ff"));
         }
         {
-            final String generated = new TypeScriptGenerator(settings)
-                    .generateTypeScript(Input.from(DeprecatedClassWithoutJavadoc.class));
-            final String expected = ""
-                    + "/**\n"
-                    + " * @deprecated\n"
-                    + " */\n"
-                    + "interface DeprecatedClassWithoutJavadoc {\n"
-                    + "    /**\n"
-                    + "     * @deprecated\n"
-                    + "     */\n"
-                    + "    deprecatedField: string;\n"
-                    + "}";
+            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DeprecatedClassWithoutJavadoc.class));
+            final String expected = """
+                    \
+                    /**
+                     * @deprecated
+                     */
+                    interface DeprecatedClassWithoutJavadoc {
+                        /**
+                         * @deprecated
+                         */
+                        deprecatedField: string;
+                    }""";
             Assertions.assertEquals(expected.trim(), generated.trim());
         }
         {
-            final String generated = new TypeScriptGenerator(settings)
-                    .generateTypeScript(Input.from(DeprecatedEnumWithoutJavadoc.class));
-            final String expected = ""
-                    + "/**\n"
-                    + " * @deprecated\n"
-                    + " * \n"
-                    + " * Values:\n"
-                    + " * - `North`\n"
-                    + " * - `East` - @deprecated\n"
-                    + " * - `South`\n"
-                    + " * - `West`\n"
-                    + " */\n"
-                    + "type DeprecatedEnumWithoutJavadoc = \"North\" | \"East\" | \"South\" | \"West\";\n"
-                    + "";
+            final String generated = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DeprecatedEnumWithoutJavadoc.class));
+            final String expected = """
+                    \
+                    /**
+                     * @deprecated
+                     *\s
+                     * Values:
+                     * - `North`
+                     * - `East` - @deprecated
+                     * - `South`
+                     * - `West`
+                     */
+                    type DeprecatedEnumWithoutJavadoc = "North" | "East" | "South" | "West";
+                    """;
             Assertions.assertEquals(expected.trim(), generated.trim());
         }
         {
@@ -171,8 +171,7 @@ public class JavadocTest {
     public enum DeprecatedEnumWithoutJavadoc {
 
         North,
-        @Deprecated
-        East,
+        @Deprecated East,
         South,
         West
 
@@ -208,10 +207,10 @@ public class JavadocTest {
 
     /**
      * First sentence.
-     * 
+     *
      * <p> Long
      * paragraph </p>
-     * 
+     *
      * <p>Second
      * paragraph</p>
      */

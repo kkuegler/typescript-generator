@@ -1,11 +1,11 @@
 package cz.habarta.typescript.generator;
 
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class Jackson2ConfigurationResolvedTest {
+import java.util.List;
 
+public class Jackson2ConfigurationResolvedTest {
     @Test
     public void test() {
         final Jackson2Configuration configuration = new Jackson2Configuration();

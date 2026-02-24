@@ -2,15 +2,16 @@
 package cz.habarta.typescript.generator;
 
 import io.swagger.annotations.*;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SwaggerTest {
 
@@ -131,7 +132,7 @@ public class SwaggerTest {
     private static class DocumentedApplication extends Application {
         @Override
         public Set<Class<?>> getClasses() {
-            return new LinkedHashSet<>(List.<Class<?>>of(DocumentedResource.class));
+            return new LinkedHashSet<>(List.of(DocumentedResource.class));
         }
     }
 

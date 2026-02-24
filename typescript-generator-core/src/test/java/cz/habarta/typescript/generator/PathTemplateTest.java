@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class PathTemplateTest {
-
     @Test
     public void test() {
         Assertions.assertEquals(0, PathTemplate.parse("").getParts().size());

@@ -1,4 +1,3 @@
-
 package cz.habarta.typescript.generator.compiler;
 
 import cz.habarta.typescript.generator.*;
@@ -8,6 +7,7 @@ import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -1356,7 +1356,7 @@ public class ModelCompiler {
     }
 
     private static boolean isValidIdentifierPart(char c) {
-        return Character.isUnicodeIdentifierPart(c) || c == '$' || c == '_' || c == '\u200C' || c == '\u200D';
+        return Character.isUnicodeIdentifierPart(c) ||  c == '.' ||  c == '<' ||  c == '>' || c == '$' || c == '_' || c == '\u200C' || c == '\u200D';
     }
 
 }

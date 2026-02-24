@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class InterfaceTest {
-
     @Test
     public void test() {
         final Settings settings = TestUtils.settings();

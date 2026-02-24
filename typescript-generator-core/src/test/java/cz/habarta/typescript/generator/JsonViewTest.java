@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class JsonViewTest {
-
     public static void main(String[] args) throws Exception {
         final SomeClass parent1 = new SomeClass();
         parent1.id = 22;

@@ -4,10 +4,10 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.TsProperty;
 import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.util.List;
 
 public class TsPropertyModel extends TsProperty implements Comparable<TsProperty> {
-
     public final List<TsDecorator> decorators;
     public final TsModifierFlags modifiers;
     public final boolean ownProperty; // property exists directly on the bean, should not be inherited

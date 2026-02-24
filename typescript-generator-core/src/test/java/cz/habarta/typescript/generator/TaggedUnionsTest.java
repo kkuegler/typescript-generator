@@ -6,11 +6,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
 public class TaggedUnionsTest {
@@ -186,33 +187,36 @@ public class TaggedUnionsTest {
     public void testTaggedUnions() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry.class));
-        final String expected = ("\n" +
-                "interface Geometry {\n" +
-                "    shapes: ShapeUnion[];\n" +
-                "}\n" +
-                "\n" +
-                "interface Shape {\n" +
-                "    kind: 'square' | 'rectangle' | 'circle';\n" +
-                "}\n" +
-                "\n" +
-                "interface Square extends Shape {\n" +
-                "    kind: 'square';\n" +
-                "    size: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Rectangle extends Shape {\n" +
-                "    kind: 'rectangle';\n" +
-                "    width: number;\n" +
-                "    height: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Circle extends Shape {\n" +
-                "    kind: 'circle';\n" +
-                "    radius: number;\n" +
-                "}\n" +
-                "\n" +
-                "type ShapeUnion = Square | Rectangle | Circle;\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface Geometry {
+                            shapes: ShapeUnion[];
+                        }
+                        
+                        interface Shape {
+                            kind: 'square' | 'rectangle' | 'circle';
+                        }
+                        
+                        interface Square extends Shape {
+                            kind: 'square';
+                            size: number;
+                        }
+                        
+                        interface Rectangle extends Shape {
+                            kind: 'rectangle';
+                            width: number;
+                            height: number;
+                        }
+                        
+                        interface Circle extends Shape {
+                            kind: 'circle';
+                            radius: number;
+                        }
+                        
+                        type ShapeUnion = Square | Rectangle | Circle;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -220,33 +224,36 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithInterfaces() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(IShape2.class));
-        final String expected = ("\n" +
-                "interface IShape2 {\n" +
-                "    kind: 'circle' | 'square' | 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "interface CSquare2 extends IQuadrilateral2 {\n" +
-                "    kind: 'square';\n" +
-                "    size: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface CRectangle2 extends IQuadrilateral2 {\n" +
-                "    kind: 'rectangle';\n" +
-                "    width: number;\n" +
-                "    height: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface CCircle2 extends IShape2 {\n" +
-                "    kind: 'circle';\n" +
-                "    radius: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface IQuadrilateral2 extends IShape2 {\n" +
-                "    kind: 'square' | 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "type IShape2Union = CSquare2 | CRectangle2 | CCircle2;\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface IShape2 {
+                            kind: 'circle' | 'square' | 'rectangle';
+                        }
+                        
+                        interface CSquare2 extends IQuadrilateral2 {
+                            kind: 'square';
+                            size: number;
+                        }
+                        
+                        interface CRectangle2 extends IQuadrilateral2 {
+                            kind: 'rectangle';
+                            width: number;
+                            height: number;
+                        }
+                        
+                        interface CCircle2 extends IShape2 {
+                            kind: 'circle';
+                            radius: number;
+                        }
+                        
+                        interface IQuadrilateral2 extends IShape2 {
+                            kind: 'square' | 'rectangle';
+                        }
+                        
+                        type IShape2Union = CSquare2 | CRectangle2 | CCircle2;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -254,33 +261,37 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithOverlappingInterfaces() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(IShape3.class));
-        final String expected = ("\n" +
-                "interface IShape3 {\n" +
-                "    kind: 'circle' | 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "interface IRectangle3 extends INamedQuadrilateral3 {\n" +
-                "    kind: 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "interface ICircle3 extends INamedShape3 {\n" +
-                "    kind: 'circle';\n" +
-                "}\n" +
-                "\n" +
-                "interface INamedQuadrilateral3 extends INamedShape3, IQuadrilateral3 {\n" +
-                "    kind: 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "interface INamedShape3 extends IShape3 {\n" +
-                "    kind: 'circle' | 'rectangle';\n" +
-                "    name: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface IQuadrilateral3 extends IShape3 {\n" +
-                "    kind: 'rectangle';\n" +
-                "}\n" +
-                "\n" +
-                "type IShape3Union = IRectangle3 | ICircle3;\n").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface IShape3 {
+                            kind: 'circle' | 'rectangle';
+                        }
+                        
+                        interface IRectangle3 extends INamedQuadrilateral3 {
+                            kind: 'rectangle';
+                        }
+                        
+                        interface ICircle3 extends INamedShape3 {
+                            kind: 'circle';
+                        }
+                        
+                        interface INamedQuadrilateral3 extends INamedShape3, IQuadrilateral3 {
+                            kind: 'rectangle';
+                        }
+                        
+                        interface INamedShape3 extends IShape3 {
+                            kind: 'circle' | 'rectangle';
+                            name: string;
+                        }
+                        
+                        interface IQuadrilateral3 extends IShape3 {
+                            kind: 'rectangle';
+                        }
+                        
+                        type IShape3Union = IRectangle3 | ICircle3;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -289,31 +300,34 @@ public class TaggedUnionsTest {
         final Settings settings = TestUtils.settings();
         settings.disableTaggedUnions = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry.class));
-        final String expected = ("\n" +
-                "interface Geometry {\n" +
-                "    shapes: Shape[];\n" +
-                "}\n" +
-                "\n" +
-                "interface Shape {\n" +
-                "    kind: 'square' | 'rectangle' | 'circle';\n" +
-                "}\n" +
-                "\n" +
-                "interface Square extends Shape {\n" +
-                "    kind: 'square';\n" +
-                "    size: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Rectangle extends Shape {\n" +
-                "    kind: 'rectangle';\n" +
-                "    width: number;\n" +
-                "    height: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Circle extends Shape {\n" +
-                "    kind: 'circle';\n" +
-                "    radius: number;\n" +
-                "}\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface Geometry {
+                            shapes: Shape[];
+                        }
+                        
+                        interface Shape {
+                            kind: 'square' | 'rectangle' | 'circle';
+                        }
+                        
+                        interface Square extends Shape {
+                            kind: 'square';
+                            size: number;
+                        }
+                        
+                        interface Rectangle extends Shape {
+                            kind: 'rectangle';
+                            width: number;
+                            height: number;
+                        }
+                        
+                        interface Circle extends Shape {
+                            kind: 'circle';
+                            radius: number;
+                        }
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -321,29 +335,32 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithDiamond() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DiamondA.class));
-        final String expected = ("\n" +
-                "interface DiamondA {\n" +
-                "    kind: 'b1' | 'c' | 'b2';\n" +
-                "    a: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface DiamondB1 extends DiamondA {\n" +
-                "    kind: 'b1' | 'c';\n" +
-                "    b1: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface DiamondB2 extends DiamondA {\n" +
-                "    kind: 'b2' | 'c';\n" +
-                "    b2: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface DiamondC extends DiamondB1, DiamondB2 {\n" +
-                "    kind: 'c';\n" +
-                "    c: string;\n" +
-                "}\n" +
-                "\n" +
-                "type DiamondAUnion = DiamondB1 | DiamondB2 | DiamondC;\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface DiamondA {
+                            kind: 'b1' | 'c' | 'b2';
+                            a: string;
+                        }
+                        
+                        interface DiamondB1 extends DiamondA {
+                            kind: 'b1' | 'c';
+                            b1: string;
+                        }
+                        
+                        interface DiamondB2 extends DiamondA {
+                            kind: 'b2' | 'c';
+                            b2: string;
+                        }
+                        
+                        interface DiamondC extends DiamondB1, DiamondB2 {
+                            kind: 'c';
+                            c: string;
+                        }
+                        
+                        type DiamondAUnion = DiamondB1 | DiamondB2 | DiamondC;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -351,25 +368,27 @@ public class TaggedUnionsTest {
     public void testIdClass() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Car.class));
-        final String expected = ("\n" +
-                "interface Car {\n" +
-                "    '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar' | 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';\n"
-                +
-                "    name: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface DieselCar extends Car {\n" +
-                "    '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar';\n" +
-                "    fuelTankCapacityInLiters: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface ElectricCar extends Car {\n" +
-                "    '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';\n" +
-                "    batteryCapacityInKWh: number;\n" +
-                "}\n" +
-                "\n" +
-                "type CarUnion = DieselCar | ElectricCar;\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface Car {
+                            '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar' | 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';
+                            name: string;
+                        }
+                        
+                        interface DieselCar extends Car {
+                            '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$DieselCar';
+                            fuelTankCapacityInLiters: number;
+                        }
+                        
+                        interface ElectricCar extends Car {
+                            '@class': 'cz.habarta.typescript.generator.TaggedUnionsTest$ElectricCar';
+                            batteryCapacityInKWh: number;
+                        }
+                        
+                        type CarUnion = DieselCar | ElectricCar;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -489,33 +508,36 @@ public class TaggedUnionsTest {
     public void testTaggedUnionsWithExistingProperty() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry2.class));
-        final String expected = ("\n" +
-                "interface Geometry2 {\n" +
-                "    shapes: Shape2Union[];\n" +
-                "}\n" +
-                "\n" +
-                "interface Shape2 {\n" +
-                "    kind: 'square' | 'rectangle' | 'circle';\n" +
-                "}\n" +
-                "\n" +
-                "interface Square2 extends Shape2 {\n" +
-                "    kind: 'square';\n" +
-                "    size: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Rectangle2 extends Shape2 {\n" +
-                "    kind: 'rectangle';\n" +
-                "    width: number;\n" +
-                "    height: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Circle2 extends Shape2 {\n" +
-                "    kind: 'circle';\n" +
-                "    radius: number;\n" +
-                "}\n" +
-                "\n" +
-                "type Shape2Union = Square2 | Rectangle2 | Circle2;\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface Geometry2 {
+                            shapes: Shape2Union[];
+                        }
+                        
+                        interface Shape2 {
+                            kind: 'square' | 'rectangle' | 'circle';
+                        }
+                        
+                        interface Square2 extends Shape2 {
+                            kind: 'square';
+                            size: number;
+                        }
+                        
+                        interface Rectangle2 extends Shape2 {
+                            kind: 'rectangle';
+                            width: number;
+                            height: number;
+                        }
+                        
+                        interface Circle2 extends Shape2 {
+                            kind: 'circle';
+                            radius: number;
+                        }
+                        
+                        type Shape2Union = Square2 | Rectangle2 | Circle2;
+                        """
+                ).replace('\'', '"');
         Assertions.assertEquals(expected, output);
     }
 
@@ -524,28 +546,31 @@ public class TaggedUnionsTest {
         final Settings settings = TestUtils.settings();
         settings.disableTaggedUnionAnnotations = List.of(TestMarker.class);
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Geometry2.class));
-        final String expected = ("\n" +
-                "interface Geometry2 {\n" +
-                "    shapes: Shape2[];\n" +
-                "}\n" +
-                "\n" +
-                "interface Shape2 {\n" +
-                "    kind: string;\n" +
-                "}\n" +
-                "\n" +
-                "interface Square2 extends Shape2 {\n" +
-                "    size: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Rectangle2 extends Shape2 {\n" +
-                "    width: number;\n" +
-                "    height: number;\n" +
-                "}\n" +
-                "\n" +
-                "interface Circle2 extends Shape2 {\n" +
-                "    radius: number;\n" +
-                "}\n" +
-                "").replace('\'', '"');
+        final String expected = (
+                """
+                        
+                        interface Geometry2 {
+                            shapes: Shape2[];
+                        }
+                        
+                        interface Shape2 {
+                            kind: string;
+                        }
+                        
+                        interface Square2 extends Shape2 {
+                            size: number;
+                        }
+                        
+                        interface Rectangle2 extends Shape2 {
+                            width: number;
+                            height: number;
+                        }
+                        
+                        interface Circle2 extends Shape2 {
+                            radius: number;
+                        }
+                        """
+                );
         Assertions.assertEquals(expected, output);
     }
 
@@ -604,34 +629,25 @@ public class TaggedUnionsTest {
             @JsonSubTypes.Type(value = FormRecord.class),
             @JsonSubTypes.Type(value = ListRecord.class),
     })
-    static abstract class Record {
-    }
+
+    static abstract class Record {}
 
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = OrderFormRecord.class, name = "order.form"),
-            @JsonSubTypes.Type(value = ProductFormRecord.class, name = "product.form"),
+        @JsonSubTypes.Type(value = OrderFormRecord.class, name = "order.form"),
+        @JsonSubTypes.Type(value = ProductFormRecord.class, name = "product.form"),
     })
-    static abstract class FormRecord extends Record {
-    }
+    static abstract class FormRecord extends Record {}
 
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = OrderListRecord.class, name = "order.list"),
-            @JsonSubTypes.Type(value = ProductListRecord.class, name = "product.list"),
+        @JsonSubTypes.Type(value = OrderListRecord.class, name = "order.list"),
+        @JsonSubTypes.Type(value = ProductListRecord.class, name = "product.list"),
     })
-    static abstract class ListRecord extends Record {
-    }
+    static abstract class ListRecord extends Record {}
 
-    static class OrderFormRecord extends FormRecord {
-    }
-
-    static class OrderListRecord extends ListRecord {
-    }
-
-    static class ProductFormRecord extends FormRecord {
-    }
-
-    static class ProductListRecord extends ListRecord {
-    }
+    static class OrderFormRecord extends FormRecord {}
+    static class OrderListRecord extends ListRecord {}
+    static class ProductFormRecord extends FormRecord {}
+    static class ProductListRecord extends ListRecord {}
 
     @Test
     public void testIntermediateUnions() {

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class RestApplicationModel {
-
     private final RestApplicationType type;
     private String applicationPath;
     private String applicationName;

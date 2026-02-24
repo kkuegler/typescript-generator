@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class Jackson2PolymorphismTest {
-
     @Test
     public void testPropertyNameQuoting() {
         final String output = new TypeScriptGenerator(TestUtils.settings())

@@ -5,14 +5,15 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
 import cz.habarta.typescript.generator.util.Pair;
-import java.util.*;
-import java.util.regex.Pattern;
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Name table.
@@ -114,8 +115,8 @@ public class SymbolTable {
     private void setSymbolQualifiedName(Symbol symbol, Class<?> cls, String suffix) {
         final String module;
         final String namespacedName;
-        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies()
-                .getFullName(cls);
+        // Pair<module, namespacedName>
+        final Pair<String, String> fullNameFromDependency = settings.getModuleDependencies().getFullName(cls);
         if (fullNameFromDependency != null) {
             module = fullNameFromDependency.getValue1();
             namespacedName = fullNameFromDependency.getValue2();
@@ -182,19 +183,20 @@ public class SymbolTable {
 
     // https://github.com/Microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md#221-reserved-words
     private static final Set<String> Keywords = new LinkedHashSet<>(Arrays.asList(
-            "break", "case", "catch", "class",
-            "const", "continue", "debugger", "default",
-            "delete", "do", "else", "enum",
-            "export", "extends", "false", "finally",
-            "for", "function", "if", "import",
-            "in", "instanceof", "new", "null",
-            "return", "super", "switch", "this",
-            "throw", "true", "try", "typeof",
-            "var", "void", "while", "with",
+        "break",             "case",              "catch",             "class",
+        "const",             "continue",          "debugger",          "default",
+        "delete",            "do",                "else",              "enum",
+        "export",            "extends",           "false",             "finally",
+        "for",               "function",          "if",                "import",
+        "in",                "instanceof",        "new",               "null",
+        "return",            "super",             "switch",            "this",
+        "throw",             "true",              "try",               "typeof",
+        "var",               "void",              "while",             "with",
 
-            "implements", "interface", "let", "package",
-            "private", "protected", "public", "static",
-            "yield"));
+        "implements",        "interface",         "let",               "package",
+        "private",           "protected",         "public",            "static",
+        "yield"
+    ));
 
     public static boolean isReservedWord(String word) {
         return Keywords.contains(word);
@@ -222,8 +224,8 @@ public class SymbolTable {
     }
 
     public Symbol getSymbolIfImported(Class<?> cls) {
-        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies()
-                .getFullName(cls);
+        // Pair<module, namespaceName>
+        final Pair<String, String> fullNameFromDependency = settings.getModuleDependencies().getFullName(cls);
         if (fullNameFromDependency != null) {
             final Symbol symbol = new Symbol(null);
             symbol.setFullName(fullNameFromDependency.getValue1(), fullNameFromDependency.getValue2());
@@ -234,7 +236,6 @@ public class SymbolTable {
     }
 
     public static class NameConflictException extends RuntimeException {
-
         private static final long serialVersionUID = 1L;
 
         public NameConflictException() {

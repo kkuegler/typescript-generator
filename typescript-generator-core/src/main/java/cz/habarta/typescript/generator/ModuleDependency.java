@@ -3,11 +3,11 @@ package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.io.File;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ModuleDependency {
-
     public boolean global;
     public String importFrom;
     public String importAs;

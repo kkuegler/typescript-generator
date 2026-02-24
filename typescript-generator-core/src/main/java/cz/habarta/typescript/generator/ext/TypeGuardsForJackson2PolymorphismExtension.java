@@ -11,7 +11,6 @@ import cz.habarta.typescript.generator.emitter.TsBeanModel;
 import cz.habarta.typescript.generator.emitter.TsModel;
 
 public class TypeGuardsForJackson2PolymorphismExtension extends EmitterExtension {
-
     @Override
     public EmitterExtensionFeatures getFeatures() {
         final EmitterExtensionFeatures features = new EmitterExtensionFeatures();

@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GenericsResolver {
-
     public static Type resolveField(Class<?> cls, Field field) {
         final Type fieldType = field.getGenericType();
         return resolveType(cls, fieldType, field.getDeclaringClass());
@@ -35,6 +34,19 @@ public class GenericsResolver {
                     .collect(Collectors.toList());
         }
         return result;
+    }
+
+    /**
+     * Receives a given generic class/interface (that have generic type parameters) and returns a List with the type parameter names.
+     * For instance, if we have a generic type Map&lt;K,V&gt;, this method will return the string K, V;.
+     * @param genericClass a class/interface that have generic type parameters
+     * @return a List of the type parameter names
+     */
+    public static List<String> typeParameterNameList(final Class<?> genericClass){
+        return
+            Arrays.stream(genericClass.getTypeParameters())
+                  .map(TypeVariable::getName)
+                  .collect(Collectors.toList());
     }
 
     public static List<Type> resolveBaseGenericVariables(Class<?> baseClass, Type contextType) {

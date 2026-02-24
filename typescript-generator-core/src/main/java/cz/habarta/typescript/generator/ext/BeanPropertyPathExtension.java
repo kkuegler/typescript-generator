@@ -3,6 +3,7 @@ package cz.habarta.typescript.generator.ext;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.emitter.*;
+
 import java.util.*;
 
 /**
@@ -18,7 +19,6 @@ import java.util.*;
  * (in this case "field1.field2")
  */
 public class BeanPropertyPathExtension extends EmitterExtension {
-
     @Override
     public EmitterExtensionFeatures getFeatures() {
         final EmitterExtensionFeatures features = new EmitterExtensionFeatures();
@@ -75,7 +75,7 @@ public class BeanPropertyPathExtension extends EmitterExtension {
         final TsBeanModel parentBean = getBeanModelByType(model, bean.getParent());
         final Set<TsBeanModel> emittedBeans = parentBean != null
                 ? writeBeanAndParentsFieldSpecs(writer, settings, model, emittedSoFar, parentBean)
-                : new HashSet<TsBeanModel>();
+                : new HashSet<>();
         final String parentClassName = parentBean != null
                 ? getBeanModelClassName(parentBean) + "Fields"
                 : "Fields";

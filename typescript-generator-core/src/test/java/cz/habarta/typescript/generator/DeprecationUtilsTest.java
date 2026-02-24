@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DeprecationUtilsTest {
-
     @Deprecated
     private String a;
 
@@ -29,8 +28,7 @@ public class DeprecationUtilsTest {
 
     private static String getDeprecationText(String fieldName) {
         try {
-            final Deprecated deprecated = DeprecationUtilsTest.class.getDeclaredField(fieldName)
-                    .getAnnotation(Deprecated.class);
+            final Deprecated deprecated = DeprecationUtilsTest.class.getDeclaredField(fieldName).getAnnotation(Deprecated.class);
             return DeprecationUtils.convertToComment(deprecated);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.habarta.typescript.generator.emitter.InfoJson;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class LoadedModuleDependencies {
-
     private final Map<String/*javaClass*/, Pair<ModuleDependency, String/*namespacedName*/>> classMappings = new LinkedHashMap<>();
 
     public LoadedModuleDependencies(Settings settings, List<ModuleDependency> dependencies) {
@@ -46,10 +46,8 @@ public class LoadedModuleDependencies {
                 }
                 Objects.requireNonNull(dependency.infoJson, () -> reportNullParameter.apply("infoJson"));
                 if (settings.generateNpmPackageJson) {
-                    Objects.requireNonNull(dependency.npmPackageName,
-                            () -> reportNullParameter.apply("npmPackageName"));
-                    Objects.requireNonNull(dependency.npmVersionRange,
-                            () -> reportNullParameter.apply("npmVersionRange"));
+                    Objects.requireNonNull(dependency.npmPackageName, () -> reportNullParameter.apply("npmPackageName"));
+                    Objects.requireNonNull(dependency.npmVersionRange, () -> reportNullParameter.apply("npmVersionRange"));
                 } else {
                     if (dependency.npmPackageName != null) {
                         throw new RuntimeException(String.format(

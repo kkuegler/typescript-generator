@@ -10,6 +10,7 @@ import cz.habarta.typescript.generator.compiler.SymbolTable;
 import cz.habarta.typescript.generator.compiler.TsModelTransformer;
 import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonDeserializationExtension extends Extension {
-
     public static final String CFG_USE_JSON_DESERIALIZATION_IN_JAXRS_APPLICATION_CLIENT = "useJsonDeserializationInJaxrsApplicationClient";
 
     private boolean useJsonDeserializationInJaxrsApplicationClient = false;

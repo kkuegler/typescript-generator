@@ -33,6 +33,7 @@ import cz.habarta.typescript.generator.type.JUnionType;
 import cz.habarta.typescript.generator.util.Pair;
 import cz.habarta.typescript.generator.util.PropertyMember;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -44,7 +45,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Jackson2Parser extends ModelParser {
-
     public static class Jackson2ParserFactory extends ModelParser.Factory {
 
         private final boolean useJaxbAnnotations;
@@ -729,7 +729,8 @@ public class Jackson2Parser extends ModelParser {
         if (jsonFormat != null && jsonFormat.shape() == JsonFormat.Shape.OBJECT) {
             return parseBean(sourceClass, classComments);
         }
-        final boolean isNumberBased = jsonFormat != null && (jsonFormat.shape() == JsonFormat.Shape.NUMBER ||
+        final boolean isNumberBased = jsonFormat != null && (
+                jsonFormat.shape() == JsonFormat.Shape.NUMBER ||
                 jsonFormat.shape() == JsonFormat.Shape.NUMBER_FLOAT ||
                 jsonFormat.shape() == JsonFormat.Shape.NUMBER_INT);
 
@@ -749,8 +750,7 @@ public class Jackson2Parser extends ModelParser {
                 try {
                     constant.setAccessible(true);
                     final String enumJson = objectMapper.writeValueAsString(constant.get(null));
-                    value = objectMapper.readValue(enumJson, new TypeReference<Object>() {
-                    });
+                    value = objectMapper.readValue(enumJson, new TypeReference<>() {});
                 } catch (Throwable e) {
                     TypeScriptGenerator.getLogger().error(String.format("Cannot get enum value for constant '%s.%s'",
                             enumClass.getName(), constant.getName()));

@@ -1,17 +1,17 @@
 package cz.habarta.typescript.generator.ext;
 
 import cz.habarta.typescript.generator.*;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PropertyPolymorphismExtensionTest {
-
     @Retention(RetentionPolicy.RUNTIME)
     private @interface Marker {
     }

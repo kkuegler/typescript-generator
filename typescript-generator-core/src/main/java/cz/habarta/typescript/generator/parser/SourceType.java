@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.parser;
 import java.lang.reflect.Type;
 
 public class SourceType<T extends Type> {
-
     public final T type;
     public final Class<?> usedInClass;
     public final String usedInMember;

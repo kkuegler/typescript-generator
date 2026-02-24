@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
 public class FullyQualifiedNamesTest {
-
     @Test
     public void test() {
         final Settings settings = TestUtils.settings();
@@ -66,24 +65,25 @@ public class FullyQualifiedNamesTest {
         settings.mapClasses = ClassMapping.asClasses;
         settings.mapPackagesToNamespaces = true;
         settings.sortTypeDeclarations = true;
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(Outer.Inner.class, Outer.class));
-        final String expected = ""
-                + "namespace cz.habarta.typescript.generator.FullyQualifiedNamesTest {\n"
-                + "\n"
-                + "    export class Outer {\n"
-                + "        outer: string;\n"
-                + "    }\n"
-                + "\n"
-                + "}\n"
-                + "\n"
-                + "namespace cz.habarta.typescript.generator.FullyQualifiedNamesTest.Outer {\n"
-                + "\n"
-                + "    export class Inner {\n"
-                + "        inner: string;\n"
-                + "    }\n"
-                + "\n"
-                + "}\n";
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Outer.Inner.class, Outer.class));
+        final String expected = """
+                \
+                namespace cz.habarta.typescript.generator.FullyQualifiedNamesTest {
+                
+                    export class Outer {
+                        outer: string;
+                    }
+                
+                }
+                
+                namespace cz.habarta.typescript.generator.FullyQualifiedNamesTest.Outer {
+                
+                    export class Inner {
+                        inner: string;
+                    }
+                
+                }
+                """;
         Assertions.assertEquals(expected.trim(), output.trim());
     }
 

@@ -5,7 +5,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Output {
-
     private final Writer writer;
     private final String name;
     private final boolean closeWriter;

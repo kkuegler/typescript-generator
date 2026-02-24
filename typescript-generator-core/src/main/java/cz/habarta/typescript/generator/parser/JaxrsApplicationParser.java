@@ -9,6 +9,7 @@ import cz.habarta.typescript.generator.util.Utils;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.*;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -20,7 +21,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class JaxrsApplicationParser extends RestApplicationParser {
-
     public static class Factory extends RestApplicationParser.Factory {
 
         @Override

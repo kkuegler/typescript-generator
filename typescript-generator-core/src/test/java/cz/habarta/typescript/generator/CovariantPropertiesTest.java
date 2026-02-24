@@ -1,32 +1,34 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CovariantPropertiesTest {
+import java.util.List;
 
+public class CovariantPropertiesTest {
     @Test
     public void test() {
         final Settings settings = TestUtils.settings();
         settings.sortDeclarations = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(Dog.class));
-        final String expected = "interface Animal {\n" +
-                "    allFood: Food[];\n" +
-                "    todaysFood: Food;\n" +
-                "}\n" +
-                "\n" +
-                "interface Dog extends Animal {\n" +
-                "    allFood: DogFood[];\n" +
-                "    todaysFood: DogFood;\n" +
-                "}\n" +
-                "\n" +
-                "interface DogFood extends Food {\n" +
-                "}\n" +
-                "\n" +
-                "interface Food {\n" +
-                "}";
+        final String expected =
+                """
+                        interface Animal {
+                            allFood: Food[];
+                            todaysFood: Food;
+                        }
+                        
+                        interface Dog extends Animal {
+                            allFood: DogFood[];
+                            todaysFood: DogFood;
+                        }
+                        
+                        interface DogFood extends Food {
+                        }
+                        
+                        interface Food {
+                        }""";
         Assertions.assertEquals(expected.replace('\'', '"'), output.trim());
     }
 

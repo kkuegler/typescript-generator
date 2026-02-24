@@ -2,7 +2,6 @@
 package cz.habarta.typescript.generator;
 
 public class TsParameter {
-
     public final String name;
     public final TsType tsType;
 

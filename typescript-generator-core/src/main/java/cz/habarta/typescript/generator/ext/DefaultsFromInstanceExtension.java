@@ -8,6 +8,7 @@ import cz.habarta.typescript.generator.compiler.TsModelTransformer;
 import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.parser.BeanModel;
 import cz.habarta.typescript.generator.parser.PropertyModel;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
  * it gets those values from class instance (object) created using default (parameter-less) constructor.
  */
 public class DefaultsFromInstanceExtension extends Extension {
-
     @Override
     public EmitterExtensionFeatures getFeatures() {
         final EmitterExtensionFeatures features = new EmitterExtensionFeatures();

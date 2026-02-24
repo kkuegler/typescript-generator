@@ -2,6 +2,7 @@
 package cz.habarta.typescript.generator.parser;
 
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -10,7 +11,6 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class Swagger {
-
     public static SwaggerOperation parseSwaggerAnnotations(Method method) {
         return firstResult(
                 () -> parseSwaggerAnnotations3(method),
@@ -77,8 +77,7 @@ public class Swagger {
         // @Operation
         if (operationAnnotation != null) {
             swaggerOperation.hidden = Utils.getAnnotationElementValue(operationAnnotation, "hidden", Boolean.class);
-            swaggerOperation.comment = Utils.getAnnotationElementValue(operationAnnotation, "description",
-                    String.class);
+            swaggerOperation.comment = Utils.getAnnotationElementValue(operationAnnotation, "description", String.class);
             swaggerOperation.comment = swaggerOperation.comment.isEmpty() ? null : swaggerOperation.comment;
         }
         // @ApiResponses
@@ -210,8 +209,7 @@ public class Swagger {
         return firstResult(supplier1, supplier2, null);
     }
 
-    private static <T> T firstResult(Supplier<? extends T> supplier1, Supplier<? extends T> supplier2,
-            T defaultResult) {
+    private static <T> T firstResult(Supplier<? extends T> supplier1, Supplier<? extends T> supplier2, T defaultResult) {
         final T result1 = supplier1.get();
         if (result1 != null) {
             return result1;

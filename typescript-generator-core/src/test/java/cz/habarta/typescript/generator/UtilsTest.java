@@ -2,18 +2,17 @@
 package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.util.Utils;
-import java.io.File;
-import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UtilsTest {
+import java.io.File;
+import java.util.*;
 
+public class UtilsTest {
     @Test
     public void testReplaceExtension() {
         Assertions.assertEquals(new File("test.dir/test.js"), Utils.replaceExtension(new File("test.dir/test"), ".js"));
-        Assertions.assertEquals(new File("test.dir/test.1.js"),
-                Utils.replaceExtension(new File("test.dir/test.1.ts"), ".js"));
+        Assertions.assertEquals(new File("test.dir/test.1.js"), Utils.replaceExtension(new File("test.dir/test.1.ts"), ".js"));
     }
 
     @Test
@@ -69,9 +68,7 @@ public class UtilsTest {
         Assertions.assertFalse(Utils.isPrimitiveType(Date.class));
         Assertions.assertFalse(Utils.isPrimitiveType(Collection.class));
         Assertions.assertFalse(Utils.isPrimitiveType(Map.class));
-        class NewClass {
-        }
+        class NewClass{}
         Assertions.assertFalse(Utils.isPrimitiveType(NewClass.class));
     }
-
 }

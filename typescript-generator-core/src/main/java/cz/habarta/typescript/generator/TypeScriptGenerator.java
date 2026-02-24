@@ -5,6 +5,7 @@ import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.emitter.*;
 import cz.habarta.typescript.generator.parser.*;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TypeScriptGenerator {
-
     public static final String Version = getVersion();
 
     private static Logger logger = new Logger();

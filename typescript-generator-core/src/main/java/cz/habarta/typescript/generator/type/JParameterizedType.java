@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class JParameterizedType implements ParameterizedType {
-
     private final Type rawType;
     private final Type[] actualTypeArguments;
     private final Type ownerType;

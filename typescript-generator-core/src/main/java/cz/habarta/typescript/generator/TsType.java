@@ -5,6 +5,7 @@ import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.emitter.Emittable;
 import cz.habarta.typescript.generator.emitter.Emitter;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -17,7 +18,6 @@ import java.util.stream.Stream;
  * That means something which can appear in type position (after ":" character).
  */
 public abstract class TsType implements Emittable {
-
     public static final TsType Any = new BasicType("any");
     public static final TsType Boolean = new BasicType("boolean");
     public static final TsType Number = new BasicType("number");

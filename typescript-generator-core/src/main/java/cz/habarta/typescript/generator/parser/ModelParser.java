@@ -8,6 +8,7 @@ import cz.habarta.typescript.generator.util.AnnotationGetter;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.PropertyMember;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -16,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class ModelParser {
-
     protected final Settings settings;
     private final Javadoc javadoc;
     private final DeprecationEnricher deprecationEnricher;
@@ -25,14 +25,11 @@ public abstract class ModelParser {
     private final List<RestApplicationParser> restApplicationParsers;
 
     public static abstract class Factory {
-
         public TypeProcessor getSpecificTypeProcessor() {
             return null;
         }
 
-        public abstract ModelParser create(Settings settings, TypeProcessor commonTypeProcessor,
-                List<RestApplicationParser> restApplicationParsers);
-
+        public abstract ModelParser create(Settings settings, TypeProcessor commonTypeProcessor, List<RestApplicationParser> restApplicationParsers);
     }
 
     public ModelParser(Settings settings, TypeProcessor commonTypeProcessor,
@@ -84,8 +81,7 @@ public abstract class ModelParser {
                 continue;
             }
 
-            final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null,
-                    settings);
+            final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null, settings);
             if (result != null) {
                 if (sourceType.type instanceof Class<?> cls
                         && result.getTsType() instanceof TsType.ReferenceType referenceType) {
@@ -177,8 +173,7 @@ public abstract class ModelParser {
         if (settings.optionalProperties == OptionalProperties.all) {
             return true;
         }
-        if (settings.optionalProperties == null
-                || settings.optionalProperties == OptionalProperties.useSpecifiedAnnotations) {
+        if (settings.optionalProperties == null || settings.optionalProperties == OptionalProperties.useSpecifiedAnnotations) {
             if (!settings.optionalAnnotations.isEmpty()) {
                 return Utils.hasAnyAnnotation(propertyMember::getAnnotation, settings.optionalAnnotations);
             }
@@ -220,8 +215,7 @@ public abstract class ModelParser {
         for (Class<?> cls : classes) {
             typeQueue.add(new SourceType<>(cls, usedInClass, name));
         }
-        return new PropertyModel(name, resolvedType, optional, access, originalMember, pullProperties, typeContext,
-                comments);
+        return new PropertyModel(name, resolvedType, optional, access, originalMember, pullProperties, typeContext, comments);
     }
 
     public static boolean containsProperty(List<PropertyModel> properties, String propertyName) {

@@ -2,10 +2,10 @@
 package cz.habarta.typescript.generator.emitter;
 
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.util.List;
 
 public class TsSwitchStatement extends TsStatement {
-
     private final TsExpression expression;
     private final List<TsSwitchCaseClause> caseClauses;
     private final List<TsStatement> defaultClause;
