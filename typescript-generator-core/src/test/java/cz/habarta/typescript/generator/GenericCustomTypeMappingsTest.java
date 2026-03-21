@@ -1,12 +1,13 @@
 
 package cz.habarta.typescript.generator;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
 public class GenericCustomTypeMappingsTest {
@@ -187,5 +188,4 @@ public class GenericCustomTypeMappingsTest {
 
     private static abstract class Class3 extends AbstractClass<Date> implements Interface<Date> {
     }
-
 }

@@ -2,10 +2,10 @@
 package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.List;
 
 public class DataLibraryJson {
-
     public List<ClassMapping> classMappings;
     public List<TypeAlias> typeAliases;
 
@@ -25,8 +25,7 @@ public class DataLibraryJson {
         List("list"),
         Map("map"),
         Optional("optional"),
-        Wrapper("wrapper"),
-        ;
+        Wrapper("wrapper");
 
         private final String name;
 
@@ -38,12 +37,10 @@ public class DataLibraryJson {
         public String getName() {
             return name;
         }
-
     }
 
     public static class TypeAlias {
         public String name;
         public String definition;
     }
-
 }

@@ -9,7 +9,6 @@ import java.lang.reflect.TypeVariable;
 import java.util.Objects;
 
 public class JTypeVariable<D extends GenericDeclaration> implements TypeVariable<D> {
-
     private final D genericDeclaration; // should not be null but for Kotlin KTypeParameter we don't have it
     private final String name;
     private Type[] bounds;

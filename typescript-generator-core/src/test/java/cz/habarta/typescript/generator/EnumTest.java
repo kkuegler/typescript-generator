@@ -6,29 +6,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.habarta.typescript.generator.ext.ClassEnumExtension;
+import org.junit.jupiter.api.Test;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 public class EnumTest {
-
     @Test
     public void testEnumAsUnion() {
         final Settings settings = TestUtils.settings();
         //        settings.mapEnum = EnumMapping.asUnion;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AClass.class));
-        final String expected = ("\n" +
-                "interface AClass {\n" +
-                "    direction: Direction;\n" +
-                "}\n" +
-                "\n" +
-                "type Direction = 'North' | 'East' | 'South' | 'West';\n").replace("'", "\"");
+        final String expected = (
+                """
+                        
+                        interface AClass {
+                            direction: Direction;
+                        }
+                        
+                        type Direction = 'North' | 'East' | 'South' | 'West';
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
@@ -47,10 +49,13 @@ public class EnumTest {
         settings.quotes = "'";
         settings.mapEnum = EnumMapping.asInlineUnion;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AClass.class));
-        final String expected = "\n" +
-                "interface AClass {\n" +
-                "    direction: 'North' | 'East' | 'South' | 'West';\n" +
-                "}\n";
+        final String expected =
+                """
+                        
+                        interface AClass {
+                            direction: 'North' | 'East' | 'South' | 'West';
+                        }
+                        """;
         assertEquals(expected, output);
     }
 
@@ -59,17 +64,21 @@ public class EnumTest {
         final Settings settings = TestUtils.settings();
         settings.mapEnum = EnumMapping.asNumberBasedEnum;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AClass.class));
-        final String expected = ("\n" +
-                "interface AClass {\n" +
-                "    direction: Direction;\n" +
-                "}\n" +
-                "\n" +
-                "declare const enum Direction {\n" +
-                "    North,\n" +
-                "    East,\n" +
-                "    South,\n" +
-                "    West,\n" +
-                "}\n").replace("'", "\"");
+        final String expected = (
+                """
+                        
+                        interface AClass {
+                            direction: Direction;
+                        }
+                        
+                        declare const enum Direction {
+                            North,
+                            East,
+                            South,
+                            West,
+                        }
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
@@ -78,16 +87,19 @@ public class EnumTest {
         final Settings settings = TestUtils.settings();
         settings.mapEnum = EnumMapping.asEnum;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(AClass.class));
-        final String expected = ("interface AClass {\n" +
-                "    direction: Direction;\n" +
-                "}\n" +
-                "\n" +
-                "declare const enum Direction {\n" +
-                "    North = 'North',\n" +
-                "    East = 'East',\n" +
-                "    South = 'South',\n" +
-                "    West = 'West',\n" +
-                "}").replace("'", "\"");
+        final String expected = (
+                """
+                        interface AClass {
+                            direction: Direction;
+                        }
+                        
+                        declare const enum Direction {
+                            North = 'North',
+                            East = 'East',
+                            South = 'South',
+                            West = 'West',
+                        }"""
+                ).replace("'", "\"");
         assertEquals(expected.trim(), output.trim());
     }
 
@@ -99,18 +111,23 @@ public class EnumTest {
         final ClassEnumExtension classEnumExtension = new ClassEnumExtension();
         classEnumExtension.setConfiguration(Collections.singletonMap("classEnumPattern", "Enum"));
         settings.extensions.add(classEnumExtension);
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(DummyEnum.class, DummyClassEnum.class));
-        final String expected = ("\ndeclare const enum DummyClassEnum {\n" +
-                "    ATYPE = 'ATYPE',\n" +
-                "    BTYPE = 'BTYPE',\n" +
-                "    CTYPE = 'CTYPE',\n" +
-                "}\n" +
-                "\ndeclare const enum DummyEnum {\n" +
-                "    Red = 'Red',\n" +
-                "    Green = 'Green',\n" +
-                "    Blue = 'Blue',\n" +
-                "}\n").replace("'", "\"");
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DummyEnum.class, DummyClassEnum.class));
+        final String expected = (
+                """
+                        
+                        declare const enum DummyClassEnum {
+                            ATYPE = 'ATYPE',
+                            BTYPE = 'BTYPE',
+                            CTYPE = 'CTYPE',
+                        }
+                        
+                        declare const enum DummyEnum {
+                            Red = 'Red',
+                            Green = 'Green',
+                            Blue = 'Blue',
+                        }
+                        """
+                ).replace("'", "\"");
         assertEquals(expected.trim(), output.trim());
     }
 
@@ -123,23 +140,29 @@ public class EnumTest {
         final ClassEnumExtension classEnumExtension = new ClassEnumExtension();
         classEnumExtension.setConfiguration(Collections.singletonMap("classEnumPattern", "Enum"));
         settings.extensions.add(classEnumExtension);
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(DummyEnum.class, DummyClassEnum.class, DummyMixedCaseEnum.class));
-        final String expected = ("\ndeclare const enum DummyClassEnum {\n" +
-                "    Atype = 'ATYPE',\n" +
-                "    Btype = 'BTYPE',\n" +
-                "    Ctype = 'CTYPE',\n" +
-                "}\n" +
-                "\ndeclare const enum DummyEnum {\n" +
-                "    Red = 'Red',\n" +
-                "    Green = 'Green',\n" +
-                "    Blue = 'Blue',\n" +
-                "}\n" +
-                "\ndeclare const enum DummyMixedCaseEnum {\n" +
-                "    CamelCaseType = 'camelCaseType',\n" +
-                "    PascalCaseType = 'PascalCaseType',\n" +
-                "    UpperCaseType = 'UPPER_CASE_TYPE',\n" +
-                "}\n").replace("'", "\"");
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DummyEnum.class, DummyClassEnum.class, DummyMixedCaseEnum.class));
+        final String expected = (
+                """
+                        
+                        declare const enum DummyClassEnum {
+                            Atype = 'ATYPE',
+                            Btype = 'BTYPE',
+                            Ctype = 'CTYPE',
+                        }
+                        
+                        declare const enum DummyEnum {
+                            Red = 'Red',
+                            Green = 'Green',
+                            Blue = 'Blue',
+                        }
+                        
+                        declare const enum DummyMixedCaseEnum {
+                            CamelCaseType = 'camelCaseType',
+                            PascalCaseType = 'PascalCaseType',
+                            UpperCaseType = 'UPPER_CASE_TYPE',
+                        }
+                        """
+        ).replace("'", "\"");
         assertEquals(expected.trim(), output.trim());
     }
 
@@ -148,8 +171,7 @@ public class EnumTest {
         final Settings settings = TestUtils.settings();
         settings.mapEnum = EnumMapping.asNumberBasedEnum;
         settings.enumMemberCasing = IdentifierCasing.camelCase;
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(DummyMixedCaseEnum.class));
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(DummyMixedCaseEnum.class));
         assertTrue(output.contains("camelCaseType"));
         assertTrue(output.contains("pascalCaseType"));
         assertTrue(output.contains("upperCaseType"));
@@ -158,30 +180,39 @@ public class EnumTest {
     @Test
     public void testEnumWithJsonPropertyAnnotations() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(SideWithJsonPropertyAnnotations.class));
-        final String expected = ("\n" +
-                "type SideWithJsonPropertyAnnotations = 'left-side' | 'right-side';\n").replace("'", "\"");
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SideWithJsonPropertyAnnotations.class));
+        final String expected = (
+                """
+                        
+                        type SideWithJsonPropertyAnnotations = 'left-side' | 'right-side';
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
     @Test
     public void testEnumWithJsonValueMethodAnnotation() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(SideWithJsonValueMethodAnnotation.class));
-        final String expected = ("\n" +
-                "type SideWithJsonValueMethodAnnotation = 'left-side' | 'right-side';\n").replace("'", "\"");
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SideWithJsonValueMethodAnnotation.class));
+        final String expected = (
+                """
+                        
+                        type SideWithJsonValueMethodAnnotation = 'left-side' | 'right-side';
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
     @Test
     public void testEnumWithJsonValueFieldAnnotation() {
         final Settings settings = TestUtils.settings();
-        final String output = new TypeScriptGenerator(settings)
-                .generateTypeScript(Input.from(SideWithJsonValueFieldAnnotation.class));
-        final String expected = ("\n" +
-                "type SideWithJsonValueFieldAnnotation = 'left-side' | 'right-side';\n").replace("'", "\"");
+        final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SideWithJsonValueFieldAnnotation.class));
+        final String expected = (
+                """
+                        
+                        type SideWithJsonValueFieldAnnotation = 'left-side' | 'right-side';
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
@@ -191,8 +222,12 @@ public class EnumTest {
         settings.jackson2Configuration = new Jackson2ConfigurationResolved();
         settings.jackson2Configuration.enumsUsingToString = true;
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(SideUsingToString.class));
-        final String expected = ("\n" +
-                "type SideUsingToString = 'toString:left-side' | 'toString:right-side';\n").replace("'", "\"");
+        final String expected = (
+                """
+                        
+                        type SideUsingToString = 'toString:left-side' | 'toString:right-side';
+                        """
+                ).replace("'", "\"");
         assertEquals(expected, output);
     }
 
@@ -200,8 +235,12 @@ public class EnumTest {
     public void testEmptyEnum() {
         final Settings settings = TestUtils.settings();
         final String output = new TypeScriptGenerator(settings).generateTypeScript(Input.from(EmptyEnum.class));
-        final String expected = ("\n" +
-                "type EmptyEnum = never;\n").replace("'", "\"");
+        final String expected = (
+                """
+                        
+                        type EmptyEnum = never;
+                        """
+                );
         assertEquals(expected, output);
     }
 

@@ -12,14 +12,14 @@ import com.google.common.net.HostAndPort;
 import com.google.common.net.InternetDomainName;
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.util.Utils;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 @SuppressWarnings("unused")
 public class GuavaTest {
-
     @Test
     public void testGuavaInJackson() throws JsonProcessingException {
         final ObjectMapper objectMapper = Utils.getObjectMapper();

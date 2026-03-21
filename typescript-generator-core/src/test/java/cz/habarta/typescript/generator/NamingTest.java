@@ -3,14 +3,14 @@ package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.compiler.SymbolTable;
 import cz.habarta.typescript.generator.yield.KeywordInPackage;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+
 @SuppressWarnings("unused")
 public class NamingTest {
-
     @Test
     public void testConflictReport() {
         final Settings settings = TestUtils.settings();

@@ -4,6 +4,7 @@ package cz.habarta.typescript.generator;
 import cz.habarta.typescript.generator.parser.SourceType;
 import cz.habarta.typescript.generator.util.Utils;
 import io.github.classgraph.ScanResult;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -13,9 +14,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class JaxrsApplicationScanner {
-
-    public static List<SourceType<Type>> scanJaxrsApplication(Class<?> jaxrsApplicationClass,
-            Predicate<String> isClassNameExcluded) {
+    public static List<SourceType<Type>> scanJaxrsApplication(Class<?> jaxrsApplicationClass, Predicate<String> isClassNameExcluded) {
         final ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(jaxrsApplicationClass.getClassLoader());

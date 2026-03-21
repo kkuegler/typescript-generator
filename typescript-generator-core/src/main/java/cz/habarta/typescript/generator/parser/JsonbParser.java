@@ -15,6 +15,7 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.json.bind.annotation.JsonbVisibility;
 import jakarta.json.bind.config.PropertyNamingStrategy;
 import jakarta.json.bind.config.PropertyVisibilityStrategy;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -45,7 +46,6 @@ public class JsonbParser extends ModelParser {
                 List<RestApplicationParser> restApplicationParsers) {
             return new JsonbParser(settings, commonTypeProcessor, restApplicationParsers);
         }
-
     }
 
     public JsonbParser(Settings settings, TypeProcessor commonTypeProcessor) {
@@ -273,9 +273,7 @@ public class JsonbParser extends ModelParser {
 
     private interface DecoratedType {
         Type getType();
-
         <T extends Annotation> T getAnnotation(Class<T> clazz);
-
         <T extends Annotation> T getClassOrPackageAnnotation(Class<T> clazz);
     }
 
@@ -381,29 +379,24 @@ public class JsonbParser extends ModelParser {
                 readers.putAll(Stream.of(clazz.getMethods())
                         .filter(it -> it.getDeclaringClass() != Object.class && it.getParameterCount() == 0)
                         .filter(it -> !"toString".equals(it.getName()) && !"hashCode".equals(it.getName()))
-                        .filter(it -> !isIgnored(it.getName()) && johnzonAny != null
-                                && Meta.getAnnotation(it, johnzonAny) == null)
-                        .collect(Collectors.toMap(Method::getName,
-                                it -> new MethodDecoratedType(it, it.getGenericReturnType()) {
-                                })));
+                        .filter(it -> !isIgnored(it.getName()) && johnzonAny != null && Meta.getAnnotation(it, johnzonAny) == null)
+                        .collect(Collectors.toMap(Method::getName, it -> new MethodDecoratedType(it, it.getGenericReturnType()) {
+                        })));
             } else {
                 final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
                 for (final PropertyDescriptor descriptor : propertyDescriptors) {
                     final Method readMethod = descriptor.getReadMethod();
                     final String name = descriptor.getName();
                     if (readMethod != null && readMethod.getDeclaringClass() != Object.class) {
-                        if (isIgnored(name)
-                                || johnzonAny != null && Meta.getAnnotation(readMethod, johnzonAny) != null) {
+                        if (isIgnored(name) || johnzonAny != null && Meta.getAnnotation(readMethod, johnzonAny) != null) {
                             continue;
                         }
                         readers.put(name, new MethodDecoratedType(readMethod, readMethod.getGenericReturnType()));
                     } else if (readMethod == null && descriptor.getWriteMethod() != null && // isXXX, not supported by javabeans
-                            (descriptor.getPropertyType() == Boolean.class
-                                    || descriptor.getPropertyType() == boolean.class)) {
+                            (descriptor.getPropertyType() == Boolean.class || descriptor.getPropertyType() == boolean.class)) {
                         try {
                             final Method method = clazz.getMethod(
-                                    "is" + Character.toUpperCase(name.charAt(0))
-                                            + (name.length() > 1 ? name.substring(1) : ""));
+                                    "is" + Character.toUpperCase(name.charAt(0)) + (name.length() > 1 ? name.substring(1) : ""));
                             readers.put(name, new MethodDecoratedType(method, method.getGenericReturnType()));
                         } catch (final NoSuchMethodException e) {
                             // no-op
@@ -488,9 +481,10 @@ public class JsonbParser extends ModelParser {
 
             for (final Map.Entry<String, JsonbParser.DecoratedType> entry : methodReaders.entrySet()) {
                 final Method mr = MethodAccessMode.MethodDecoratedType.class.cast(entry.getValue()).getMethod();
-                final String fieldName = record ? mr.getName()
-                        : Introspector.decapitalize(
-                                mr.getName().startsWith("is") ? mr.getName().substring(2) : mr.getName().substring(3));
+                final String fieldName = record ?
+                        mr.getName() :
+                        Introspector.decapitalize(mr.getName().startsWith("is") ?
+                                mr.getName().substring(2) : mr.getName().substring(3));
                 final Field f = getField(fieldName, clazz);
 
                 final JsonbParser.DecoratedType existing = readers.get(entry.getKey());
@@ -873,10 +867,8 @@ public class JsonbParser extends ModelParser {
         map.put(jakarta.json.bind.annotation.JsonbProperty.class, javax.json.bind.annotation.JsonbProperty.class);
         map.put(jakarta.json.bind.annotation.JsonbTransient.class, javax.json.bind.annotation.JsonbTransient.class);
         map.put(jakarta.json.bind.annotation.JsonbVisibility.class, javax.json.bind.annotation.JsonbVisibility.class);
-        map.put(jakarta.json.bind.config.PropertyNamingStrategy.class,
-                javax.json.bind.config.PropertyNamingStrategy.class);
-        map.put(jakarta.json.bind.config.PropertyVisibilityStrategy.class,
-                javax.json.bind.config.PropertyVisibilityStrategy.class);
+        map.put(jakarta.json.bind.config.PropertyNamingStrategy.class, javax.json.bind.config.PropertyNamingStrategy.class);
+        map.put(jakarta.json.bind.config.PropertyVisibilityStrategy.class, javax.json.bind.config.PropertyVisibilityStrategy.class);
         return map;
     });
 

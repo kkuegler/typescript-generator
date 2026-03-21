@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DuplicatePropertyTest {
-
     public static class DuplicateKindUsage {
         public DuplicateKind duplicateKind;
     }

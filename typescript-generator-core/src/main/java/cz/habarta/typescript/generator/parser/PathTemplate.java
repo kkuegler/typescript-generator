@@ -2,6 +2,7 @@
 package cz.habarta.typescript.generator.parser;
 
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,7 +10,6 @@ import java.util.regex.Pattern;
 
 // see org.glassfish.jersey.uri.internal.UriTemplateParser
 public class PathTemplate {
-
     private final List<Part> parts;
 
     private PathTemplate(List<Part> parts) {
@@ -22,16 +22,18 @@ public class PathTemplate {
 
     public static PathTemplate parse(String path) {
         final List<Part> parts = new ArrayList<>();
-        final String pattern = ""
-                + "\\{"
-                + "\\s*"
-                + "(?<ParamName>\\w[\\w\\.-]*)"
-                + "\\s*"
-                + "(:"
-                + "\\s*"
-                + "(?<ParamRegex>[^{}\\s]+(\\{[^{}]*\\}[^{}]*)*)" // this handles RegExp which may contain '{}' quantifiers
-                + "\\s*)?"
-                + "\\}";
+        // this handles RegExp which may contain '{}' quantifiers
+        final String pattern = """
+                \
+                \\{\
+                \\s*\
+                (?<ParamName>\\w[\\w\\.-]*)\
+                \\s*\
+                (:\
+                \\s*\
+                (?<ParamRegex>[^{}\\s]+(\\{[^{}]*\\}[^{}]*)*)\
+                \\s*)?\
+                \\}""";
         final Matcher matcher = Pattern.compile(pattern).matcher(path);
         int index = 0;
         while (matcher.find()) {

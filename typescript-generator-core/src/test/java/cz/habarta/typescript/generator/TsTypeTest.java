@@ -5,9 +5,10 @@ import cz.habarta.typescript.generator.TsType.IndexedArrayType;
 import cz.habarta.typescript.generator.TsType.ObjectType;
 import cz.habarta.typescript.generator.TsType.UnionType;
 import cz.habarta.typescript.generator.compiler.Symbol;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 import static cz.habarta.typescript.generator.TsType.Number;
 import static cz.habarta.typescript.generator.TsType.String;
@@ -15,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TsTypeTest {
-
     @Test
     public void testEquals() {
         assertEquals(new TsType.ReferenceType(new Symbol(new String("Foo"))),

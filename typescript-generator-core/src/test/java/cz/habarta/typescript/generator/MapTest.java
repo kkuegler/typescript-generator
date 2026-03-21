@@ -1,12 +1,12 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MapTest {
+import java.util.Map;
 
+public class MapTest {
     public static class ClassWithMap {
         public Map<String, Person> people;
     }

@@ -1,18 +1,18 @@
 
 package cz.habarta.typescript.generator;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @SuppressWarnings("unused")
 public class IncludeExcludePropertyTest {
-
     public static Stream<JsonLibrary> data() {
         return Arrays.stream(JsonLibrary.values())
                 .filter(library -> library != JsonLibrary.jsonb);

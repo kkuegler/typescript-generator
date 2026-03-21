@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class PropertyModel {
-
     private final String name;
     private final Type type;
     private final boolean optional;

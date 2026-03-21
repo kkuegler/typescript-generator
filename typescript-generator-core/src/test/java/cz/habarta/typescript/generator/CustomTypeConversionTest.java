@@ -1,17 +1,17 @@
 package cz.habarta.typescript.generator;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomTypeConversionTest {
-
     @Test
     public void testCustomTypeConversion() {
         final Settings settings = TestUtils.settings();

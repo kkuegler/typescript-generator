@@ -8,7 +8,6 @@ import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 public class DummyBean {
-
     public String firstProperty;
     public int intProperty;
     public Integer integerProperty;

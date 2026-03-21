@@ -2,6 +2,7 @@
 package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class ExcludingTypeProcessor implements TypeProcessor {
-
     private final Predicate<String> excludeFilter;
 
     public ExcludingTypeProcessor(List<String> excludedTypes) {

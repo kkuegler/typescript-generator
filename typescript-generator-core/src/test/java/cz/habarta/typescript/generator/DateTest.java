@@ -5,13 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.time.*;
-import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DateTest {
+import java.time.*;
+import java.util.*;
 
+public class DateTest {
     @Test
     public void testDate_forJavaUtilDate() {
         final Settings settings = TestUtils.settings();

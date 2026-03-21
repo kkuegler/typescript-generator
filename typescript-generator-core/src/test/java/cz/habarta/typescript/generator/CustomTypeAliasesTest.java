@@ -1,13 +1,13 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 @SuppressWarnings("unused")
 public class CustomTypeAliasesTest {
-
     @Test
     public void testGeneric() {
         final Settings settings = TestUtils.settings();

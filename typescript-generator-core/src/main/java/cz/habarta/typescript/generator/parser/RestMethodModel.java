@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class RestMethodModel extends MethodModel {
-
     private final Class<?> rootResource;
     private final String httpMethod;
     private final String path;

@@ -2,7 +2,6 @@
 package cz.habarta.typescript.generator.parser;
 
 public abstract class RestQueryParam {
-
     public boolean required;
 
     RestQueryParam(boolean required) {

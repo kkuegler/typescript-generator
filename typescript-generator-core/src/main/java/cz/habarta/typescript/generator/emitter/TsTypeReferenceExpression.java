@@ -5,7 +5,6 @@ import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.TsType;
 
 public class TsTypeReferenceExpression extends TsExpression {
-
     private final TsType.ReferenceType type;
 
     public TsTypeReferenceExpression(TsType.ReferenceType type) {

@@ -1,15 +1,15 @@
 package cz.habarta.typescript.generator;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MapExtensionTest {
-
     @Test
     public void testOrder1() {
         final Settings settings = TestUtils.settings();
@@ -40,8 +40,7 @@ public class MapExtensionTest {
         public MapExtension<String> mapExt;
     }
 
-    public static class MapExtension<T> extends HashMap<T, Long> {
-    }
+    public static class MapExtension<T> extends HashMap<T, Long> {}
 
     @Test
     public void testStringList() {

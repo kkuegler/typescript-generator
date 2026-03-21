@@ -2,13 +2,13 @@
 package cz.habarta.typescript.generator.parser;
 
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class BeanModel extends DeclarationModel {
-
     private final Type parent;
     private final List<Class<?>> taggedUnionClasses;
     private final String discriminantProperty;

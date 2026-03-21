@@ -68,11 +68,8 @@ public class TestEnums {
     }
 
     public enum JsonPropertyValuedEnum {
-        @JsonProperty("_A")
-        A,
-        @JsonProperty("_B")
-        B,
-        @JsonProperty("_C")
-        C
+        @JsonProperty("_A") A,
+        @JsonProperty("_B") B,
+        @JsonProperty("_C") C
     }
 }

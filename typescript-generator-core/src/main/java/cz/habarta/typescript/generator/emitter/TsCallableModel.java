@@ -2,11 +2,11 @@
 package cz.habarta.typescript.generator.emitter;
 
 import cz.habarta.typescript.generator.TsType;
+
 import java.util.Collections;
 import java.util.List;
 
 public class TsCallableModel {
-
     protected final String name;
     protected final TsModifierFlags modifiers;
     protected final List<TsType.GenericVariableType> typeParameters;

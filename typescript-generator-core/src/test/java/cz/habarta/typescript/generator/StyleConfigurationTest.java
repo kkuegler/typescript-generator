@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StyleConfigurationTest {
-
     public static class A {
         public int getX() {
             return -1;

@@ -2,7 +2,6 @@
 package cz.habarta.typescript.generator;
 
 public class Logger {
-
     private final Level level;
 
     public enum Level {

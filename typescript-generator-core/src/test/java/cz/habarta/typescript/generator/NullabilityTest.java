@@ -1,15 +1,15 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.Date;
-import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class NullabilityTest {
-
     @Test
     public void test() {
         final Settings settings = TestUtils.settings();

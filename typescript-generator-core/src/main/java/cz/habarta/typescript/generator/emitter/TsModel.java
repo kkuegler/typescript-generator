@@ -4,6 +4,7 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.compiler.EnumKind;
 import cz.habarta.typescript.generator.compiler.Symbol;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +18,7 @@ public class TsModel {
     private final List<TsHelper> helpers;
 
     public TsModel() {
-        this(new ArrayList<TsBeanModel>(), new ArrayList<TsEnumModel>(), new ArrayList<TsEnumModel>(),
-                new ArrayList<TsAliasModel>(), new ArrayList<TsHelper>());
+        this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public TsModel(List<TsBeanModel> beans, List<TsEnumModel> enums, List<TsEnumModel> originalStringEnums,

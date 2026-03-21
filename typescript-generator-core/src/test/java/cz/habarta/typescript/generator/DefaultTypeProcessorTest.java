@@ -1,24 +1,22 @@
 package cz.habarta.typescript.generator;
 
 import cz.habarta.typescript.generator.compiler.SymbolTable;
-import java.math.BigDecimal;
-import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("unused")
 public class DefaultTypeProcessorTest {
-
     @Test
     public void testTypeConversion() {
         TypeProcessor converter = new DefaultTypeProcessor();
         final TypeProcessor.Context context = getTestContext(converter);
-        assertEquals(context.getSymbol(A.class).getFullName(),
-                converter.processType(A.class, context).getTsType().toString());
-        assertEquals(context.getSymbol(B.class).getFullName(),
-                converter.processType(B.class, context).getTsType().toString());
+        assertEquals(context.getSymbol(A.class).getFullName(), converter.processType(A.class, context).getTsType().toString());
+        assertEquals(context.getSymbol(B.class).getFullName(), converter.processType(B.class, context).getTsType().toString());
         assertEquals(TsType.Void, converter.processType(void.class, context).getTsType());
         assertEquals(TsType.Number, converter.processType(BigDecimal.class, context).getTsType());
         assertEquals(TsType.String, converter.processType(UUID.class, context).getTsType());
@@ -31,12 +29,9 @@ public class DefaultTypeProcessorTest {
     public void testWildcards() throws NoSuchFieldException {
         TypeProcessor converter = new DefaultTypeProcessor();
         final TypeProcessor.Context context = getTestContext(converter);
-        assertEquals("string[]",
-                converter.processType(C.class.getDeclaredField("x").getGenericType(), context).getTsType().toString());
-        assertEquals("any[]",
-                converter.processType(C.class.getDeclaredField("y").getGenericType(), context).getTsType().toString());
-        assertEquals("any[]",
-                converter.processType(C.class.getDeclaredField("z").getGenericType(), context).getTsType().toString());
+        assertEquals("string[]", converter.processType(C.class.getDeclaredField("x").getGenericType(), context).getTsType().toString());
+        assertEquals("any[]", converter.processType(C.class.getDeclaredField("y").getGenericType(), context).getTsType().toString());
+        assertEquals("any[]", converter.processType(C.class.getDeclaredField("z").getGenericType(), context).getTsType().toString());
     }
 
     private static class A {
@@ -59,8 +54,7 @@ public class DefaultTypeProcessorTest {
 
     @Test
     public void testRawTypes() {
-        final String output = new TypeScriptGenerator(TestUtils.settings())
-                .generateTypeScript(Input.from(DummyBean.class));
+        final String output = new TypeScriptGenerator(TestUtils.settings()).generateTypeScript(Input.from(DummyBean.class));
         Assertions.assertTrue(output.contains("rawListProperty: any[]"));
         Assertions.assertTrue(output.contains("rawMapProperty: { [index: string]: any }"));
     }

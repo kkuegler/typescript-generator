@@ -6,13 +6,13 @@ import cz.habarta.typescript.generator.type.JTypeWithNullability;
 import cz.habarta.typescript.generator.type.JUnionType;
 import cz.habarta.typescript.generator.util.GenericsResolver;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.reflect.*;
 import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultTypeProcessor implements TypeProcessor {
-
     private final LoadedDataLibraries known;
 
     public DefaultTypeProcessor() {

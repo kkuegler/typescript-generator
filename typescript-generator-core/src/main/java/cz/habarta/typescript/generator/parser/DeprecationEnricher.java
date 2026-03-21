@@ -4,6 +4,7 @@ package cz.habarta.typescript.generator.parser;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.util.DeprecationUtils;
 import cz.habarta.typescript.generator.util.Utils;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -13,7 +14,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DeprecationEnricher {
-
     public Model enrichModel(Model model) {
         final List<BeanModel> beans = mapList(model.getBeans(), this::enrichBean);
         final List<EnumModel> enums = mapList(model.getEnums(), this::enrichEnum);

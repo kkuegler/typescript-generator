@@ -1,88 +1,95 @@
 
 package cz.habarta.typescript.generator;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class ClassesTest {
-
     @Test
     public void testInvalidSettings() {
         final Settings settings = TestUtils.settings();
         settings.mapClasses = ClassMapping.asClasses;
-        Assertions.assertThrows(Exception.class,
-                () -> new TypeScriptGenerator(settings).generateTypeScript(Input.from()));
+        Assertions.assertThrows(Exception.class, () -> new TypeScriptGenerator(settings).generateTypeScript(Input.from()));
     }
 
     @Test
     public void testClass() {
         testOutput(A.class,
-                "class A {\n" +
-                        "    a: string;\n" +
-                        "}");
+                   """
+                           class A {
+                               a: string;
+                           }"""
+        );
     }
 
     @Test
     public void testInheritedClass() {
         // A and B order is important
         testOutput(B.class,
-                "class A {\n" +
-                        "    a: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "class B extends A {\n" +
-                        "    b: string;\n" +
-                        "}");
+                   """
+                           class A {
+                               a: string;
+                           }
+                           
+                           class B extends A {
+                               b: string;
+                           }"""
+        );
     }
 
     @Test
     public void testClassImplementsInterface() {
         testOutput(E.class,
-                "class E implements D {\n" +
-                        "    c: string;\n" +
-                        "    d: string;\n" +
-                        "    e: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "interface D extends C {\n" +
-                        "    d: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "interface C {\n" +
-                        "    c: string;\n" +
-                        "}");
+                   """
+                           class E implements D {
+                               c: string;
+                               d: string;
+                               e: string;
+                           }
+                           
+                           interface D extends C {
+                               d: string;
+                           }
+                           
+                           interface C {
+                               c: string;
+                           }"""
+        );
     }
 
     @Test
     public void testComplexHierarchy() {
         // Q3 and Q5 order is important
         testOutput(Q5.class,
-                "class Q3 implements Q2 {\n" +
-                        "    q1: string;\n" +
-                        "    q2: string;\n" +
-                        "    q3: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "class Q5 extends Q3 implements Q2, Q4 {\n" +
-                        "    q4: string;\n" +
-                        "    q5: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "interface Q2 extends Q1 {\n" +
-                        "    q2: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "interface Q4 {\n" +
-                        "    q4: string;\n" +
-                        "}\n" +
-                        "\n" +
-                        "interface Q1 {\n" +
-                        "    q1: string;\n" +
-                        "}");
+                   """
+                           class Q3 implements Q2 {
+                               q1: string;
+                               q2: string;
+                               q3: string;
+                           }
+                           
+                           class Q5 extends Q3 implements Q2, Q4 {
+                               q4: string;
+                               q5: string;
+                           }
+                           
+                           interface Q2 extends Q1 {
+                               q2: string;
+                           }
+                           
+                           interface Q4 {
+                               q4: string;
+                           }
+                           
+                           interface Q1 {
+                               q1: string;
+                           }"""
+        );
     }
 
     private static void testOutput(Class<?> inputClass, String expected) {
@@ -140,22 +147,25 @@ public class ClassesTest {
                         "**Bc",
                         "**Bi",
                         "**Derived1",
-                        "**Derived2"),
-                ""
-                        + "class Bc {\n"
-                        + "    x: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived1 extends Bc implements Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived2 extends Derived1 {\n"
-                        + "}");
+                        "**Derived2"
+                ),
+                """
+                        \
+                        class Bc {
+                            x: string;
+                        }
+                        
+                        interface Bi {
+                            y: string;
+                        }
+                        
+                        class Derived1 extends Bc implements Bi {
+                            y: string;
+                        }
+                        
+                        class Derived2 extends Derived1 {
+                        }"""
+        );
     }
 
     @Test
@@ -163,23 +173,26 @@ public class ClassesTest {
         testClassPatterns(
                 Arrays.asList(
                         "**Derived1",
-                        "**Derived2"),
-                ""
-                        + "interface Bc {\n"
-                        + "    x: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived1 implements Bc, Bi {\n"
-                        + "    x: string;\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived2 extends Derived1 {\n"
-                        + "}");
+                        "**Derived2"
+                ),
+                """
+                        \
+                        interface Bc {
+                            x: string;
+                        }
+                        
+                        interface Bi {
+                            y: string;
+                        }
+                        
+                        class Derived1 implements Bc, Bi {
+                            x: string;
+                            y: string;
+                        }
+                        
+                        class Derived2 extends Derived1 {
+                        }"""
+        );
     }
 
     @Test
@@ -187,23 +200,26 @@ public class ClassesTest {
         testClassPatterns(
                 Arrays.asList(
                         "**Bc",
-                        "**Derived2"),
-                ""
-                        + "class Bc {\n"
-                        + "    x: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Derived1 extends Bc, Bi {\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived2 implements Derived1 {\n"
-                        + "    x: string;\n"
-                        + "    y: string;\n"
-                        + "}");
+                        "**Derived2"
+                ),
+                """
+                        \
+                        class Bc {
+                            x: string;
+                        }
+                        
+                        interface Bi {
+                            y: string;
+                        }
+                        
+                        interface Derived1 extends Bc, Bi {
+                        }
+                        
+                        class Derived2 implements Derived1 {
+                            x: string;
+                            y: string;
+                        }"""
+        );
     }
 
     @Test
@@ -211,22 +227,25 @@ public class ClassesTest {
         testClassPatterns(
                 Arrays.asList(
                         "**Bc",
-                        "**Derived1"),
-                ""
-                        + "class Bc {\n"
-                        + "    x: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "class Derived1 extends Bc implements Bi {\n"
-                        + "    y: string;\n"
-                        + "}\n"
-                        + "\n"
-                        + "interface Derived2 extends Derived1 {\n"
-                        + "}");
+                        "**Derived1"
+                ),
+                """
+                        \
+                        class Bc {
+                            x: string;
+                        }
+                        
+                        interface Bi {
+                            y: string;
+                        }
+                        
+                        class Derived1 extends Bc implements Bi {
+                            y: string;
+                        }
+                        
+                        interface Derived2 extends Derived1 {
+                        }"""
+        );
     }
 
     private static void testClassPatterns(List<String> mapClassesAsClassesPatterns, String expected) {

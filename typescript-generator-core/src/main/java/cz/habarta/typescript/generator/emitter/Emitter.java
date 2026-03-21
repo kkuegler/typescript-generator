@@ -4,6 +4,7 @@ package cz.habarta.typescript.generator.emitter;
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.compiler.EnumMemberModel;
 import cz.habarta.typescript.generator.compiler.ModelCompiler;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -14,7 +15,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Emitter implements EmitterExtension.Writer {
-
     private final Settings settings;
     private Writer writer;
     private int indent;

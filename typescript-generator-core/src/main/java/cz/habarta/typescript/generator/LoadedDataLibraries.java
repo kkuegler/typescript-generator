@@ -6,7 +6,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LoadedDataLibraries {
-
     public final List<Class<?>> stringClasses;
     public final List<Class<?>> numberClasses;
     public final List<Class<?>> booleanClasses;
@@ -21,8 +20,7 @@ public class LoadedDataLibraries {
     public final List<Settings.CustomTypeAlias> typeAliases;
 
     public LoadedDataLibraries() {
-        this(empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(),
-                empty());
+        this(empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty());
     }
 
     private static <T> List<T> empty() {

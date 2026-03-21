@@ -5,20 +5,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ModelParserTest {
-
     @Test
     public void testClassDiscovery1() {
         final Model model = parseModel(RootClass1.class);
         Assertions.assertEquals(2, model.getBeans().size());
-
     }
 
     @Test

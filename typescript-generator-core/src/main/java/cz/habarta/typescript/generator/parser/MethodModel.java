@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class MethodModel {
-
     protected final Class<?> originClass;
     protected final String name;
     protected final List<MethodParameterModel> parameters;

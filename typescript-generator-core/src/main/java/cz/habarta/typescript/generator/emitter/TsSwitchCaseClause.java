@@ -4,7 +4,6 @@ package cz.habarta.typescript.generator.emitter;
 import java.util.List;
 
 public class TsSwitchCaseClause extends TsStatement {
-
     private final TsExpression expression;
     private final List<TsStatement> statements;
 
